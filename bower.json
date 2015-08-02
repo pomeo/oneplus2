@@ -1,0 +1,16 @@
+{
+  "name": "oneplus2",
+  "version": "0.0.1",
+  "homepage": "https://github.com/pomeo/oneplus2",
+  "authors": [
+    "Sergey Ovechkin <me@pomeo.me>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
