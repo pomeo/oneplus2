@@ -33,7 +33,15 @@ gulp.task('images', function () {
 });
 
 gulp.task('libs', function() {
-  return gulp.src([])
+  return gulp.src(['bower_components/jquery/dist/jquery.js',
+                   'bower_components/jquery-validation/dist/jquery.validate.js',
+                   'bower_components/jquery-validation/dist/additional-methods.js',
+                   'bower_components/jquery-form/jquery.form.js',
+                   'bower_components/lodash/lodash.js',
+                   'bower_components/uikit/js/uikit.js',
+                   'bower_components/uikit/js/components/notify.js',
+                   'bower_components/uikit/js/components/sortable.js',
+                   'bower_components/uikit/js/components/tooltip.js'])
          .pipe(plumber({
            errorHandler: notify.onError("Error: <%= error.message %>")
          }))
