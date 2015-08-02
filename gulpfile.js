@@ -13,6 +13,7 @@ var browserify = require('browserify'),
     nib = require('nib'),
     sourcemaps = require('gulp-sourcemaps'),
     source = require('vinyl-source-stream'),
+    buffer = require('vinyl-buffer'),
     concat = require('gulp-concat'),
     browserSync = require('browser-sync'),
     reload = browserSync.reload;
@@ -61,14 +62,15 @@ gulp.task('libs', function() {
 
 gulp.task('compress', function() {
   return browserify('src/js/main.js')
-        .bundle()
+         .bundle()
+         .pipe(source('app.js'))
+         .pipe(buffer())
          .pipe(plumber({
            errorHandler: notify.onError("Error: <%= error.message %>")
          }))
          .pipe(sourcemaps.init())
          .pipe(babel())
          .pipe(uglify())
-         .pipe(source('app.js'))
          .pipe(sourcemaps.write('maps', {
            sourceMappingURLPrefix: '/js/'
          }))
@@ -122,9 +124,10 @@ gulp.task('browser-sync', function() {
 
 gulp.task('build', ['libs', 'compress', 'stylus']);
 
-gulp.task('default', ['build', 'browser-sync', 'mocha'], function () {
+gulp.task('default', ['build', 'images', 'browser-sync', 'mocha'], function () {
   gulp.watch(['views/**/*.jade'], reload);
   gulp.watch(['src/**/*.styl'], ['stylus']);
   gulp.watch(['src/**/*.js'], ['compress']);
+  gulp.watch(['test/**/*.js'], ['mocha']);
   gulp.watch(['src/img/*'], ['images']);
 });
