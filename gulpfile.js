@@ -104,13 +104,6 @@ gulp.task('mocha', function() {
          });
 });
 
-gulp.task('karma', function (done) {
-  karma.start({
-    configFile: __dirname + '/test/karma/karma.conf.js',
-    singleRun: false
-  }, done);
-});
-
 gulp.task('browser-sync', function() {
   browserSync.init(null, {
     proxy: 'localhost:3000',
@@ -122,7 +115,7 @@ gulp.task('browser-sync', function() {
 
 gulp.task('build', ['libs', 'compress', 'stylus']);
 
-gulp.task('default', ['build', 'images', 'browser-sync', 'mocha', 'karma'], function () {
+gulp.task('default', ['build', 'images', 'browser-sync', 'mocha'], function () {
   gulp.watch(['views/**/*.jade'], reload);
   gulp.watch(['src/**/*.styl'], ['stylus']);
   gulp.watch(['src/**/*.js'], ['compress']);
