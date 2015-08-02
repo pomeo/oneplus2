@@ -38,6 +38,7 @@
     "imagemin-pngcrush": "^4.1.0",
     "mocha": "^2.2.5",
     "nib": "^1.1.0",
+    "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   }
 }
