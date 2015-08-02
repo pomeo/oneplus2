@@ -122,7 +122,7 @@ gulp.task('browser-sync', function() {
 
 gulp.task('build', ['libs', 'compress', 'stylus']);
 
-gulp.task('default', ['build', 'images', 'browser-sync', 'mocha'], function () {
+gulp.task('default', ['build', 'browser-sync', 'mocha'], function () {
   gulp.watch(['views/**/*.jade'], reload);
   gulp.watch(['src/**/*.styl'], ['stylus']);
   gulp.watch(['src/**/*.js'], ['compress']);
