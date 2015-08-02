@@ -14,6 +14,7 @@ var browserify = require('browserify'),
     karma = require('karma').server,
     sourcemaps = require('gulp-sourcemaps'),
     source = require('vinyl-source-stream'),
+    concat = require('gulp-concat'),
     browserSync = require('browser-sync'),
     reload = browserSync.reload;
 
