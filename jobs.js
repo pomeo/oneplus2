@@ -72,9 +72,9 @@ setInterval(function() {
       log('Ошибка: ' + err, 'error');
     } else {
       log(email[0].mail + ' ' + email[0].equal + ' ' + email[0].count);
-      // jobs.create('emailRegister', {
-      //   ref: email[0].ref
-      // }).priority('normal').removeOnComplete(true).save();
+      jobs.create('emailRegister', {
+        ref: email[0].ref
+      }).priority('normal').removeOnComplete(true).save();
     }
   });
 }, 1000 );
