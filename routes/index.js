@@ -18,6 +18,8 @@ var mongoose   = require('mongoose'),
     rest       = require('restler'),
     xml2js     = require('xml2js'),
     moment     = require('moment'),
+    multer     = require('multer'),
+    upload     = multer(),
     winston    = require('winston'),
     Logentries = require('winston-logentries');
 
@@ -39,15 +41,15 @@ router.get('/', function(req, res) {
   res.render('index', { title: 'Express' });
 });
 
-router.post('/webhook', function(req, res) {
-  log(req.body);
+router.post('/webhook', upload.array(), function(req, res, next) {
+  var msg = JSON.parse(req.body.mailinMsg);
   jobs.create('mail', {
-    from: req.body.from[0].address,
-    to: req.body.to[0].address,
-    subject: req.body.subject,
-    date: req.body.date,
-    html: req.body.html,
-    text: req.body.text
+    from: msg.from[0].address,
+    to: msg.to[0].address,
+    subject: msg.subject,
+    date: msg.date,
+    html: msg.html,
+    text: msg.text
   }).priority('normal').removeOnComplete(true).save();
   res.sendStatus(200);
 });

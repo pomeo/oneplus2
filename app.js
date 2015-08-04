@@ -39,7 +39,7 @@ var sessionConfig = {
   proxy: true,
   cookie: {
     httpOnly: true,
-    secure: true,
+    secure: false,
     maxAge: null
   },
   resave: false,
