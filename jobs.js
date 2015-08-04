@@ -121,7 +121,7 @@ jobs.process('emailRegister', function(job, done) {
            log(data);
            var jsonpSandbox = vm.createContext({success_jsonpCallback: function(r){return r;}});
            var one = vm.runInContext(data,jsonpSandbox);
-           if (one.ret == 0 || one.ret == 1) {
+           if (one.ret == 0 || one.ret == 1 || one.errMsg == "We just sent you an e-mail with a confirmation link.") {
              m.used = true;
            }
            m.save(function(err) {
