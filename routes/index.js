@@ -40,6 +40,7 @@ router.get('/', function(req, res) {
 });
 
 router.post('/webhook', function(req, res) {
+  log(req.body);
   jobs.create('mail', {
     from: req.body.from[0].address,
     to: req.body.to[0].address,
