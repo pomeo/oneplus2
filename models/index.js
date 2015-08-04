@@ -26,14 +26,14 @@ MailsSchema.add({
 var EmailsForInvitesSchema = new Schema();
 
 EmailsForInvitesSchema.add({
-  order       : Number, // номер почты
+  order       : { type: Number, index: true }, // номер почты
   mail        : { type: String, unique: true }, // почтовый адрес
   hash        : { type: String, index: true }, // хеш
-  equal       : Number, // количество рефереров должно быть
-  count       : Number, // количество рефереров на данный момент
+  equal       : { type: Number, index: true }, // количество рефереров должно быть
+  count       : { type: Number, index: true }, // количество рефереров на данный момент
   ref         : { type: String, index: true }, // реферальный код
   confirm     : Boolean, // подтверждённый адрес
-  used        : Boolean, // использован как реферер
+  used        : { type: Boolean, index: true }, // использован как реферер
   created_at  : Date, // дата создания
   updated_at  : Date // дата изменения
 });
