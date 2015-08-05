@@ -104,7 +104,7 @@ jobs.process('emailRegister', function(job, done) {
              'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36',
              'Referer': 'https://oneplus.net/invites?kolid=' + job.data.ref
            },
-           timeout: 5000
+           timeout: 2000
          }).once('timeout', function(ms){
            log('Ошибка: Таймаут ' + ms + ' ms', 'error');
            setImmediate(done('timeout'));
@@ -178,7 +178,7 @@ jobs.process('clickConfirm', function(job, done) {
     rest.get(job.data.url, {
       //headers: {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'},
       headers: {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36'},
-      timeout: 5000
+      timeout: 2000
     }).once('timeout', function(ms){
       log('Ошибка: Таймаут ' + ms + ' ms', 'error');
       setImmediate(done('timeout'));
