@@ -77,7 +77,7 @@ setInterval(function() {
       }).priority('normal').removeOnComplete(true).save();
     }
   });
-}, 3000 );
+}, 300000000000000000 );
 
 jobs.process('emailRegister', function(job, done) {
   var domain = require('domain').create();
