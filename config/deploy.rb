@@ -10,8 +10,8 @@ set :application, "oneplus2"
 require           "capistrano-offroad"
 offroad_modules   "defaults", "supervisord"
 set :repository,  "git@github.com:pomeo/#{application}.git"
-set :supervisord_start_group, "app"
-set :supervisord_stop_group,  "app"
+set :supervisord_start_group, "oneplus"
+set :supervisord_stop_group,  "oneplus"
 #========================
 #ROLES
 #========================
