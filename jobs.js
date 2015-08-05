@@ -101,7 +101,7 @@ jobs.process('check', function(job, done) {
         job.data.count += 1;
         var $ = cheerio.load(email[0].html);
         jobs.create('clickConfirm', {
-          id: email[0]._id,
+          to: email[0].to,
           url: $('a').first().attr('href')
         }).priority('normal').removeOnComplete(true).save();
         jobs.create('check', {
@@ -234,7 +234,7 @@ jobs.process('clickConfirm', function(job, done) {
         updated_at : new Date()
       };
       EmailsInvites.findOneAndUpdate({
-        _id: job.data.id
+        mail: job.data.to
       }, upsertData, {
         upsert: false
       }, function(err, m) {
@@ -276,7 +276,7 @@ jobs.process('mail', function(job, done) {
           var $ = cheerio.load(job.data.html);
           log($('a').first().attr('href'));
           jobs.create('clickConfirm', {
-            id: m._id,
+            to: m.to,
             url: $('a').first().attr('href')
           }).priority('normal').removeOnComplete(true).save();
           setImmediate(done);
