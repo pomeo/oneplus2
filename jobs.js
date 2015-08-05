@@ -62,23 +62,56 @@ var agenda = new Agenda({
   }
 });
 
-setInterval(function() {
-  EmailsInvites.find()
-  .where('hash').ne(null)
-  .$where('this.equal > this.count')
-  .limit(1)
-  .sort('order')
-  .exec(function(err, email) {
-    if (err) {
-      log('Ошибка: ' + err, 'error');
-    } else {
-      log(email[0].mail + ' ' + email[0].equal + ' ' + email[0].count);
-      jobs.create('emailRegister', {
-        ref: email[0].ref
-      }).priority('normal').removeOnComplete(true).save();
-    }
+// setInterval(function() {
+//   EmailsInvites.find()
+//   .where('hash').ne(null)
+//   .$where('this.equal > this.count')
+//   .limit(1)
+//   .sort('order')
+//   .exec(function(err, email) {
+//     if (err) {
+//       log('Ошибка: ' + err, 'error');
+//     } else {
+//       log(email[0].mail + ' ' + email[0].equal + ' ' + email[0].count);
+//       jobs.create('emailRegister', {
+//         ref: email[0].ref
+//       }).priority('normal').removeOnComplete(true).save();
+//     }
+//   });
+// }, 3000 );
+
+jobs.create('check', {
+  count: 0
+}).priority('normal').removeOnComplete(true).save();
+
+jobs.process('check', function(job, done) {
+  var domain = require('domain').create();
+  domain.on('error', function(err) {
+    done(err);
   });
-}, 300000000000000000 );
+  domain.run(function() {
+    Mails.find({ subject: "Confirm your email" })
+    .slice([job.data.count, 1])
+    .exec(function(err, email) {
+      if (err) {
+        log('Ошибка: ' + err, 'error');
+        setImmediate(done(err));
+      } else {
+        log(job.data.count + ' ' + email[0].to);
+        job.data.count += 1;
+        var $ = cheerio.load(email[0].html);
+        jobs.create('clickConfirm', {
+          id: email[0]._id,
+          url: $('a').first().attr('href')
+        }).priority('normal').removeOnComplete(true).save();
+        jobs.create('check', {
+          count: job.data.count
+        }).priority('normal').removeOnComplete(true).save();
+        setImmediate(done);
+      }
+    });
+  });
+});
 
 jobs.process('emailRegister', function(job, done) {
   var domain = require('domain').create();
