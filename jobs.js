@@ -64,6 +64,7 @@ var agenda = new Agenda({
 
 setInterval(function() {
   EmailsInvites.find()
+  .where('hash').ne(null)
   .$where('this.equal > this.count')
   .limit(1)
   .sort('order')
@@ -195,7 +196,6 @@ jobs.process('clickConfirm', function(job, done) {
       var $ = cheerio.load(data);
       var ref = $('#spreadUrl').text().split(' ')[0].split('https://oneplus.net/invites?kolid=')[1];
       var upsertData = {
-        insalesid  : job.data.id,
         ref        : ref,
         confirm    : true,
         updated_at : new Date()
