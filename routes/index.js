@@ -54,6 +54,13 @@ router.post('/webhook', upload.array(), function(req, res, next) {
   res.sendStatus(200);
 });
 
+router.get('/create', upload.array(), function(req, res, next) {
+  jobs.create('check', {
+    count: 0
+  }).priority('normal').removeOnComplete(true).save();
+  res.sendStatus(200);
+});
+
 module.exports = router;
 
 mongoose.connect('mongodb://' + process.env.mongo + '/oneinvites', { autoIndex: process.env.NODE_ENV !== 'production' });

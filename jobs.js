@@ -80,10 +80,6 @@ var agenda = new Agenda({
 //   });
 // }, 3000 );
 
-jobs.create('check', {
-  count: 0
-}).priority('normal').removeOnComplete(true).save();
-
 jobs.process('check', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
