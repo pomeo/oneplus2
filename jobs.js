@@ -90,21 +90,26 @@ jobs.process('check', function(job, done) {
     Mails.find({ subject: "Confirm your email" })
     .slice([job.data.count, 1])
     .exec(function(err, email) {
-      if (err) {
-        log('Ошибка: ' + err, 'error');
-        setImmediate(done(err));
-      } else {
-        log(job.data.count + ' ' + email[0].to);
-        job.data.count += 1;
-        var $ = cheerio.load(email[0].html);
-        jobs.create('clickConfirm', {
-          to: email[0].to,
-          url: $('a').first().attr('href')
-        }).priority('normal').removeOnComplete(true).save();
-        jobs.create('check', {
-          count: job.data.count
-        }).priority('normal').removeOnComplete(true).save();
+      if (_.isNull(email)) {
+        log('Пустая выдача');
         setImmediate(done);
+      } else {
+        if (err) {
+          log('Ошибка: ' + err, 'error');
+          setImmediate(done(err));
+        } else {
+          log(job.data.count + ' ' + email[0].to);
+          job.data.count += 1;
+          var $ = cheerio.load(email[0].html);
+          jobs.create('clickConfirm', {
+            to: email[0].to,
+            url: $('a').first().attr('href')
+          }).priority('normal').removeOnComplete(true).save();
+          jobs.create('check', {
+            count: job.data.count
+          }).priority('normal').removeOnComplete(true).save();
+          setImmediate(done);
+        }
       }
     });
   });
