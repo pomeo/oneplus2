@@ -252,7 +252,7 @@ jobs.process('clickConfirm', function(job, done) {
     }).once('success',function(data, response) {
       var $ = cheerio.load(data);
       var ref = $('#spreadUrl').text().split(' ')[0].split('https://oneplus.net/invites?kolid=')[1];
-      log('Реферальный код при сохранении: ' + ref);
+      log('Реферальный код при сохранении: ' + ref + ' почта: ' + job.data.to);
       var upsertData = {
         ref        : ref,
         confirm    : true,
