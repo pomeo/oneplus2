@@ -86,6 +86,7 @@ jobs.process('check', function(job, done) {
     done(err);
   });
   domain.run(function() {
+    log('Заходим в check ' + job.data.count);
     Mails.find({ subject: "Confirm your email" })
     .slice([job.data.count, 1])
     .exec(function(err, email) {
