@@ -69,16 +69,20 @@ setInterval(function() {
   .limit(1)
   .sort('order')
   .exec(function(err, email) {
-    if (err) {
-      log('Ошибка: ' + err, 'error');
+    if (_.isNull(email)) {
+      log('Пустая выдача');
     } else {
-      log(email[0].mail + ' ' + email[0].equal + ' ' + email[0].count);
-      jobs.create('emailRegister', {
-        ref: email[0].ref
-      }).priority('normal').removeOnComplete(true).save();
+      if (err) {
+        log('Ошибка: ' + err, 'error');
+      } else {
+        log(email[0].mail + ' ' + email[0].equal + ' ' + email[0].count);
+        // jobs.create('emailRegister', {
+        //   ref: email[0].ref
+        // }).priority('normal').removeOnComplete(true).save();
+      }
     }
   });
-}, 3000000000000000000 );
+}, 3000 );
 
 jobs.process('check', function(job, done) {
   var domain = require('domain').create();
