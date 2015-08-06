@@ -46,7 +46,6 @@ router.post('/webhook', upload.array(), function(req, res, next) {
   var regexp = /humst/g;
   var match = msg.to[0].address.match(regexp);
   if (_.isNull(match)) {
-    log('Спам');
     res.sendStatus(200);
   } else {
     jobs.create('mail', {
