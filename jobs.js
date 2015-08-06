@@ -250,9 +250,7 @@ jobs.process('clickConfirm', function(job, done) {
       log('Ошибка: ' + JSON.stringify(data), 'error');
       setImmediate(done(JSON.stringify(data)));
     }).once('success',function(data, response) {
-      log(data);
       var $ = cheerio.load(data);
-      log($.html());
       var ref = $('#spreadUrl').text().split(' ')[0].split('https://oneplus.net/invites?kolid=')[1];
       log('Реферальный код при сохранении: ' + ref + ' почта: ' + job.data.to);
       var upsertData = {
