@@ -64,7 +64,7 @@ var agenda = new Agenda({
 
 setInterval(function() {
   EmailsInvites.find()
-  .where('hash').ne(null)
+  .where('ref').ne(null)
   .$where('this.equal > this.count')
   .limit(1)
   .sort('order')
@@ -251,6 +251,7 @@ jobs.process('clickConfirm', function(job, done) {
       setImmediate(done(JSON.stringify(data)));
     }).once('success',function(data, response) {
       var $ = cheerio.load(data);
+      log($);
       var ref = $('#spreadUrl').text().split(' ')[0].split('https://oneplus.net/invites?kolid=')[1];
       log('Реферальный код при сохранении: ' + ref + ' почта: ' + job.data.to);
       var upsertData = {
