@@ -175,6 +175,7 @@ jobs.process('emailRegister', function(job, done) {
                  setImmediate(done(err));
                } else {
                  if (one.ret == 0) {
+                   log('Реферальный код: ' + job.data.ref);
                    jobs.create('count', {
                      ref: job.data.ref
                    }).priority('normal').removeOnComplete(true).save();
@@ -245,6 +246,7 @@ jobs.process('clickConfirm', function(job, done) {
     }).once('success',function(data, response) {
       var $ = cheerio.load(data);
       var ref = $('#spreadUrl').text().split(' ')[0].split('https://oneplus.net/invites?kolid=')[1];
+      log('Реферальный код при сохранении: ' + job.data.ref);
       var upsertData = {
         ref        : ref,
         confirm    : true,
