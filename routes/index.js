@@ -43,15 +43,22 @@ router.get('/', function(req, res) {
 
 router.post('/webhook', upload.array(), function(req, res, next) {
   var msg = JSON.parse(req.body.mailinMsg);
-  jobs.create('mail', {
-    from: msg.from[0].address,
-    to: msg.to[0].address,
-    subject: msg.subject,
-    date: msg.date,
-    html: msg.html,
-    text: msg.text
-  }).priority('normal').removeOnComplete(true).save();
-  res.sendStatus(200);
+  var regexp = /humst/g;
+  var match = msg.to[0].address.match(regexp);
+  if (_.isNull(match)) {
+    log('Спам');
+    res.sendStatus(200);
+  } else {
+    jobs.create('mail', {
+      from: msg.from[0].address,
+      to: msg.to[0].address,
+      subject: msg.subject,
+      date: msg.date,
+      html: msg.html,
+      text: msg.text
+    }).priority('normal').removeOnComplete(true).save();
+    res.sendStatus(200);
+  }
 });
 
 router.get('/create', upload.array(), function(req, res, next) {
