@@ -175,12 +175,18 @@ jobs.process('emailRegister', function(job, done) {
                  setImmediate(done(err));
                } else {
                  if (one.ret == 0) {
-                   log('Реферальный код: ' + job.data.ref);
-                   jobs.create('count', {
-                     ref: job.data.ref
-                   }).priority('normal').removeOnComplete(true).save();
+                   if (!_.isUndefined(job.data.ref)) {
+                     log('Реферальный код: ' + job.data.ref);
+                     jobs.create('count', {
+                       ref: job.data.ref
+                     }).priority('normal').removeOnComplete(true).save();
+                     setImmediate(done);
+                   } else {
+                     setImmediate(done);
+                   }
+                 } else {
+                   setImmediate(done);
                  }
-                 setImmediate(done);
                }
              });
            });
