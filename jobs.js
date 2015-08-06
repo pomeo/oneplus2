@@ -91,7 +91,6 @@ jobs.process('check', function(job, done) {
     .skip(job.data.count)
     .limit(1)
     .exec(function(err, email) {
-      log(email);
       if (_.isNull(email)) {
         log('Пустая выдача');
         setImmediate(done);
