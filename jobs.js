@@ -78,7 +78,7 @@ setInterval(function() {
       }).priority('normal').removeOnComplete(true).save();
     }
   });
-}, 3000 );
+}, 3000000000000000000 );
 
 jobs.process('check', function(job, done) {
   var domain = require('domain').create();
