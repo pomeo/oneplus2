@@ -235,48 +235,50 @@ jobs.process('clickConfirm', 1, function(job, done) {
     setImmediate(done(err));
   });
   domain.run(function() {
-    rest.get(job.data.url, {
-      //headers: {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'},
-      headers: {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36'},
-      timeout: 2000
-    }).once('timeout', function(ms){
-      log('Ошибка: Таймаут ' + ms + ' ms', 'error');
-      setImmediate(done('timeout'));
-    }).once('error',function(err, response) {
-      log('Ошибка: ' + err, 'error');
-      setImmediate(done(err));
-    }).once('abort',function() {
-      log('Ошибка: Abort', 'error');
-      setImmediate(done('abort'));
-    }).once('fail',function(data, response) {
-      log('Ошибка: ' + JSON.stringify(data), 'error');
-      setImmediate(done(JSON.stringify(data)));
-    }).once('success',function(data, response) {
-      var ref = response.socket._httpMessage.path.split('/invites?kid=')[1];
-      log('Реферальный код при сохранении: ' + ref + ' почта: ' + job.data.to);
-      var upsertData = {
-        ref        : ref,
-        confirm    : true,
-        updated_at : new Date()
-      };
-      EmailsInvites.findOneAndUpdate({
-        mail: job.data.to
-      }, upsertData, {
-        upsert: false
-      }, function(err, m) {
-           if (_.isNull(m)) {
-             log('Пустая выдача');
-             setImmediate(done);
-           } else {
-             if (err) {
-               log('Ошибка: ' + err, 'error');
-               setImmediate(done(err));
-             } else {
-               log('Подтверждена почта ' + m.mail);
+    setTimeout(function() {
+      rest.get(job.data.url, {
+        //headers: {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'},
+        headers: {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36'},
+        timeout: 2000
+      }).once('timeout', function(ms){
+        log('Ошибка: Таймаут ' + ms + ' ms', 'error');
+        setImmediate(done('timeout'));
+      }).once('error',function(err, response) {
+        log('Ошибка: ' + err, 'error');
+        setImmediate(done(err));
+      }).once('abort',function() {
+        log('Ошибка: Abort', 'error');
+        setImmediate(done('abort'));
+      }).once('fail',function(data, response) {
+        log('Ошибка: ' + JSON.stringify(data), 'error');
+        setImmediate(done(JSON.stringify(data)));
+      }).once('success',function(data, response) {
+        var ref = response.socket._httpMessage.path.split('/invites?kid=')[1];
+        log('Реферальный код при сохранении: ' + ref + ' почта: ' + job.data.to);
+        var upsertData = {
+          ref        : ref,
+          confirm    : true,
+          updated_at : new Date()
+        };
+        EmailsInvites.findOneAndUpdate({
+          mail: job.data.to
+        }, upsertData, {
+          upsert: false
+        }, function(err, m) {
+             if (_.isNull(m)) {
+               log('Пустая выдача');
                setImmediate(done);
+             } else {
+               if (err) {
+                 log('Ошибка: ' + err, 'error');
+                 setImmediate(done(err));
+               } else {
+                 log('Подтверждена почта ' + m.mail);
+                 setImmediate(done);
+               }
              }
-           }
-         });
+           });
+      }, 2000);
     });
   });
 });
