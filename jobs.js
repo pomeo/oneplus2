@@ -25,8 +25,12 @@ var mongoose    = require('mongoose'),
     request     = require('request'),
     cheerio     = require('cheerio'),
     vm          = require('vm'),
+    heapdump    = require('heapdump'),
+    path        = require('path'),
     winston     = require('winston'),
     Logentries  = require('winston-logentries');
+
+heapdump.writeSnapshot(path.join(__dirname, 'files/' + Date.now() + '.heapsnapshot'));
 
 String.prototype.cleanup = function() {
    return this.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '');
@@ -87,7 +91,7 @@ setInterval(function() {
 jobs.process('check', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
-    done(err);
+    setImmediate(done(err));
   });
   domain.run(function() {
     log('Заходим в check ' + job.data.count);
@@ -123,7 +127,7 @@ jobs.process('check', function(job, done) {
 jobs.process('emailRegister', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
-    done(err);
+    setImmediate(done(err));
   });
   domain.run(function() {
     EmailsInvites.findOne({
@@ -198,7 +202,7 @@ jobs.process('emailRegister', function(job, done) {
 jobs.process('count', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
-    done(err);
+    setImmediate(done(err));
   });
   domain.run(function() {
     var upsertData = {
@@ -230,7 +234,7 @@ jobs.process('count', function(job, done) {
 jobs.process('clickConfirm', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
-    done(err);
+    setImmediate(done(err));
   });
   domain.run(function() {
     rest.get(job.data.url, {
@@ -282,7 +286,7 @@ jobs.process('clickConfirm', function(job, done) {
 jobs.process('mail', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
-    done(err);
+    setImmediate(done(err));
   });
   domain.run(function() {
     var M = new Mails({
@@ -353,7 +357,7 @@ function readFile100() {
 jobs.process('createEmails', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
-    done(err);
+    setImmediate(done(err));
   });
   domain.run(function() {
     var M = new EmailsInvites({
