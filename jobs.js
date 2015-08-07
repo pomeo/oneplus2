@@ -20,7 +20,7 @@ var mongoose    = require('mongoose'),
     _           = require('lodash'),
     async       = require('async'),
     cc          = require('coupon-code'),
-    Browser     = require('zombie'),
+    //Browser     = require('zombie'),
     rollbar     = require('rollbar'),
     request     = require('request'),
     cheerio     = require('cheerio'),
@@ -29,10 +29,6 @@ var mongoose    = require('mongoose'),
     path        = require('path'),
     winston     = require('winston'),
     Logentries  = require('winston-logentries');
-
-setInterval(function() {
-  heapdump.writeSnapshot(path.join(__dirname, 'files/' + Date.now() + '.heapsnapshot'));
-}, 300000 );
 
 String.prototype.cleanup = function() {
    return this.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '');
@@ -115,7 +111,7 @@ jobs.process('check', function(job, done) {
           jobs.create('clickConfirm', {
             to: email[0].to,
             url: $('a').first().attr('href')
-          }).priority('normal').removeOnComplete(true).save();
+          }).delay(2000).priority('normal').removeOnComplete(true).save();
           jobs.create('check', {
             count: job.data.count
           }).priority('normal').removeOnComplete(true).save();
