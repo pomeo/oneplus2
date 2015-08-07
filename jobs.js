@@ -8,6 +8,7 @@ var mongoose    = require('mongoose'),
     jobs        = kue.createQueue({
       prefix: 'q',
       disableSearch: true,
+      jobEvents: false,
       redis: {
         host: process.env.redis
       }
@@ -56,7 +57,17 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
+jobs.promote(1500, 1);
+
 jobs.watchStuckJobs();
+
+kue.Job.rangeByState('complete', 0, 100, 'asc', function(err, jobs) {
+  jobs.forEach(function(job) {
+    job.remove(function(){
+      log('removed ', job.id );
+    });
+  });
+});
 
 var agenda = new Agenda({
   db: {
