@@ -61,13 +61,15 @@ jobs.promote(1500, 1);
 
 jobs.watchStuckJobs();
 
-kue.Job.rangeByState('complete', 0, 100, 'asc', function(err, jobs) {
-  jobs.forEach(function(job) {
-    job.remove(function(){
-      log('removed ', job.id );
+setInterval(function() {
+  kue.Job.rangeByState('complete', 0, 100, 'asc', function(err, jobs) {
+    jobs.forEach(function(job) {
+      job.remove(function(){
+        log('removed ', job.id );
+      });
     });
   });
-});
+}, 1000 );
 
 var agenda = new Agenda({
   db: {
