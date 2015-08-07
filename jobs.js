@@ -30,6 +30,10 @@ var mongoose    = require('mongoose'),
     winston     = require('winston'),
     Logentries  = require('winston-logentries');
 
+setInterval(function() {
+  heapdump.writeSnapshot(path.join(__dirname, 'files/' + Date.now() + '.heapsnapshot'));
+}, 300000 );
+
 String.prototype.cleanup = function() {
    return this.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '');
 };
@@ -389,8 +393,6 @@ var Tasks         = require('./models').Task;
 var Charges       = require('./models').Chrg;
 var Mails         = require('./models').Mail;
 var EmailsInvites = require('./models').Emfi;
-
-heapdump.writeSnapshot(path.join(__dirname, 'files/' + Date.now() + '.heapsnapshot'));
 
 //Логгер в одном месте, для упрощения перезда на любой логгер.
 function log(logMsg, logType) {
