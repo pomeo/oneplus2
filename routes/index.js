@@ -11,6 +11,7 @@ var mongoose   = require('mongoose'),
     jobs       = kue.createQueue({
       prefix: 'q',
       disableSearch: true,
+      jobEvents: false,
       redis: {
         host: process.env.redis
       }
