@@ -99,7 +99,7 @@ setInterval(function() {
   });
 }, 3000 );
 
-jobs.process('check', 1, function(job, done) {
+jobs.process('check', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
     setImmediate(done(err));
@@ -242,7 +242,7 @@ jobs.process('count', function(job, done) {
   });
 });
 
-jobs.process('clickConfirm', 1, function(job, done) {
+jobs.process('clickConfirm', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
     setImmediate(done(err));
@@ -324,7 +324,7 @@ jobs.process('mail', function(job, done) {
           jobs.create('clickConfirm', {
             to: m.to,
             url: $('a').first().attr('href')
-          }).priority('normal').removeOnComplete(true).save();
+          }).delay(2000).priority('normal').removeOnComplete(true).save();
           setImmediate(done);
         } else {
           setImmediate(done);
