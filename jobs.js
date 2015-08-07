@@ -86,7 +86,7 @@ setInterval(function() {
   });
 }, 3000 );
 
-jobs.process('check', function(job, done) {
+jobs.process('check', 1, function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
     setImmediate(done(err));
@@ -229,7 +229,7 @@ jobs.process('count', function(job, done) {
   });
 });
 
-jobs.process('clickConfirm', function(job, done) {
+jobs.process('clickConfirm', 1, function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
     setImmediate(done(err));
