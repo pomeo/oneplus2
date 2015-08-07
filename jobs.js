@@ -256,7 +256,7 @@ jobs.process('clickConfirm', function(job, done) {
       }).once('timeout', function(ms){
         log('Ошибка: Таймаут ' + ms + ' ms', 'error');
         jobs.create('clickConfirm', {
-          to: job.data.url,
+          to: job.data.to,
           url: job.data.url
         }).delay(2000).priority('low').removeOnComplete(true).save();
         setImmediate(done);
