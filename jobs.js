@@ -299,7 +299,7 @@ jobs.process('clickConfirm', function(job, done) {
 jobs.process('mail', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
-    setImmediate(done(err));
+    setImmediate(done);
   });
   domain.run(function() {
     var M = new Mails({
@@ -315,7 +315,7 @@ jobs.process('mail', function(job, done) {
     M.save(function(err, m) {
       if (err) {
         log('Письмо ' + job.data.to + ' Ошибка: ' + err, 'error');
-        setImmediate(done(err));
+        setImmediate(done);
       } else {
         log('Письмо ' + job.data.to + ' сохранено');
         if (job.data.subject == 'Confirm your email') {
@@ -370,7 +370,7 @@ function readFile100() {
 jobs.process('createEmails', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
-    setImmediate(done(err));
+    setImmediate(done);
   });
   domain.run(function() {
     var M = new EmailsInvites({
