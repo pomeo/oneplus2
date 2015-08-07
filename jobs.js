@@ -102,7 +102,7 @@ setInterval(function() {
 jobs.process('check', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
-    setImmediate(done(err));
+    setImmediate(done);
   });
   domain.run(function() {
     log('Заходим в check ' + job.data.count);
@@ -116,7 +116,7 @@ jobs.process('check', function(job, done) {
       } else {
         if (err) {
           log('Ошибка: ' + err, 'error');
-          setImmediate(done(err));
+          setImmediate(done);
         } else {
           log(job.data.count + ' ' + email[0].to);
           job.data.count += 1;
@@ -138,7 +138,7 @@ jobs.process('check', function(job, done) {
 jobs.process('emailRegister', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
-    setImmediate(done(err));
+    setImmediate(done);
   });
   domain.run(function() {
     EmailsInvites.findOne({
@@ -167,16 +167,16 @@ jobs.process('emailRegister', function(job, done) {
              timeout: 2000
            }).once('timeout', function(ms){
              log('Ошибка: Таймаут ' + ms + ' ms', 'error');
-             setImmediate(done('timeout'));
+             setImmediate(done);
            }).once('error',function(err, response) {
              log('Ошибка: ' + err, 'error');
-             setImmediate(done(err));
+             setImmediate(done);
            }).once('abort',function() {
              log('Ошибка: Abort', 'error');
-             setImmediate(done('abort'));
+             setImmediate(done);
            }).once('fail',function(data, response) {
              log('Ошибка: ' + JSON.stringify(data), 'error');
-             setImmediate(done(JSON.stringify(data)));
+             setImmediate(done);
            }).once('success',function(data, response) {
              log(data);
              var jsonpSandbox = vm.createContext({success_jsonpCallback: function(r){return r;}});
@@ -187,7 +187,7 @@ jobs.process('emailRegister', function(job, done) {
              m.save(function(err) {
                if (err) {
                  log('Ошибка: ' + err, 'error');
-                 setImmediate(done(err));
+                 setImmediate(done);
                } else {
                  if (one.ret == 0) {
                    if (!_.isUndefined(job.data.ref)) {
@@ -213,7 +213,7 @@ jobs.process('emailRegister', function(job, done) {
 jobs.process('count', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
-    setImmediate(done(err));
+    setImmediate(done);
   });
   domain.run(function() {
     var upsertData = {
@@ -232,7 +232,7 @@ jobs.process('count', function(job, done) {
          } else {
            if (err) {
              log('Ошибка: ' + err, 'error');
-             setImmediate(done(err));
+             setImmediate(done);
            } else {
              log('+1 ' + m.mail);
              setImmediate(done);
@@ -245,7 +245,7 @@ jobs.process('count', function(job, done) {
 jobs.process('clickConfirm', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
-    setImmediate(done(err));
+    setImmediate(done);
   });
   domain.run(function() {
     setTimeout(function() {
@@ -255,16 +255,16 @@ jobs.process('clickConfirm', function(job, done) {
         timeout: 2000
       }).once('timeout', function(ms){
         log('Ошибка: Таймаут ' + ms + ' ms', 'error');
-        setImmediate(done('timeout'));
+        setImmediate(done);
       }).once('error',function(err, response) {
         log('Ошибка: ' + err, 'error');
-        setImmediate(done(err));
+        setImmediate(done);
       }).once('abort',function() {
         log('Ошибка: Abort', 'error');
-        setImmediate(done('abort'));
+        setImmediate(done);
       }).once('fail',function(data, response) {
         log('Ошибка: ' + JSON.stringify(data), 'error');
-        setImmediate(done(JSON.stringify(data)));
+        setImmediate(done);
       }).once('success',function(data, response) {
         var ref = response.socket._httpMessage.path.split('/invites?kid=')[1];
         log('Реферальный код при сохранении: ' + ref + ' почта: ' + job.data.to);
@@ -284,7 +284,7 @@ jobs.process('clickConfirm', function(job, done) {
              } else {
                if (err) {
                  log('Ошибка: ' + err, 'error');
-                 setImmediate(done(err));
+                 setImmediate(done);
                } else {
                  log('Подтверждена почта ' + m.mail);
                  setImmediate(done);
