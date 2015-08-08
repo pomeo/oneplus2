@@ -164,7 +164,7 @@ jobs.process('emailRegister', function(job, done) {
   });
 });
 
-jobs.process('count', function(job, done) {
+jobs.process('register', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
     setImmediate(done);
