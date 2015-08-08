@@ -190,15 +190,19 @@ jobs.process('register', function(job, done) {
       timeout: 2000
     }).once('timeout', function(ms){
       log('Ошибка: Таймаут ' + ms + ' ms', 'error');
+      re.removeAllListeners('error');
       setImmediate(done);
     }).once('error',function(err, response) {
       log('Ошибка: ' + err, 'error');
+      re.removeAllListeners('error');
       setImmediate(done);
     }).once('abort',function() {
       log('Ошибка: Abort', 'error');
+      re.removeAllListeners('error');
       setImmediate(done);
     }).once('fail',function(data, response) {
       log('Ошибка: ' + JSON.stringify(data), 'error');
+      re.removeAllListeners('error');
       setImmediate(done);
     }).once('success',function(data, response) {
       log(data);
@@ -208,6 +212,7 @@ jobs.process('register', function(job, done) {
       if (one.ret == 0 || one.ret == 1 || one.errMsg == "We just sent you an e-mail with a confirmation link.") {
         upsertData.used = true;
       }
+      re.removeAllListeners('error');
       EmailsInvites.findOneAndUpdate({
         _id: job.data.id
       }, upsertData, {
