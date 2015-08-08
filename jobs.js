@@ -94,6 +94,9 @@ setInterval(function() {
         jobs.create('emailRegister', {
           ref: email[0].ref
         }).priority('normal').removeOnComplete(true).save();
+        delete mongoose.models['EmailsForInvites'];
+        delete mongoose.collections['EmailsForInvites'];
+        delete mongoose.base.modelSchemas['EmailsForInvites'];
       }
     }
   });
