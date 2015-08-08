@@ -154,7 +154,7 @@ jobs.process('emailRegister', function(job, done) {
          } else {
            log(m.mail + ' ' + m.order);
            var re = require('restler');
-           re.get('https://invites.oneplus.net/index.php', {
+           rest.get('https://invites.oneplus.net/index.php', {
              query: {
                'r': 'share/signup',
                'success_jsonpCallback': 'success_jsonpCallback',
@@ -250,7 +250,7 @@ jobs.process('clickConfirm', function(job, done) {
   });
   domain.run(function() {
     var re = require('restler');
-    re.get(job.data.url, {
+    rest.get(job.data.url, {
       //headers: {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'},
       headers: {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36'},
       timeout: 2000
