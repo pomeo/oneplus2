@@ -21,6 +21,7 @@ var mongoose    = require('mongoose'),
     _           = require('lodash'),
     async       = require('async'),
     cc          = require('coupon-code'),
+    memwatch    = require('memwatch-next'),
     //Browser     = require('zombie'),
     rollbar     = require('rollbar'),
     request     = require('request'),
@@ -28,6 +29,7 @@ var mongoose    = require('mongoose'),
     vm          = require('vm'),
     heapdump    = require('heapdump'),
     path        = require('path'),
+    util        = require('util'),
     winston     = require('winston'),
     Logentries  = require('winston-logentries');
 
@@ -58,6 +60,18 @@ if (process.env.NODE_ENV === 'development') {
     ]
   });
 }
+
+var hd;
+memwatch.on('leak', function(info) {
+ log(info, 'error');
+ if (!hd) {
+   hd = new memwatch.HeapDiff();
+ } else {
+   var diff = hd.end();
+   log(util.inspect(diff, true, null), 'error');
+   hd = null;
+ }
+});
 
 jobs.promote(1500, 1);
 
