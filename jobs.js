@@ -153,61 +153,85 @@ jobs.process('emailRegister', function(job, done) {
            setImmediate(done);
          } else {
            log(m.mail + ' ' + m.order);
-           var re = require('restler');
-           rest.get('https://invites.oneplus.net/index.php', {
-             query: {
-               'r': 'share/signup',
-               'success_jsonpCallback': 'success_jsonpCallback',
-               'email': m.mail,
-               'koid': job.data.ref
-             },
-             headers: {
-               'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36',
-               'Referer': 'https://oneplus.net/invites?kolid=' + job.data.ref
-             },
-             timeout: 2000
-           }).once('timeout', function(ms){
-             log('Ошибка: Таймаут ' + ms + ' ms', 'error');
+           jobs.create('register', {
+             id: m._id,
+             to: m.mail,
+             ref: job.data.ref
+           }).delay(2000).priority('normal').removeOnComplete(true).save();
+           setImmediate(done);
+         }
+       });
+  });
+});
+
+jobs.process('count', function(job, done) {
+  var domain = require('domain').create();
+  domain.on('error', function(err) {
+    setImmediate(done);
+  });
+  domain.run(function() {
+    rest.get('https://invites.oneplus.net/index.php', {
+      query: {
+        'r': 'share/signup',
+        'success_jsonpCallback': 'success_jsonpCallback',
+        'email': job.data.to,
+        'koid': job.data.ref
+      },
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36',
+        'Referer': 'https://oneplus.net/invites?kolid=' + job.data.ref
+      },
+      timeout: 2000
+    }).once('timeout', function(ms){
+      log('Ошибка: Таймаут ' + ms + ' ms', 'error');
+      setImmediate(done);
+    }).once('error',function(err, response) {
+      log('Ошибка: ' + err, 'error');
+      setImmediate(done);
+    }).once('abort',function() {
+      log('Ошибка: Abort', 'error');
+      setImmediate(done);
+    }).once('fail',function(data, response) {
+      log('Ошибка: ' + JSON.stringify(data), 'error');
+      setImmediate(done);
+    }).once('success',function(data, response) {
+      log(data);
+      var jsonpSandbox = vm.createContext({success_jsonpCallback: function(r){return r;}});
+      var one = vm.runInContext(data,jsonpSandbox);
+      var upsertData = {};
+      if (one.ret == 0 || one.ret == 1 || one.errMsg == "We just sent you an e-mail with a confirmation link.") {
+        upsertData.used = true;
+      }
+      EmailsInvites.findOneAndUpdate({
+        _id: job.data.id
+      }, upsertData, {
+        upsert: false
+      }, function(err, m) {
+           if (_.isNull(m)) {
+             log('Пустая выдача');
              setImmediate(done);
-           }).once('error',function(err, response) {
-             log('Ошибка: ' + err, 'error');
-             setImmediate(done);
-           }).once('abort',function() {
-             log('Ошибка: Abort', 'error');
-             setImmediate(done);
-           }).once('fail',function(data, response) {
-             log('Ошибка: ' + JSON.stringify(data), 'error');
-             setImmediate(done);
-           }).once('success',function(data, response) {
-             log(data);
-             var jsonpSandbox = vm.createContext({success_jsonpCallback: function(r){return r;}});
-             var one = vm.runInContext(data,jsonpSandbox);
-             if (one.ret == 0 || one.ret == 1 || one.errMsg == "We just sent you an e-mail with a confirmation link.") {
-               m.used = true;
-             }
-             m.save(function(err) {
-               if (err) {
-                 log('Ошибка: ' + err, 'error');
-                 setImmediate(done);
-               } else {
-                 if (one.ret == 0) {
-                   if (!_.isUndefined(job.data.ref)) {
-                     log('Реферальный код: ' + job.data.ref);
-                     jobs.create('count', {
-                       ref: job.data.ref
-                     }).priority('normal').removeOnComplete(true).save();
-                     setImmediate(done);
-                   } else {
-                     setImmediate(done);
-                   }
+           } else {
+             if (err) {
+               log('Ошибка: ' + err, 'error');
+               setImmediate(done);
+             } else {
+               if (one.ret == 0) {
+                 if (!_.isUndefined(job.data.ref)) {
+                   log('Реферальный код: ' + job.data.ref);
+                   jobs.create('count', {
+                     ref: job.data.ref
+                   }).priority('normal').removeOnComplete(true).save();
+                   setImmediate(done);
                  } else {
                    setImmediate(done);
                  }
+               } else {
+                 setImmediate(done);
                }
-             });
-           });
-         }
-       });
+             }
+           }
+         });
+    });
   });
 });
 
@@ -249,7 +273,6 @@ jobs.process('clickConfirm', function(job, done) {
     setImmediate(done);
   });
   domain.run(function() {
-    var re = require('restler');
     rest.get(job.data.url, {
       //headers: {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'},
       headers: {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36'},
