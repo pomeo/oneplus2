@@ -41,14 +41,16 @@ function randomIntFromInterval(min,max) {
 
 rollbar.init(process.env.rollbar);
 
+var logger;
+
 if (process.env.NODE_ENV === 'development') {
-  var logger = new (winston.Logger)({
+  logger = new (winston.Logger)({
     transports: [
       new (winston.transports.Console)()
     ]
   });
 } else {
-  var logger = new (winston.Logger)({
+  logger = new (winston.Logger)({
     transports: [
       new winston.transports.Logentries({
         token: process.env.logentries
