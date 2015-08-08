@@ -94,9 +94,9 @@ setInterval(function() {
         jobs.create('emailRegister', {
           ref: email[0].ref
         }).priority('normal').removeOnComplete(true).save();
-        delete mongoose.models['EmailsForInvites'];
-        delete mongoose.collections['EmailsForInvites'];
-        delete mongoose.base.modelSchemas['EmailsForInvites'];
+        // delete mongoose.models['EmailsForInvites'];
+        // delete mongoose.collections['EmailsForInvites'];
+        // delete mongoose.base.modelSchemas['EmailsForInvites'];
       }
     }
   });
@@ -170,27 +170,15 @@ jobs.process('emailRegister', function(job, done) {
              timeout: 2000
            }).once('timeout', function(ms){
              log('Ошибка: Таймаут ' + ms + ' ms', 'error');
-             delete mongoose.models['EmailsForInvites'];
-             delete mongoose.collections['EmailsForInvites'];
-             delete mongoose.base.modelSchemas['EmailsForInvites'];
              setImmediate(done);
            }).once('error',function(err, response) {
              log('Ошибка: ' + err, 'error');
-             delete mongoose.models['EmailsForInvites'];
-             delete mongoose.collections['EmailsForInvites'];
-             delete mongoose.base.modelSchemas['EmailsForInvites'];
              setImmediate(done);
            }).once('abort',function() {
              log('Ошибка: Abort', 'error');
-             delete mongoose.models['EmailsForInvites'];
-             delete mongoose.collections['EmailsForInvites'];
-             delete mongoose.base.modelSchemas['EmailsForInvites'];
              setImmediate(done);
            }).once('fail',function(data, response) {
              log('Ошибка: ' + JSON.stringify(data), 'error');
-             delete mongoose.models['EmailsForInvites'];
-             delete mongoose.collections['EmailsForInvites'];
-             delete mongoose.base.modelSchemas['EmailsForInvites'];
              setImmediate(done);
            }).once('success',function(data, response) {
              log(data);
