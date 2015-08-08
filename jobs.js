@@ -167,15 +167,19 @@ jobs.process('emailRegister', function(job, done) {
              timeout: 2000
            }).once('timeout', function(ms){
              log('Ошибка: Таймаут ' + ms + ' ms', 'error');
+             rest.removeAllListeners('error');
              setImmediate(done);
            }).once('error',function(err, response) {
              log('Ошибка: ' + err, 'error');
+             rest.removeAllListeners('error');
              setImmediate(done);
            }).once('abort',function() {
              log('Ошибка: Abort', 'error');
+             rest.removeAllListeners('error');
              setImmediate(done);
            }).once('fail',function(data, response) {
              log('Ошибка: ' + JSON.stringify(data), 'error');
+             rest.removeAllListeners('error');
              setImmediate(done);
            }).once('success',function(data, response) {
              log(data);
@@ -187,6 +191,7 @@ jobs.process('emailRegister', function(job, done) {
              m.save(function(err) {
                if (err) {
                  log('Ошибка: ' + err, 'error');
+                 rest.removeAllListeners('error');
                  setImmediate(done);
                } else {
                  if (one.ret == 0) {
@@ -195,11 +200,14 @@ jobs.process('emailRegister', function(job, done) {
                      jobs.create('count', {
                        ref: job.data.ref
                      }).priority('normal').removeOnComplete(true).save();
+                     rest.removeAllListeners('error');
                      setImmediate(done);
                    } else {
+                     rest.removeAllListeners('error');
                      setImmediate(done);
                    }
                  } else {
+                   rest.removeAllListeners('error');
                    setImmediate(done);
                  }
                }
@@ -259,15 +267,19 @@ jobs.process('clickConfirm', function(job, done) {
           to: job.data.to,
           url: job.data.url
         }).delay(2000).priority('low').removeOnComplete(true).save();
+        rest.removeAllListeners('error');
         setImmediate(done);
       }).once('error',function(err, response) {
         log('Ошибка: ' + err, 'error');
+        rest.removeAllListeners('error');
         setImmediate(done);
       }).once('abort',function() {
         log('Ошибка: Abort', 'error');
+        rest.removeAllListeners('error');
         setImmediate(done);
       }).once('fail',function(data, response) {
         log('Ошибка: ' + JSON.stringify(data), 'error');
+        rest.removeAllListeners('error');
         setImmediate(done);
       }).once('success',function(data, response) {
         var ref = response.socket._httpMessage.path.split('/invites?kid=')[1];
@@ -284,13 +296,16 @@ jobs.process('clickConfirm', function(job, done) {
         }, function(err, m) {
              if (_.isNull(m)) {
                log('Пустая выдача');
+               rest.removeAllListeners('error');
                setImmediate(done);
              } else {
                if (err) {
                  log('Ошибка: ' + err, 'error');
+                 rest.removeAllListeners('error');
                  setImmediate(done);
                } else {
                  log('Подтверждена почта ' + m.mail);
+                 rest.removeAllListeners('error');
                  setImmediate(done);
                }
              }
