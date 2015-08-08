@@ -167,19 +167,27 @@ jobs.process('emailRegister', function(job, done) {
              timeout: 2000
            }).once('timeout', function(ms){
              log('Ошибка: Таймаут ' + ms + ' ms', 'error');
-             delete m;
+             delete mongoose.models['EmailsForInvites'];
+             delete mongoose.collections['EmailsForInvites'];
+             delete mongoose.base.modelSchemas['EmailsForInvites'];
              setImmediate(done);
            }).once('error',function(err, response) {
              log('Ошибка: ' + err, 'error');
-             delete m;
+             delete mongoose.models['EmailsForInvites'];
+             delete mongoose.collections['EmailsForInvites'];
+             delete mongoose.base.modelSchemas['EmailsForInvites'];
              setImmediate(done);
            }).once('abort',function() {
              log('Ошибка: Abort', 'error');
-             delete m;
+             delete mongoose.models['EmailsForInvites'];
+             delete mongoose.collections['EmailsForInvites'];
+             delete mongoose.base.modelSchemas['EmailsForInvites'];
              setImmediate(done);
            }).once('fail',function(data, response) {
              log('Ошибка: ' + JSON.stringify(data), 'error');
-             delete m;
+             delete mongoose.models['EmailsForInvites'];
+             delete mongoose.collections['EmailsForInvites'];
+             delete mongoose.base.modelSchemas['EmailsForInvites'];
              setImmediate(done);
            }).once('success',function(data, response) {
              log(data);
@@ -232,7 +240,6 @@ jobs.process('count', function(job, done) {
     }, function(err, m) {
          if (_.isNull(m)) {
            log('Пустая выдача');
-           delete m;
            setImmediate(done);
          } else {
            if (err) {
@@ -240,7 +247,6 @@ jobs.process('count', function(job, done) {
              setImmediate(done);
            } else {
              log('+1 ' + m.mail);
-             delete m;
              setImmediate(done);
            }
          }
@@ -290,7 +296,6 @@ jobs.process('clickConfirm', function(job, done) {
         }, function(err, m) {
              if (_.isNull(m)) {
                log('Пустая выдача');
-               delete m;
                setImmediate(done);
              } else {
                if (err) {
