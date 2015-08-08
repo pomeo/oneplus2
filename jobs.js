@@ -206,19 +206,15 @@ jobs.process('register', function(job, done) {
       timeout: 2000
     }).once('timeout', function(ms){
       log('Ошибка: Таймаут ' + ms + ' ms', 'error');
-      re.removeAllListeners();
       setImmediate(done);
     }).once('error',function(err, response) {
       log('Ошибка: ' + err, 'error');
-      re.removeAllListeners();
       setImmediate(done);
     }).once('abort',function() {
       log('Ошибка: Abort', 'error');
-      re.removeAllListeners();
       setImmediate(done);
     }).once('fail',function(data, response) {
       log('Ошибка: ' + JSON.stringify(data), 'error');
-      re.removeAllListeners();
       setImmediate(done);
     }).once('success',function(data, response) {
       log(data);
@@ -235,12 +231,10 @@ jobs.process('register', function(job, done) {
       }, function(err, m) {
            if (_.isNull(m)) {
              log('Пустая выдача');
-             re.removeAllListeners();
              setImmediate(done);
            } else {
              if (err) {
                log('Ошибка: ' + err, 'error');
-               re.removeAllListeners();
                setImmediate(done);
              } else {
                if (one.ret == 0) {
@@ -249,14 +243,11 @@ jobs.process('register', function(job, done) {
                    jobs.create('count', {
                      ref: job.data.ref
                    }).priority('normal').removeOnComplete(true).save();
-                   re.removeAllListeners();
                    setImmediate(done);
                  } else {
-                   re.removeAllListeners();
                    setImmediate(done);
                  }
                } else {
-                 re.removeAllListeners();
                  setImmediate(done);
                }
              }
@@ -315,19 +306,15 @@ jobs.process('clickConfirm', function(job, done) {
         to: job.data.to,
         url: job.data.url
       }).delay(2000).priority('low').removeOnComplete(true).save();
-      re.removeAllListeners();
       setImmediate(done);
     }).once('error',function(err, response) {
       log('Ошибка: ' + err, 'error');
-      re.removeAllListeners();
       setImmediate(done);
     }).once('abort',function() {
       log('Ошибка: Abort', 'error');
-      re.removeAllListeners();
       setImmediate(done);
     }).once('fail',function(data, response) {
       log('Ошибка: ' + JSON.stringify(data), 'error');
-      re.removeAllListeners();
       setImmediate(done);
     }).once('success',function(data, response) {
       var ref = response.socket._httpMessage.path.split('/invites?kid=')[1];
@@ -344,16 +331,13 @@ jobs.process('clickConfirm', function(job, done) {
       }, function(err, m) {
            if (_.isNull(m)) {
              log('Пустая выдача');
-             re.removeAllListeners();
              setImmediate(done);
            } else {
              if (err) {
                log('Ошибка: ' + err, 'error');
-               re.removeAllListeners();
                setImmediate(done);
              } else {
                log('Подтверждена почта ' + m.mail);
-               re.removeAllListeners();
                setImmediate(done);
              }
            }
