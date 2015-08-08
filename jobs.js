@@ -65,7 +65,7 @@ setInterval(function() {
   kue.Job.rangeByState('complete', 0, 100, 'asc', function(err, jobs) {
     jobs.forEach(function(job) {
       job.remove(function(){
-        log('removed ', job.id );
+        log('removed ' + job.id );
       });
     });
   });
