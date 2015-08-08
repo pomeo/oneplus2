@@ -168,19 +168,15 @@ jobs.process('emailRegister', function(job, done) {
              timeout: 2000
            }).once('timeout', function(ms){
              log('Ошибка: Таймаут ' + ms + ' ms', 'error');
-             re.removeAllListeners('error');
              setImmediate(done);
            }).once('error',function(err, response) {
              log('Ошибка: ' + err, 'error');
-             re.removeAllListeners('error');
              setImmediate(done);
            }).once('abort',function() {
              log('Ошибка: Abort', 'error');
-             re.removeAllListeners('error');
              setImmediate(done);
            }).once('fail',function(data, response) {
              log('Ошибка: ' + JSON.stringify(data), 'error');
-             re.removeAllListeners('error');
              setImmediate(done);
            }).once('success',function(data, response) {
              log(data);
@@ -192,7 +188,6 @@ jobs.process('emailRegister', function(job, done) {
              m.save(function(err) {
                if (err) {
                  log('Ошибка: ' + err, 'error');
-                 re.removeAllListeners('error');
                  setImmediate(done);
                } else {
                  if (one.ret == 0) {
@@ -201,14 +196,11 @@ jobs.process('emailRegister', function(job, done) {
                      jobs.create('count', {
                        ref: job.data.ref
                      }).priority('normal').removeOnComplete(true).save();
-                     re.removeAllListeners('error');
                      setImmediate(done);
                    } else {
-                     re.removeAllListeners('error');
                      setImmediate(done);
                    }
                  } else {
-                   re.removeAllListeners('error');
                    setImmediate(done);
                  }
                }
