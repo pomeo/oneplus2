@@ -152,13 +152,18 @@ jobs.process('emailRegister', function(job, done) {
            log('Пустая выдача');
            setImmediate(done);
          } else {
-           log(m.mail + ' ' + m.order);
-           jobs.create('register', {
-             id: m._id,
-             to: m.mail,
-             ref: job.data.ref
-           }).delay(2000).priority('normal').removeOnComplete(true).save();
-           setImmediate(done);
+           if (err) {
+             log('Ошибка: ' + err, 'error');
+             setImmediate(done);
+           } else {
+             log(m.mail + ' ' + m.order);
+             jobs.create('register', {
+               id: m._id,
+               to: m.mail,
+               ref: job.data.ref
+             }).delay(2000).priority('normal').removeOnComplete(true).save();
+             setImmediate(done);
+           }
          }
        });
   });
@@ -170,7 +175,8 @@ jobs.process('register', function(job, done) {
     setImmediate(done);
   });
   domain.run(function() {
-    rest.get('https://invites.oneplus.net/index.php', {
+    var re = require('restler');
+    re.get('https://invites.oneplus.net/index.php', {
       query: {
         'r': 'share/signup',
         'success_jsonpCallback': 'success_jsonpCallback',
