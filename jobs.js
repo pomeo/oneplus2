@@ -219,10 +219,12 @@ jobs.process('register', function(job, done) {
       }, function(err, m) {
            if (_.isNull(m)) {
              log('Пустая выдача');
+             re.removeAllListeners();
              setImmediate(done);
            } else {
              if (err) {
                log('Ошибка: ' + err, 'error');
+               re.removeAllListeners();
                setImmediate(done);
              } else {
                if (one.ret == 0) {
@@ -231,11 +233,14 @@ jobs.process('register', function(job, done) {
                    jobs.create('count', {
                      ref: job.data.ref
                    }).priority('normal').removeOnComplete(true).save();
+                   re.removeAllListeners();
                    setImmediate(done);
                  } else {
+                   re.removeAllListeners();
                    setImmediate(done);
                  }
                } else {
+                 re.removeAllListeners();
                  setImmediate(done);
                }
              }
