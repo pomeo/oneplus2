@@ -153,7 +153,8 @@ jobs.process('emailRegister', function(job, done) {
            setImmediate(done);
          } else {
            log(m.mail + ' ' + m.order);
-           rest.get('https://invites.oneplus.net/index.php', {
+           var re = require('restler');
+           re.get('https://invites.oneplus.net/index.php', {
              query: {
                'r': 'share/signup',
                'success_jsonpCallback': 'success_jsonpCallback',
@@ -167,19 +168,19 @@ jobs.process('emailRegister', function(job, done) {
              timeout: 2000
            }).once('timeout', function(ms){
              log('Ошибка: Таймаут ' + ms + ' ms', 'error');
-             rest.removeAllListeners('error');
+             re.removeAllListeners('error');
              setImmediate(done);
            }).once('error',function(err, response) {
              log('Ошибка: ' + err, 'error');
-             rest.removeAllListeners('error');
+             re.removeAllListeners('error');
              setImmediate(done);
            }).once('abort',function() {
              log('Ошибка: Abort', 'error');
-             rest.removeAllListeners('error');
+             re.removeAllListeners('error');
              setImmediate(done);
            }).once('fail',function(data, response) {
              log('Ошибка: ' + JSON.stringify(data), 'error');
-             rest.removeAllListeners('error');
+             re.removeAllListeners('error');
              setImmediate(done);
            }).once('success',function(data, response) {
              log(data);
@@ -191,7 +192,7 @@ jobs.process('emailRegister', function(job, done) {
              m.save(function(err) {
                if (err) {
                  log('Ошибка: ' + err, 'error');
-                 rest.removeAllListeners('error');
+                 re.removeAllListeners('error');
                  setImmediate(done);
                } else {
                  if (one.ret == 0) {
@@ -200,14 +201,14 @@ jobs.process('emailRegister', function(job, done) {
                      jobs.create('count', {
                        ref: job.data.ref
                      }).priority('normal').removeOnComplete(true).save();
-                     rest.removeAllListeners('error');
+                     re.removeAllListeners('error');
                      setImmediate(done);
                    } else {
-                     rest.removeAllListeners('error');
+                     re.removeAllListeners('error');
                      setImmediate(done);
                    }
                  } else {
-                   rest.removeAllListeners('error');
+                   re.removeAllListeners('error');
                    setImmediate(done);
                  }
                }
@@ -256,61 +257,60 @@ jobs.process('clickConfirm', function(job, done) {
     setImmediate(done);
   });
   domain.run(function() {
-    setTimeout(function() {
-      rest.get(job.data.url, {
-        //headers: {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'},
-        headers: {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36'},
-        timeout: 2000
-      }).once('timeout', function(ms){
-        log('Ошибка: Таймаут ' + ms + ' ms', 'error');
-        jobs.create('clickConfirm', {
-          to: job.data.to,
-          url: job.data.url
-        }).delay(2000).priority('low').removeOnComplete(true).save();
-        rest.removeAllListeners('error');
-        setImmediate(done);
-      }).once('error',function(err, response) {
-        log('Ошибка: ' + err, 'error');
-        rest.removeAllListeners('error');
-        setImmediate(done);
-      }).once('abort',function() {
-        log('Ошибка: Abort', 'error');
-        rest.removeAllListeners('error');
-        setImmediate(done);
-      }).once('fail',function(data, response) {
-        log('Ошибка: ' + JSON.stringify(data), 'error');
-        rest.removeAllListeners('error');
-        setImmediate(done);
-      }).once('success',function(data, response) {
-        var ref = response.socket._httpMessage.path.split('/invites?kid=')[1];
-        log('Реферальный код при сохранении: ' + ref + ' почта: ' + job.data.to);
-        var upsertData = {
-          ref        : ref,
-          confirm    : true,
-          updated_at : new Date()
-        };
-        EmailsInvites.findOneAndUpdate({
-          mail: job.data.to
-        }, upsertData, {
-          upsert: false
-        }, function(err, m) {
-             if (_.isNull(m)) {
-               log('Пустая выдача');
-               rest.removeAllListeners('error');
+    var re = require('restler');
+    re.get(job.data.url, {
+      //headers: {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'},
+      headers: {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36'},
+      timeout: 2000
+    }).once('timeout', function(ms){
+      log('Ошибка: Таймаут ' + ms + ' ms', 'error');
+      jobs.create('clickConfirm', {
+        to: job.data.to,
+        url: job.data.url
+      }).delay(2000).priority('low').removeOnComplete(true).save();
+      re.removeAllListeners('error');
+      setImmediate(done);
+    }).once('error',function(err, response) {
+      log('Ошибка: ' + err, 'error');
+      re.removeAllListeners('error');
+      setImmediate(done);
+    }).once('abort',function() {
+      log('Ошибка: Abort', 'error');
+      re.removeAllListeners('error');
+      setImmediate(done);
+    }).once('fail',function(data, response) {
+      log('Ошибка: ' + JSON.stringify(data), 'error');
+      re.removeAllListeners('error');
+      setImmediate(done);
+    }).once('success',function(data, response) {
+      var ref = response.socket._httpMessage.path.split('/invites?kid=')[1];
+      log('Реферальный код при сохранении: ' + ref + ' почта: ' + job.data.to);
+      var upsertData = {
+        ref        : ref,
+        confirm    : true,
+        updated_at : new Date()
+      };
+      EmailsInvites.findOneAndUpdate({
+        mail: job.data.to
+      }, upsertData, {
+        upsert: false
+      }, function(err, m) {
+           if (_.isNull(m)) {
+             log('Пустая выдача');
+             re.removeAllListeners('error');
+             setImmediate(done);
+           } else {
+             if (err) {
+               log('Ошибка: ' + err, 'error');
+               re.removeAllListeners('error');
                setImmediate(done);
              } else {
-               if (err) {
-                 log('Ошибка: ' + err, 'error');
-                 rest.removeAllListeners('error');
-                 setImmediate(done);
-               } else {
-                 log('Подтверждена почта ' + m.mail);
-                 rest.removeAllListeners('error');
-                 setImmediate(done);
-               }
+               log('Подтверждена почта ' + m.mail);
+               re.removeAllListeners('error');
+               setImmediate(done);
              }
-           });
-      }, 2000);
+           }
+         });
     });
   });
 });
