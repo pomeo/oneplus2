@@ -288,7 +288,8 @@ jobs.process('clickConfirm', function(job, done) {
     setImmediate(done);
   });
   domain.run(function() {
-    rest.get(job.data.url, {
+    var re = require('restler');
+    re.get(job.data.url, {
       //headers: {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'},
       headers: {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36'},
       timeout: 2000
@@ -298,15 +299,19 @@ jobs.process('clickConfirm', function(job, done) {
         to: job.data.to,
         url: job.data.url
       }).delay(2000).priority('low').removeOnComplete(true).save();
+      re.removeAllListeners();
       setImmediate(done);
     }).once('error',function(err, response) {
       log('Ошибка: ' + err, 'error');
+      re.removeAllListeners();
       setImmediate(done);
     }).once('abort',function() {
       log('Ошибка: Abort', 'error');
+      re.removeAllListeners();
       setImmediate(done);
     }).once('fail',function(data, response) {
       log('Ошибка: ' + JSON.stringify(data), 'error');
+      re.removeAllListeners();
       setImmediate(done);
     }).once('success',function(data, response) {
       var ref = response.socket._httpMessage.path.split('/invites?kid=')[1];
@@ -323,13 +328,16 @@ jobs.process('clickConfirm', function(job, done) {
       }, function(err, m) {
            if (_.isNull(m)) {
              log('Пустая выдача');
+             re.removeAllListeners();
              setImmediate(done);
            } else {
              if (err) {
                log('Ошибка: ' + err, 'error');
+               re.removeAllListeners();
                setImmediate(done);
              } else {
                log('Подтверждена почта ' + m.mail);
+               re.removeAllListeners();
                setImmediate(done);
              }
            }
