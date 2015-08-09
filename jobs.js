@@ -31,7 +31,8 @@ var mongoose    = require('mongoose'),
     path        = require('path'),
     util        = require('util'),
     winston     = require('winston'),
-    Logentries  = require('winston-logentries');
+    Logentries  = require('le_node');
+    //Logentries  = require('winston-logentries');
 
 String.prototype.cleanup = function() {
    return this.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '');
