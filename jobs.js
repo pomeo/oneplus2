@@ -94,27 +94,27 @@ var agenda = new Agenda({
   }
 });
 
-setInterval(function() {
-  EmailsInvites.find()
-  .where('ref').ne(null)
-  .$where('this.equal > this.count')
-  .limit(1)
-  .sort('order')
-  .exec(function(err, email) {
-    if (_.isNull(email)) {
-      log('Пустая выдача');
-    } else {
-      if (err) {
-        log('Ошибка: ' + err, 'error');
-      } else {
-        log(email[0].mail + ' ' + email[0].equal + ' ' + email[0].count);
-        jobs.create('emailRegister', {
-          ref: email[0].ref
-        }).priority('normal').removeOnComplete(true).save();
-      }
-    }
-  });
-}, 3000 );
+// setInterval(function() {
+//   EmailsInvites.find()
+//   .where('ref').ne(null)
+//   .$where('this.equal > this.count')
+//   .limit(1)
+//   .sort('order')
+//   .exec(function(err, email) {
+//     if (_.isNull(email)) {
+//       log('Пустая выдача');
+//     } else {
+//       if (err) {
+//         log('Ошибка: ' + err, 'error');
+//       } else {
+//         log(email[0].mail + ' ' + email[0].equal + ' ' + email[0].count);
+//         jobs.create('emailRegister', {
+//           ref: email[0].ref
+//         }).priority('normal').removeOnComplete(true).save();
+//       }
+//     }
+//   });
+// }, 3000 );
 
 jobs.process('check', function(job, done) {
   var domain = require('domain').create();

@@ -62,9 +62,9 @@ router.post('/webhook', upload.array(), function(req, res, next) {
 });
 
 router.get('/create', upload.array(), function(req, res, next) {
-  jobs.create('check', {
-    count: 1
-  }).delay(2000).priority('normal').removeOnComplete(true).save();
+  // jobs.create('check', {
+  //   count: 1
+  // }).delay(2000).priority('normal').removeOnComplete(true).save();
   res.sendStatus(200);
 });
 
