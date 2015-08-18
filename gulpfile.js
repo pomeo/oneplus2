@@ -1,22 +1,23 @@
-var browserify = require('browserify'),
-    gulp = require('gulp'),
-    imagemin = require('gulp-imagemin'),
-    pngcrush = require('imagemin-pngcrush'),
-    babel = require('gulp-babel'),
-    uglify = require('gulp-uglify'),
-    stylus = require('gulp-stylus'),
-    prefix = require('gulp-autoprefixer'),
-    minifyCSS = require('gulp-minify-css'),
-    mocha = require('gulp-mocha'),
-    plumber = require('gulp-plumber'),
-    notify = require('gulp-notify'),
-    nib = require('nib'),
-    sourcemaps = require('gulp-sourcemaps'),
-    source = require('vinyl-source-stream'),
-    buffer = require('vinyl-buffer'),
-    concat = require('gulp-concat'),
-    browserSync = require('browser-sync'),
-    reload = browserSync.reload;
+'use strict';
+var browserify  = require('browserify'),
+    gulp        = require('gulp'),
+    imagemin    = require('gulp-imagemin'),
+    pngcrush    = require('imagemin-pngcrush'),
+    babel       = require('gulp-babel'),
+    uglify      = require('gulp-uglify'),
+    stylus      = require('gulp-stylus'),
+    prefix      = require('gulp-autoprefixer'),
+    minifyCSS   = require('gulp-minify-css'),
+    mocha       = require('gulp-mocha'),
+    plumber     = require('gulp-plumber'),
+    notify      = require('gulp-notify'),
+    nib         = require('nib'),
+    sourcemaps  = require('gulp-sourcemaps'),
+    source      = require('vinyl-source-stream'),
+    buffer      = require('vinyl-buffer'),
+    concat      = require('gulp-concat'),
+    rev         = require('gulp-rev'),
+    browserSync = require('browser-sync');
 
 gulp.task('images', function () {
   return gulp.src('src/img/**/*')
@@ -29,7 +30,7 @@ gulp.task('images', function () {
            use: [pngcrush()]
          }))
          .pipe(gulp.dest('public/img'))
-         .pipe(reload({stream:true}))
+         .pipe(browserSync.stream())
          .pipe(notify('Update images'));
 });
 
@@ -49,11 +50,14 @@ gulp.task('libs', function() {
          .pipe(sourcemaps.init())
          .pipe(uglify())
          .pipe(concat('libs.js'))
+         .pipe(rev())
          .pipe(sourcemaps.write('maps', {
            sourceMappingURLPrefix: '/js/'
          }))
          .pipe(gulp.dest('public/js'))
-         .pipe(reload({stream:true}))
+         .pipe(browserSync.stream())
+         .pipe(rev.manifest('libs.json'))
+         .pipe(gulp.dest('routes'))
          .pipe(notify({
            onLast: true,
            message: 'Update libs.js'
@@ -71,11 +75,14 @@ gulp.task('compress', function() {
          .pipe(sourcemaps.init())
          .pipe(babel())
          .pipe(uglify())
+         .pipe(rev())
          .pipe(sourcemaps.write('maps', {
            sourceMappingURLPrefix: '/js/'
          }))
          .pipe(gulp.dest('public/js'))
-         .pipe(reload({stream:true}))
+         .pipe(browserSync.stream())
+         .pipe(rev.manifest('app.json'))
+         .pipe(gulp.dest('routes'))
          .pipe(notify({
            onLast: true,
            message: 'Update app.js'
@@ -92,11 +99,14 @@ gulp.task('stylus', function () {
          .pipe(prefix())
          .pipe(minifyCSS())
          .pipe(concat('styles.css'))
+         .pipe(rev())
          .pipe(sourcemaps.write('maps'), {
            sourceMappingURLPrefix: '/css/'
          })
          .pipe(gulp.dest('public/css'))
-         .pipe(reload({stream:true}))
+         .pipe(browserSync.stream())
+         .pipe(rev.manifest('styles.json'))
+         .pipe(gulp.dest('routes'))
          .pipe(notify({
            onLast: true,
            message: 'Update stylus'
@@ -125,7 +135,7 @@ gulp.task('browser-sync', function() {
 gulp.task('build', ['libs', 'compress', 'stylus']);
 
 gulp.task('default', ['build', 'images', 'browser-sync', 'mocha'], function () {
-  gulp.watch(['views/**/*.jade'], reload);
+  gulp.watch('views/**/*.jade').on('change', browserSync.reload);
   gulp.watch(['src/**/*.styl'], ['stylus']);
   gulp.watch(['src/**/*.js'], ['compress']);
   gulp.watch(['test/**/*.js'], ['mocha']);
