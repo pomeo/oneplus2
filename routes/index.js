@@ -1,37 +1,36 @@
-/* jshint node:true */
-/* jshint laxbreak:true */
-/* jshint esnext:true */
-var mongoose   = require('mongoose'),
-    Schema     = mongoose.Schema,
-    express    = require('express'),
-    crypto     = require('crypto'),
-    kue        = require('kue'),
-    router     = express.Router(),
-    _          = require('lodash'),
-    jobs       = kue.createQueue({
-      prefix: 'q',
-      disableSearch: true,
-      jobEvents: false,
-      redis: {
-        host: process.env.redis
-      }
-    }),
-    rest       = require('restler'),
-    xml2js     = require('xml2js'),
-    moment     = require('moment'),
-    multer     = require('multer'),
-    upload     = multer(),
-    winston    = require('winston'),
-    Logentries = require('winston-logentries');
+'use strict';
+const mongoose   = require('mongoose');
+const express    = require('express');
+const crypto     = require('crypto');
+const io         = require('redis.io');
+const router     = express.Router();
+const _          = require('lodash');
+const jobs       = io.createQueue({
+  prefix: 'q',
+  disableSearch: true,
+  jobEvents: false,
+  redis: {
+    host: process.env.redis
+  }
+});
+const multer     = require('multer');
+const upload     = multer();
+const winston    = require('winston');
+const Logentries = require('le_node');
+const appjs      = require('./app.json');
+const libsjs     = require('./libs.json');
+const stylesjs   = require('./styles.json');
+
+let logger;
 
 if (process.env.NODE_ENV === 'development') {
-  var logger = new (winston.Logger)({
+  logger = new (winston.Logger)({
     transports: [
       new (winston.transports.Console)()
     ]
   });
 } else {
-  var logger = new (winston.Logger)({
+  logger = new (winston.Logger)({
     transports: [
       new winston.transports.Logentries({token: process.env.logentries})
     ]
@@ -39,13 +38,18 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 router.get('/', function(req, res) {
-  res.render('index', { title: 'Express' });
+  res.render('index', {
+    title  : 'Express',
+    app    : appjs['app.js'],
+    libs   : libsjs['libs.js'],
+    styles : stylesjs['styles.css']
+  });
 });
 
 router.post('/webhook', upload.array(), function(req, res, next) {
-  var msg = JSON.parse(req.body.mailinMsg);
-  var regexp = /humst/g;
-  var match = msg.to[0].address.match(regexp);
+  let msg = JSON.parse(req.body.mailinMsg);
+  let regexp = /humst/g;
+  let match = msg.to[0].address.match(regexp);
   if (_.isNull(match)) {
     res.sendStatus(200);
   } else {
@@ -70,9 +74,9 @@ router.get('/create', upload.array(), function(req, res, next) {
 
 module.exports = router;
 
-mongoose.connect('mongodb://' + process.env.mongo + '/oneinvites', { autoIndex: process.env.NODE_ENV !== 'production' });
-
-var Mails     = require('../models').Mail;
+mongoose.connect('mongodb://' + process.env.mongo + '/oneinvites', {
+  autoIndex: process.env.NODE_ENV !== 'production'
+});
 
 //Логгер в одном месте, для упрощения перезда на любой логгер.
 function log(logMsg, logType) {
