@@ -1,23 +1,28 @@
 'use strict';
-var browserify  = require('browserify'),
-    gulp        = require('gulp'),
-    imagemin    = require('gulp-imagemin'),
-    pngcrush    = require('imagemin-pngcrush'),
-    babel       = require('gulp-babel'),
-    uglify      = require('gulp-uglify'),
-    stylus      = require('gulp-stylus'),
-    prefix      = require('gulp-autoprefixer'),
-    minifyCSS   = require('gulp-minify-css'),
-    mocha       = require('gulp-mocha'),
-    plumber     = require('gulp-plumber'),
-    notify      = require('gulp-notify'),
-    nib         = require('nib'),
-    sourcemaps  = require('gulp-sourcemaps'),
-    source      = require('vinyl-source-stream'),
-    buffer      = require('vinyl-buffer'),
-    concat      = require('gulp-concat'),
-    rev         = require('gulp-rev'),
-    browserSync = require('browser-sync');
+var gulp             = require('gulp'),
+    path             = require('path'),
+    browserify       = require('browserify'),
+    imagemin         = require('gulp-imagemin'),
+    babelify         = require('babelify'),
+    uglify           = require('gulp-uglify'),
+    pngcrush         = require('imagemin-pngcrush'),
+    gutil            = require('gulp-util'),
+    stylus           = require('gulp-stylus'),
+    prefix           = require('gulp-autoprefixer'),
+    minifyCSS        = require('gulp-minify-css'),
+    mocha            = require('gulp-mocha'),
+    plumber          = require('gulp-plumber'),
+    notify           = require('gulp-notify'),
+    webpack          = require('webpack'),
+    WebpackDevServer = require('webpack-dev-server'),
+    _config          = require(path.join(__dirname, 'webpack.config.js')),
+    nib              = require('nib'),
+    sourcemaps       = require('gulp-sourcemaps'),
+    source           = require('vinyl-source-stream'),
+    buffer           = require('vinyl-buffer'),
+    concat           = require('gulp-concat'),
+    browserSync      = require('browser-sync'),
+    b;
 
 gulp.task('images', function () {
   return gulp.src('src/img/**/*')
@@ -34,6 +39,24 @@ gulp.task('images', function () {
          .pipe(notify('Update images'));
 });
 
+gulp.task('webpack-dev-server', function(callback) {
+  var compiler = webpack(_config);
+
+  new WebpackDevServer(compiler, {
+    publicPath: _config.output.publicPath,
+    hot: true,
+    historyApiFallback: true,
+    stats: { colors: true },
+    proxy: {
+      '*' : 'http://localhost:9090'
+    }
+  }).listen(8081, 'localhost', function(err) {
+    if(err) throw new gutil.PluginError('webpack-dev-server', err);
+    gutil.log('[webpack-dev-server]',
+              'http://localhost:8081/webpack-dev-server/');
+  });
+});
+
 gulp.task('libs', function() {
   return gulp.src(['bower_components/jquery/dist/jquery.js',
                    'bower_components/jquery-validation/dist/jquery.validate.js',
@@ -44,45 +67,45 @@ gulp.task('libs', function() {
                    'bower_components/uikit/js/components/notify.js',
                    'bower_components/uikit/js/components/sortable.js',
                    'bower_components/uikit/js/components/tooltip.js'])
-         .pipe(plumber({
-           errorHandler: notify.onError("Error: <%= error.message %>")
-         }))
+         .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
          .pipe(sourcemaps.init())
          .pipe(uglify())
          .pipe(concat('libs.js'))
-         .pipe(rev())
          .pipe(sourcemaps.write('maps', {
            sourceMappingURLPrefix: '/js/'
          }))
          .pipe(gulp.dest('public/js'))
          .pipe(browserSync.stream())
-         .pipe(rev.manifest('libs.json'))
-         .pipe(gulp.dest('routes'))
          .pipe(notify({
            onLast: true,
            message: 'Update libs.js'
          }));
 });
 
+function bundler(file) {
+  b = browserify(file.path);
+  var stream = b.bundle();
+  file.contents = stream;
+}
+
 gulp.task('compress', function() {
-  return browserify('src/js/main.js')
-         .bundle()
+  var b = browserify({
+    entries: './src/js/main.js',
+    debug: true,
+    transform: [babelify]
+  });
+
+  return b.bundle()
          .pipe(source('app.js'))
          .pipe(buffer())
-         .pipe(plumber({
-           errorHandler: notify.onError("Error: <%= error.message %>")
-         }))
          .pipe(sourcemaps.init())
-         .pipe(babel())
          .pipe(uglify())
-         .pipe(rev())
+         .on('error', gutil.log)
          .pipe(sourcemaps.write('maps', {
            sourceMappingURLPrefix: '/js/'
          }))
-         .pipe(gulp.dest('public/js'))
+         .pipe(gulp.dest('public/js/'))
          .pipe(browserSync.stream())
-         .pipe(rev.manifest('app.json'))
-         .pipe(gulp.dest('routes'))
          .pipe(notify({
            onLast: true,
            message: 'Update app.js'
@@ -99,19 +122,18 @@ gulp.task('stylus', function () {
          .pipe(prefix())
          .pipe(minifyCSS())
          .pipe(concat('styles.css'))
-         .pipe(rev())
          .pipe(sourcemaps.write('maps'), {
            sourceMappingURLPrefix: '/css/'
          })
          .pipe(gulp.dest('public/css'))
          .pipe(browserSync.stream())
-         .pipe(rev.manifest('styles.json'))
-         .pipe(gulp.dest('routes'))
          .pipe(notify({
            onLast: true,
            message: 'Update stylus'
          }));
 });
+
+gulp.task('build', ['libs', 'compress', 'stylus']);
 
 gulp.task('mocha', function() {
   return gulp.src('test/*.js', {read: false})
@@ -132,9 +154,7 @@ gulp.task('browser-sync', function() {
   });
 });
 
-gulp.task('build', ['libs', 'compress', 'stylus']);
-
-gulp.task('default', ['build', 'images', 'browser-sync', 'mocha'], function () {
+gulp.task('default', ['build', 'images', 'browser-sync'], function () {
   gulp.watch('views/**/*.jade').on('change', browserSync.reload);
   gulp.watch(['src/**/*.styl'], ['stylus']);
   gulp.watch(['src/**/*.js'], ['compress']);
