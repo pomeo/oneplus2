@@ -5,6 +5,6 @@ block content
     div#startup
       svg.spinner-container(width="65px", height="65px", viewBox="0 0 52 52")
         circle.path(cx="26px", cy="26px", r="20px", fill="none", stroke-width="4px")
-  link(rel="stylesheet", href="/css/#{styles}")
-  script(src='/js/#{app}')
-  script(src='/js/#{libs}')
+  link(rel="stylesheet", href="/css/styles.css")
+  script(src='#{files.vendor.js}')
+  script(src='#{files.main.js}')
