@@ -1,17 +1,19 @@
-var express = require('express');
-var debug = require('debug')('app');
-var session = require('express-session');
-var RedisStore = require('connect-redis')(session);
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var rollbar = require('rollbar');
+'use strict';
+const express      = require('express');
+const debug        = require('debug')('app');
+const session      = require('express-session');
+const RedisStore   = require('connect-redis')(session);
+const path         = require('path');
+const favicon      = require('serve-favicon');
+const logger       = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser   = require('body-parser');
+const rollbar      = require('rollbar');
+const jsFiles      = require('./routes/assets.json');
 
-var routes = require('./routes/index');
+let routes = require('./routes/index');
 
-var app = express();
+let app = express();
 
 app.set('port', process.env.PORT || 3000);
 
@@ -54,11 +56,13 @@ if (app.get('env') !== 'production') {
 app.use(session(sessionConfig));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.locals.files = jsFiles;
+
 app.use('/', routes);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+  let err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
@@ -90,5 +94,6 @@ app.use(function(err, req, res, next) {
 app.use(rollbar.errorHandler(process.env.rollbar));
 
 var server = app.listen(app.get('port'), function() {
-               debug('Express server listening on port ' + server.address().port);
+               debug('Express server listening on port ' +
+                     server.address().port);
              });
