@@ -4,12 +4,13 @@ html
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
     title OnePlus Invites / OnePlus 2 Invites / OnePlus Two Invites
+    link(rel="stylesheet", href="/css/styles.css")
     link(rel="stylesheet", href="http://fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic")
     meta(name="viewport", content="width=device-width")
-    style(type="text/css").
-      body,html{height:100%;margin:0;padding:0}#app{width:100%;height:100%;}#startup{width:100%;height:100%;position:fixed;background-color:#eee;-moz-user-select:none;-webkit-user-select:none;display:flex;align-items:center;justify-content:center}.spinner-container{animation:rotate 2s linear infinite;-webkit-animation:rotate 2s linear infinite}.spinner-container .path{stroke-dasharray:1,150;stroke-dashoffset:0;stroke:rgba(27,154,89,.7);stroke-linecap:round;animation:dash 1.5s ease-in-out infinite;-webkit-animation:dash 1.5s ease-in-out infinite}@keyframes rotate{100%{transform:rotate(360deg)}}@keyframes dash{0%{stroke-dasharray:1,150;stroke-dashoffset:0}50%{stroke-dasharray:90,150;stroke-dashoffset:-35}100%{stroke-dasharray:90,150;stroke-dashoffset:-124}}@-webkit-keyframes rotate{100%{transform:rotate(360deg)}}@-webkit-keyframes dash{0%{stroke-dasharray:1,150;stroke-dashoffset:0}50%{stroke-dasharray:90,150;stroke-dashoffset:-35}100%{stroke-dasharray:90,150;stroke-dashoffset:-124}}
   body
     block content
+    script(src='#{files.vendor.js}')
+    script(src='#{files.main.js}')
     script(type="text/javascript").
       /*<![CDATA[*/window.zEmbed||function(e,t){var n,o,d,i,s,a=[],r=document.createElement("iframe");window.zEmbed=function(){a.push(arguments)},window.zE=window.zE||window.zEmbed,r.src="javascript:false",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="display: none",d=document.getElementsByTagName("script"),d=d[d.length-1],d.parentNode.insertBefore(r,d),i=r.contentWindow,s=i.document;try{o=s}catch(c){n=document.domain,r.src='javascript:var d=document.open();d.domain="'+n+'";void(0);',o=s}o.open()._l=function(){var o=this.createElement("script");n&&(this.domain=n),o.id="js-iframe-async",o.src=e,this.t=+new Date,this.zendeskHost=t,this.zEQueue=a,this.body.appendChild(o)},o.write('<body onload="document._l();">'),o.close()}("https://assets.zendesk.com/embeddable_framework/main.js","salesapps.zendesk.com");/*]]>*/
     script(type="text/javascript").
