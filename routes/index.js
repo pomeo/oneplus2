@@ -17,7 +17,6 @@ const multer     = require('multer');
 const upload     = multer();
 const winston    = require('winston');
 const Logentries = require('le_node');
-const jsfiles    = require('./assets.json');
 
 let logger;
 
@@ -37,8 +36,7 @@ if (process.env.NODE_ENV === 'development') {
 
 router.get('/', function(req, res) {
   res.render('index', {
-    title  : 'Express',
-    files  : jsfiles
+    title  : 'Express'
   });
 });
 
