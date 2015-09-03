@@ -15,7 +15,7 @@ set :supervisord_stop_group,  "oneplus"
 #========================
 #ROLES
 #========================
-role :app,        "ubuntu@107.170.209.197"
+role :app,        "ubuntu@oneinvites.com"
 
 namespace :deploy do
   desc "Symlink shared configs and folders on each release."
