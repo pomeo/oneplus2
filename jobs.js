@@ -1,31 +1,30 @@
 'use strict';
-var mongoose    = require('mongoose'),
-    crypto      = require('crypto'),
-    io          = require('redis.io'),
-    jobs        = io.createQueue({
-      prefix: 'q',
-      disableSearch: true,
-      jobEvents: false,
-      redis: {
-        host: process.env.redis
-      }
-    }),
-    rest        = require('restler'),
-    xml2js      = require('xml2js'),
-    fs          = require('fs'),
-    moment      = require('moment'),
-    Agenda      = require('agenda'),
-    _           = require('lodash'),
-    async       = require('async'),
-    cc          = require('coupon-code'),
-    //Browser     = require('zombie'),
-    rollbar     = require('rollbar'),
-    cheerio     = require('cheerio'),
-    vm          = require('vm'),
-    path        = require('path'),
-    util        = require('util'),
-    winston     = require('winston'),
-    Logentries  = require('le_node');
+const mongoose    = require('mongoose');
+const crypto      = require('crypto');
+const io          = require('redis.io');
+const jobs        = io.createQueue({
+  prefix: 'q',
+  disableSearch: true,
+  jobEvents: false,
+  redis: {
+    host: process.env.redis
+  }
+});
+const rest        = require('restler');
+const xml2js      = require('xml2js');
+const fs          = require('fs');
+const moment      = require('moment');
+const Agenda      = require('agenda');
+const _           = require('lodash');
+const async       = require('async');
+const cc          = require('coupon-code');
+// const Browser     = require('zombie');
+const rollbar     = require('rollbar');
+const cheerio     = require('cheerio');
+const vm          = require('vm');
+const path        = require('path');
+const util        = require('util');
+const winston     = require('winston');
 
 String.prototype.cleanup = function() {
   return this.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '');
@@ -42,6 +41,7 @@ if (process.env.NODE_ENV === 'development') {
     ]
   });
 } else {
+  require('le_node');
   logger = new (winston.Logger)({
     transports: [
       new winston.transports.Logentries({
