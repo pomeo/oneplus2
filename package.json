@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --expose-gc --harmony app.js",
+    "start": "node-dev --expose-gc --harmony app.js",
+    "job": "node-dev --expose-gc --harmony jobs.js",
     "build": "/bin/rm -rf public/js/* && NODE_ENV=production webpack -p --colors"
   },
   "dependencies": {
