@@ -1,1 +1,1 @@
-{"version":3,"sources":["styles.css"],"names":[],"mappings":"AAAA","file":"styles.css","sourcesContent":[],"sourceRoot":"/source/"}
+{"version":3,"sources":["styles.styl"],"names":[],"mappings":"iBAEA,KACE,iBAAA,KAEF,KACE,YAAA,YAAA","file":"styles.css","sourcesContent":["@charset \"UTF-8\";\n\nhtml\n  background-color #000\n\nbody\n  font-family 'Open Sans', sans-serif\n"],"sourceRoot":"/source/"}
