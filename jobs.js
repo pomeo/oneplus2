@@ -51,6 +51,15 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
+const modelsPath = __dirname + '/models';
+fs.readdirSync(modelsPath).forEach(function(file) {
+  if (~file.indexOf('js')) {
+    require(modelsPath + '/' + file);
+  }
+});
+
+let Mails = mongoose.model('Mails');
+
 jobs.promote(1500, 1);
 
 jobs.watchStuckJobs();
@@ -65,7 +74,7 @@ setInterval(function() {
   });
 }, 1000 );
 
-var agenda = new Agenda({
+let agenda = new Agenda({
   db: {
     address: process.env.mongo + '/oneinvites'
   }
@@ -83,9 +92,7 @@ jobs.process('mail', function(job, done) {
       subject    : job.data.subject,
       date       : job.data.date,
       html       : job.data.html,
-      text       : job.data.text,
-      created_at : new Date(),
-      updated_at : new Date()
+      text       : job.data.text
     });
     M.save(function(err, m) {
       if (err) {
@@ -110,13 +117,6 @@ jobs.process('mail', function(job, done) {
 });
 
 mongoose.connect('mongodb://' + process.env.mongo + '/oneinvites', { autoIndex: process.env.NODE_ENV !== 'production' });
-
-var Apps          = require('./models').Apps;
-var Products      = require('./models').Prdt;
-var Tasks         = require('./models').Task;
-var Charges       = require('./models').Chrg;
-var Mails         = require('./models').Mail;
-var EmailsInvites = require('./models').Emfi;
 
 //Логгер в одном месте, для упрощения перезда на любой логгер.
 function log(logMsg, logType) {
