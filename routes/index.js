@@ -1,11 +1,10 @@
 'use strict';
-const mongoose   = require('mongoose');
-const express    = require('express');
-const crypto     = require('crypto');
-const io         = require('redis.io');
-const router     = express.Router();
-const _          = require('lodash');
-const jobs       = io.createQueue({
+const mongoose = require('mongoose');
+const express  = require('express');
+const io       = require('redis.io');
+const router   = express.Router();
+const _        = require('lodash');
+const jobs     = io.createQueue({
   prefix: 'q',
   disableSearch: true,
   jobEvents: false,
@@ -13,10 +12,9 @@ const jobs       = io.createQueue({
     host: process.env.redis
   }
 });
-const multer     = require('multer');
-const upload     = multer();
-const winston    = require('winston');
-const Logentries = require('le_node');
+const multer   = require('multer');
+const upload   = multer();
+const winston  = require('winston');
 
 let logger;
 
@@ -27,6 +25,7 @@ if (process.env.NODE_ENV === 'development') {
     ]
   });
 } else {
+  require('le_node');
   logger = new (winston.Logger)({
     transports: [
       new winston.transports.Logentries({token: process.env.logentries})
@@ -35,9 +34,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 router.get('/', function(req, res) {
-  res.render('index', {
-    title  : 'Express'
-  });
+  res.render('index');
 });
 
 router.post('/webhook', upload.array(), function(req, res, next) {
