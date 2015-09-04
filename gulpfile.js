@@ -113,7 +113,15 @@ gulp.task('compress', function() {
 });
 
 gulp.task('stylus', function () {
-  return gulp.src(['src/css/styles.styl'])
+  return gulp.src(['bower_components/uikit/css/uikit.css',
+                   'bower_components/uikit/css/uikit.almost-flat.css',
+                   'bower_components/uikit/css/components/notify.almost-flat.css',
+                   'bower_components/uikit/css/components/notify.css',
+                   'bower_components/uikit/css/components/sortable.css',
+                   'bower_components/uikit/css/components/sortable.almost-flat.css',
+                   'bower_components/uikit/css/components/tooltip.css',
+                   'bower_components/uikit/css/components/tooltip.almost-flat.css',
+                   'src/css/styles.styl'])
          .pipe(plumber({
            errorHandler: notify.onError("Error: <%= error.message %>")
          }))
