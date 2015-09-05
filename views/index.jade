@@ -1,4 +1,58 @@
 extends layout
 
 block content
-  
+  div.uk-grid.main
+    div.uk-width-medium-1-2.uk-width-large-1-2.uk-width-small-1-1
+      div.uk-margin-top.uk-margin-left.uk-margin-right.uk-margin-bottom
+        div.uk-panel.uk-panel-box.uk-margin-bottom
+          div.uk-panel-teaser
+            img(src="/img/oneplus/invite.png", alt="")
+          h1.uk-h4.uk-margin-remove Here you can get an invite to buy #[strong OnePlus 2]
+        div.uk-accordion(data-uk-accordion={collapse:false,showfirst:false})
+          h3.uk-accordion-title OnePlus is available in the following countries and areas at this moment
+          div.uk-accordion-content
+            ul
+              li United States
+              li Sweden
+              li Denmark
+              li Netherlands
+              li United Kingdom
+              li Spain
+              li Germany
+              li France
+              li Italy
+              li Finland
+              li Belgium
+              li Austria
+              li Canada
+              li Hong Kong
+              li Taiwan
+              li Portugal
+              li India
+              li Indonesia
+              li Bulgaria
+              li Slovenia
+              li Slovakia
+              li Romania
+              li Poland
+              li Malaysia
+              li Malta
+              li Luxembourg
+              li Lithuania
+              li Latvia
+              li Ireland
+              li Hungary
+              li Estonia
+              li Czech Republic
+              li Cyprus
+              li Greece
+              li Croatia
+            p If you are in any of these regions and can not find your country in the shipping field while ordering, it means that you aren't on your country specific site. Please go to #[a(href="http://oneplus.net/choose-country") oneplus.net/choose-country] and choose your region. You will then be permitted to check out.
+        a.twitter-timeline(href="https://twitter.com/oneinvites", data-widget-id="640100674269802496") Tweets by @oneinvites
+        script
+          !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    div.uk-width-medium-1-2.uk-width-large-1-2.uk-hidden-small
+      div.uk-margin-top.uk-margin-right.uk-margin-bottom.b-feedback
+        div#auction-nudge-feedback.auction-nudge
+          a(href="https://www.auctionnudge.com/") eBay on my website by Auction Nudge
+        script(src="//www.auctionnudge.com/feedback_build/js/UserID/oneinvites/siteid/0/limit/25/type/FeedbackReceivedAsSeller/theme/profile_table/blank/1")
