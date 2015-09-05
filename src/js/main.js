@@ -1,1 +1,2 @@
-var test = require('./test.js');
+'use strict';
+require('./first.js');
