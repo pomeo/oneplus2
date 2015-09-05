@@ -66,6 +66,9 @@ gulp.task('libs', function() {
                    'bower_components/uikit/js/uikit.js',
                    'bower_components/uikit/js/components/notify.js',
                    'bower_components/uikit/js/components/sortable.js',
+                   'bower_components/uikit/js/components/slideshow.js',
+                   'bower_components/uikit/js/components/slideshow-fx.js',
+                   'bower_components/uikit/js/components/accordion.js',
                    'bower_components/uikit/js/components/tooltip.js'])
          .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
          .pipe(sourcemaps.init())
