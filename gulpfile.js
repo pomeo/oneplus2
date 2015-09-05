@@ -134,7 +134,10 @@ gulp.task('stylus', function () {
          }))
          .pipe(sourcemaps.init())
          .pipe(stylus({compress: false, use: nib()}))
-         .pipe(prefix())
+         .pipe(prefix({
+           browsers: ['last 2 versions'],
+           cascade: false
+         }))
          .pipe(minifyCSS())
          .pipe(concat('styles.css'))
          .pipe(sourcemaps.write('maps'), {
