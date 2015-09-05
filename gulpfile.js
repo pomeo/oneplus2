@@ -124,6 +124,10 @@ gulp.task('stylus', function () {
                    'bower_components/uikit/css/components/sortable.almost-flat.css',
                    'bower_components/uikit/css/components/tooltip.css',
                    'bower_components/uikit/css/components/tooltip.almost-flat.css',
+                   'bower_components/uikit/css/components/accordion.css',
+                   'bower_components/uikit/css/components/accordion.almost-flat.css',
+                   'bower_components/uikit/css/components/slideshow.css',
+                   'bower_components/uikit/css/components/slideshow.almost-flat.css',
                    'src/css/styles.styl'])
          .pipe(plumber({
            errorHandler: notify.onError("Error: <%= error.message %>")
