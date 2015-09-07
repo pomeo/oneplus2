@@ -85,12 +85,6 @@ gulp.task('libs', function() {
          }));
 });
 
-function bundler(file) {
-  b = browserify(file.path);
-  var stream = b.bundle();
-  file.contents = stream;
-}
-
 gulp.task('compress', function() {
   var b = browserify({
     entries: './src/js/main.js',
@@ -177,5 +171,5 @@ gulp.task('default', ['build', 'images', 'browser-sync'], function () {
   gulp.watch(['src/**/*.styl'], ['stylus']);
   gulp.watch(['src/**/*.js'], ['compress']);
   gulp.watch(['test/**/*.js'], ['mocha']);
-  gulp.watch(['src/img/*'], ['images']);
+  gulp.watch(['src/img/**/*'], ['images']);
 });
