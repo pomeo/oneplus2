@@ -1,67 +1,68 @@
 extends layout
 
 block content
-  div.uk-grid
-    div.uk-width-medium-1-2.uk-width-large-1-2.uk-width-small-1-1
-      div.uk-margin-top
-        div.uk-panel.uk-panel-box.uk-margin-bottom
-          div.uk-panel-teaser
-            img(src="/img/oneplus/invite.png", alt="")
-          h1.uk-h4.uk-margin-remove Here you can get an #[strong INVITE] to buy #[strong OnePlus 2]
-        div.uk-panel.uk-panel-box.uk-margin-bottom
-          h2.uk-panel-title Counter already given away invites
-          p.uk-text-center.uk-text-large.uk-text-danger.b-count 12563
-        div.uk-panel.uk-panel-box.uk-margin-bottom
-          h3.uk-panel-title #[i.uk-icon-mobile] Invites
-          table.uk-table.uk-table-hover
-            caption Invites and accounts to buy OnePlus 2
-            thead
-              tr
-                th Type of invite
-                th Quantity
-                th Price
-                th
-            tbody
-              tr
-                td.uk-text-large
-                  strong.uk-text-success invite
-                td.uk-text-large.uk-text-warning 0
-                td.uk-text-large.uk-text-danger 3$
-                td
-                  button.uk-button.uk-button-primary(disabled) Buy
-              tr
-                td.uk-text-large
-                  strong.uk-text-success invite with account
-                td.uk-text-large.uk-text-warning 0
-                td.uk-text-large.uk-text-danger 2$
-                td
-                  button.uk-button.uk-button-primary(disabled) Buy
-              tr
-                td.uk-text-large
-                  strong.uk-text-success activated invite with account
-                td.uk-text-large.uk-text-warning 0
-                td.uk-text-large.uk-text-danger 1$
-                td
-                  button.uk-button.uk-button-primary(disabled) Buy
-              tr
-                td.uk-text-large
-                  strong.uk-text-success India invite
-                td.uk-text-large.uk-text-warning 0
-                td.uk-text-large.uk-text-danger FREE
-                td
-                  button.uk-button.uk-button-primary(disabled) Get
-              tr
-                td.uk-text-large
-                  strong.uk-text-success free activated invite with account
-                td.uk-text-large.uk-text-warning 0
-                td.uk-text-large.uk-text-danger FREE
-                td
-                  button.uk-button.uk-button-primary(disabled) Get
-        a.twitter-timeline(href="https://twitter.com/oneinvites", data-widget-id="640100674269802496") Tweets by @oneinvites
-        script.
-          !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-    div.uk-width-medium-1-2.uk-width-large-1-2.uk-hidden-small
-      div.uk-margin-top.b-feedback
-        div#auction-nudge-feedback.auction-nudge
-          a(href="https://www.auctionnudge.com/") eBay on my website by Auction Nudge
-        script(src="//www.auctionnudge.com/feedback_build/js/UserID/oneinvites/siteid/0/limit/25/type/FeedbackReceivedAsSeller/theme/profile_table/blank/1")
+  div.uk-container.main
+    div.uk-grid
+      div.uk-width-medium-1-2.uk-width-large-1-2.uk-width-small-1-1
+        div.uk-margin-top
+          div.uk-panel.uk-panel-box.uk-margin-bottom
+            div.uk-panel-teaser
+              img(src="/img/oneplus/invite.png", alt="")
+            h1.uk-h4.uk-margin-remove Here you can get an #[strong INVITE] to buy #[strong OnePlus 2]
+          div.uk-panel.uk-panel-box.uk-margin-bottom
+            h2.uk-panel-title Counter already given away invites
+            p.uk-text-center.uk-text-large.uk-text-danger.b-count 12563
+          div.uk-panel.uk-panel-box.uk-margin-bottom
+            h3.uk-panel-title #[i.uk-icon-mobile] Invites
+            table.uk-table.uk-table-hover
+              caption Invites and accounts to buy OnePlus 2
+              thead
+                tr
+                  th Type of invite
+                  th Quantity
+                  th Price
+                  th
+              tbody
+                tr
+                  td.uk-text-large
+                    strong.uk-text-success invite
+                  td.uk-text-large.uk-text-warning 0
+                  td.uk-text-large.uk-text-danger 3$
+                  td
+                    button.uk-button.uk-button-primary(disabled) Buy
+                tr
+                  td.uk-text-large
+                    strong.uk-text-success invite with account
+                  td.uk-text-large.uk-text-warning 0
+                  td.uk-text-large.uk-text-danger 2$
+                  td
+                    button.uk-button.uk-button-primary(disabled) Buy
+                tr
+                  td.uk-text-large
+                    strong.uk-text-success activated invite with account
+                  td.uk-text-large.uk-text-warning 0
+                  td.uk-text-large.uk-text-danger 1$
+                  td
+                    button.uk-button.uk-button-primary(disabled) Buy
+                tr
+                  td.uk-text-large
+                    strong.uk-text-success India invite
+                  td.uk-text-large.uk-text-warning 0
+                  td.uk-text-large.uk-text-danger FREE
+                  td
+                    button.uk-button.uk-button-primary(disabled) Get
+                tr
+                  td.uk-text-large
+                    strong.uk-text-success free activated invite with account
+                  td.uk-text-large.uk-text-warning 0
+                  td.uk-text-large.uk-text-danger FREE
+                  td
+                    button.uk-button.uk-button-primary(disabled) Get
+          a.twitter-timeline(href="https://twitter.com/oneinvites", data-widget-id="640100674269802496") Tweets by @oneinvites
+          script.
+            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+      div.uk-width-medium-1-2.uk-width-large-1-2.uk-hidden-small
+        div.uk-margin-top.b-feedback
+          div#auction-nudge-feedback.auction-nudge
+            a(href="https://www.auctionnudge.com/") eBay on my website by Auction Nudge
+          script(src="//www.auctionnudge.com/feedback_build/js/UserID/oneinvites/siteid/0/limit/25/type/FeedbackReceivedAsSeller/theme/profile_table/blank/1")
