@@ -118,7 +118,6 @@ jobs.process('mail', function(job, done) {
 
 mongoose.connect('mongodb://' + process.env.mongo + '/oneinvites', { autoIndex: process.env.NODE_ENV !== 'production' });
 
-//Логгер в одном месте, для упрощения перезда на любой логгер.
 function log(logMsg, logType) {
   if (logMsg instanceof Error) logger.error(logMsg.stack);
   if (!_.isUndefined(logType)) {
