@@ -93,7 +93,6 @@ app.use((err, req, res, next) => {
 
 app.use(rollbar.errorHandler(process.env.rollbar));
 
-var server = app.listen(app.get('port'), '127.0.0.1', function() {
-               debug('Express server listening on port ' +
-                     server.address().port);
-             });
+app.listen(app.get('port'), '127.0.0.1', () => {
+  debug('Express server listening on port ' + this.address().port);
+});
