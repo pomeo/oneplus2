@@ -131,5 +131,5 @@ function log(logMsg, logType) {
 // server with small memory, need manual release
 setInterval(function () {
   global.gc();
-  log((process.memoryUsage().rss / 1024 / 1024).toFixed(2) + 'Mb');
+  console.log((process.memoryUsage().rss / 1024 / 1024).toFixed(2) + 'Mb');
 }, 60000);
