@@ -28,22 +28,47 @@ if (process.env.NODE_ENV === 'development') {
   require('le_node');
   logger = new (winston.Logger)({
     transports: [
-      new winston.transports.Logentries({token: process.env.logentries})
+      new winston.transports.Logentries({
+        token: process.env.logentries
+      })
     ]
   });
 }
 
-router.get('/', function(req, res) {
-  res.render('index');
+let pp = require('./paypal/paypalWrapper');
+
+router.get('/', (req, res) => {
+  if (req.session.one) {
+    res.redirect('/dashboard');
+  } else {
+    res.render('index');
+  }
 });
 
-router.post('/webhook', upload.array(), function(req, res, next) {
+router.get('/dashboard', (req, res) => {
+  if (req.session.one) {
+    res.render('dashboard');
+  } else {
+    res.redirect('/');
+  }
+});
+
+router.get('/login', (req, res) => {
+  res.render('login', {
+    url: pp.helpers.getLoginUrl()
+  });
+});
+
+router.get('/callback/paypal', pp.handlers.handleAuthCallback);
+
+router.post('/webhook', upload.array(), (req, res, next) => {
   let msg = JSON.parse(req.body.mailinMsg);
   let regexp = /humst/g;
   let match = msg.to[0].address.match(regexp);
   if (_.isNull(match)) {
     res.sendStatus(200);
   } else {
+    log(msg.from[0].address);
     jobs.create('mail', {
       from: msg.from[0].address,
       to: msg.to[0].address,
@@ -56,7 +81,7 @@ router.post('/webhook', upload.array(), function(req, res, next) {
   }
 });
 
-router.get('/create', upload.array(), function(req, res, next) {
+router.get('/create', (req, res) => {
   // jobs.create('check', {
   //   count: 1
   // }).delay(2000).priority('normal').removeOnComplete(true).save();
