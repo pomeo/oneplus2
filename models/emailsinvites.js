@@ -13,8 +13,6 @@ var EmailsForInvitesSchema = new Schema({
   used        : { type: Boolean, index: true }, // использован как реферер
   created_at  : { type: Date, default: Date.now }, // дата создания
   updated_at  : { type: Date, default: Date.now } // дата изменения
-}, {
-  _id: false
 });
 
 mongoose.model('EmailsForInvites', EmailsForInvitesSchema);

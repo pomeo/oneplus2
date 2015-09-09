@@ -7,8 +7,6 @@ var SettingsSchema = new Schema({
   value       : String, // значение свойства
   created_at  : { type: Date, default: Date.now }, // дата создания
   updated_at  : { type: Date, default: Date.now } // дата изменения
-}, {
-  _id: false
 });
 
 mongoose.model('Settings', SettingsSchema);

@@ -11,8 +11,6 @@ var MailsSchema = new Schema({
   text        : String, // текст письма
   created_at  : { type: Date, default: Date.now },   // дата создания записи
   updated_at  : { type: Date, default: Date.now }    // дата изменения записи
-}, {
-  _id: false
 });
 
 mongoose.model('Mails', MailsSchema);

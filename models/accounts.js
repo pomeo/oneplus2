@@ -7,8 +7,6 @@ let AccountsSchema = new Schema({
   email       : { type: String, index: true }, // почтовый адрес
   created_at  : { type: Date }, // дата создания
   updated_at  : { type: Date } // дата изменения
-}, {
-  _id: false
 });
 
 mongoose.model('Accounts', AccountsSchema);

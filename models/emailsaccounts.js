@@ -12,8 +12,6 @@ var EmailsAccountsSchema = new Schema({
   end         : { type: Date, index: true }, // дата конца инвайта
   created_at  : { type: Date }, // дата создания
   updated_at  : { type: Date } // дата изменения
-}, {
-  _id: false
 });
 
 mongoose.model('EmailsAccounts', EmailsAccountsSchema);
