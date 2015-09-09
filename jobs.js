@@ -109,8 +109,8 @@ jobs.process('mail', function(job, done) {
         if (job.data.from === 'invites@oneplus.net' ||
             job.data.from === 'me@pomeo.me') {
           let msg = {
-            message: 'invites@oneplus.net',
-            title: 'New invite to ' + job.data.to
+            title: 'invites@oneplus.net',
+            message: 'New invite to ' + job.data.to
           };
           p.send(msg, function(err, result) {
             if (err) {
