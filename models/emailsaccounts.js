@@ -2,9 +2,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var EmailsAccountsSchema = new Schema();
-
-EmailsAccountsSchema.add({
+var EmailsAccountsSchema = new Schema({
   email       : { type: String, unique: true }, // почтовый адрес
   hash        : { type: String, index: true }, // хеш
   password    : String, // пароль от аккаунта

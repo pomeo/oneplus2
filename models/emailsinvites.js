@@ -2,9 +2,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var EmailsForInvitesSchema = new Schema();
-
-EmailsForInvitesSchema.add({
+var EmailsForInvitesSchema = new Schema({
   order       : { type: Number, index: true }, // номер почты
   mail        : { type: String, unique: true }, // почтовый адрес
   hash        : { type: String, index: true }, // хеш

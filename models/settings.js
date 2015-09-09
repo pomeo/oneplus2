@@ -2,9 +2,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var SettingsSchema = new Schema();
-
-SettingsSchema.add({
+var SettingsSchema = new Schema({
   property    : { type: String, index: true }, // свойство
   value       : String, // значение свойства
   created_at  : { type: Date, default: Date.now }, // дата создания

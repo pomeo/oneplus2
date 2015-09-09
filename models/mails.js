@@ -2,9 +2,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var MailsSchema = new Schema();
-
-MailsSchema.add({
+var MailsSchema = new Schema({
   from        : { type: String, index: true }, // откого
   to          : { type: String, index: true }, // кому
   subject     : { type: String, index: true }, // тема
