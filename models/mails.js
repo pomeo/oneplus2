@@ -5,7 +5,6 @@ var Schema = mongoose.Schema;
 var MailsSchema = new Schema();
 
 MailsSchema.add({
-  _id         : false,
   from        : { type: String, index: true }, // откого
   to          : { type: String, index: true }, // кому
   subject     : { type: String, index: true }, // тема
@@ -14,11 +13,8 @@ MailsSchema.add({
   text        : String, // текст письма
   created_at  : { type: Date, default: Date.now },   // дата создания записи
   updated_at  : { type: Date, default: Date.now }    // дата изменения записи
-});
-
-MailsSchema.pre('save', function(next) {
-  this.updated_at = new Date();
-  next();
+}, {
+  _id: false
 });
 
 mongoose.model('Mails', MailsSchema);

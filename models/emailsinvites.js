@@ -5,7 +5,6 @@ var Schema = mongoose.Schema;
 var EmailsForInvitesSchema = new Schema();
 
 EmailsForInvitesSchema.add({
-  _id         : false,
   order       : { type: Number, index: true }, // номер почты
   mail        : { type: String, unique: true }, // почтовый адрес
   hash        : { type: String, index: true }, // хеш
@@ -16,11 +15,8 @@ EmailsForInvitesSchema.add({
   used        : { type: Boolean, index: true }, // использован как реферер
   created_at  : { type: Date, default: Date.now }, // дата создания
   updated_at  : { type: Date, default: Date.now } // дата изменения
-});
-
-EmailsForInvitesSchema.pre('save', function(next) {
-  this.updated_at = new Date();
-  next();
+}, {
+  _id: false
 });
 
 mongoose.model('EmailsForInvites', EmailsForInvitesSchema);
