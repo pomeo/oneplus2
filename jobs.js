@@ -18,6 +18,7 @@ const Agenda      = require('agenda');
 const _           = require('lodash');
 const async       = require('async');
 const cc          = require('coupon-code');
+const push        = require('pushover-notifications');
 // const Browser     = require('zombie');
 const rollbar     = require('rollbar');
 const cheerio     = require('cheerio');
@@ -25,6 +26,11 @@ const vm          = require('vm');
 const path        = require('path');
 const util        = require('util');
 const winston     = require('winston');
+
+let p = new push( {
+  user: process.env.PUSHOVER_USER,
+  token: process.env.PUSHOVER_TOKEN
+});
 
 String.prototype.cleanup = function() {
   return this.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '');
@@ -100,6 +106,20 @@ jobs.process('mail', function(job, done) {
         setImmediate(done);
       } else {
         log('Письмо ' + job.data.to + ' сохранено');
+        if (job.data.from === 'invites@oneplus.net' ||
+            job.data.from === 'me@pomeo.me') {
+          let msg = {
+            message: 'invites@oneplus.net',
+            title: 'New invite to ' + job.data.to
+          };
+          p.send(msg, function(err, result) {
+            if (err) {
+              log(err, 'error');
+            } else {
+              log(result);
+            }
+          });
+        }
         if (job.data.subject == 'Confirm your email') {
           var $ = cheerio.load(job.data.html);
           log($('a').first().attr('href'));
