@@ -1,2 +1,3 @@
 'use strict';
-require('./first.js');
+import './first.js';
+import './reg.js';
