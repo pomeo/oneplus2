@@ -128,7 +128,7 @@ jobs.process('mail', function(job, done) {
           jobs.create('clickConfirm', {
             to: m.to,
             url: $('a').first().text()
-          }).delay(2000).priority('normal').removeOnComplete(true).save();
+          }).delay(10000).priority('normal').removeOnComplete(true).save();
           setImmediate(done);
         } else {
           setImmediate(done);
