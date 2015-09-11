@@ -124,6 +124,8 @@ router.post('/admin/reg', (req, res) => {
             password   : req.body.pass,
             invite     : false,
             sell       : false,
+            start      : new Date(),
+            end        : new Date(),
             created_at : new Date(),
             updated_at : new Date()
           });
