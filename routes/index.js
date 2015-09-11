@@ -99,7 +99,7 @@ router.get('/admin/reg', (req, res) => {
         Emails.findOne().skip(random).exec((err, result) => {
           let login = result.mail.split('@')[0] + '123@humst.ru';
           res.render('admin/reg', {
-            username: result.mail.split('@')[0],
+            username: result.mail.split('@')[0] + '123',
             login: login,
             password: generatePass()
           });
