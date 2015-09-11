@@ -27,7 +27,7 @@ const path        = require('path');
 const util        = require('util');
 const winston     = require('winston');
 
-let p = new push( {
+let p = new push({
   user: process.env.PUSHOVER_USER,
   token: process.env.PUSHOVER_TOKEN
 });
@@ -89,6 +89,7 @@ let agenda = new Agenda({
 jobs.process('mail', function(job, done) {
   var domain = require('domain').create();
   domain.on('error', function(err) {
+    log(err);
     setImmediate(done);
   });
   domain.run(function() {
@@ -120,7 +121,8 @@ jobs.process('mail', function(job, done) {
             }
           });
         }
-        if (job.data.subject == 'Confirm your email') {
+        if ((job.data.subject === 'Confirm your email') ||
+            (job.data.subject === 'Account Confirmation')) {
           var $ = cheerio.load(job.data.html);
           log($('a').first().attr('href'));
           jobs.create('clickConfirm', {
@@ -132,6 +134,41 @@ jobs.process('mail', function(job, done) {
           setImmediate(done);
         }
       }
+    });
+  });
+});
+
+jobs.process('clickConfirm', function(job, done) {
+  var domain = require('domain').create();
+  domain.on('error', function(err) {
+    log(err);
+    setImmediate(done);
+  });
+  domain.run(function() {
+    rest.get(job.data.url, {
+      //headers: {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'},
+      headers: {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36'},
+      timeout: 2000
+    }).once('timeout', function(ms){
+      log('Ошибка: Таймаут ' + ms + ' ms', 'error');
+      jobs.create('clickConfirm', {
+        to: job.data.to,
+        url: job.data.url
+      }).delay(2000).priority('low').removeOnComplete(true).save();
+      setImmediate(done);
+    }).once('error',function(err, response) {
+      log('Ошибка: ' + err, 'error');
+      setImmediate(done);
+    }).once('abort',function() {
+      log('Ошибка: Abort', 'error');
+      setImmediate(done);
+    }).once('fail',function(data, response) {
+      log('Ошибка: ' + JSON.stringify(data), 'error');
+      setImmediate(done);
+    }).once('success',function(data, response) {
+      log(response);
+      log('Подтверждена почта ' + job.data.mail);
+      setImmediate(done);
     });
   });
 });
