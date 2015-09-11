@@ -12,6 +12,8 @@ const jobs     = io.createQueue({
     host: process.env.redis
   }
 });
+const fs       = require('fs');
+const bcrypt   = require('bcrypt');
 const multer   = require('multer');
 const upload   = multer();
 const winston  = require('winston');
@@ -35,6 +37,16 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
+const modelsPath = __dirname + '/../models';
+fs.readdirSync(modelsPath).forEach(function(file) {
+  if (~file.indexOf('js')) {
+    require(modelsPath + '/' + file);
+  }
+});
+
+let Emails = mongoose.model('EmailsForInvites');
+let Acc = mongoose.model('EmailsAccounts');
+
 let pp = require('./paypal/paypalWrapper');
 
 router.get('/', (req, res) => {
@@ -47,9 +59,86 @@ router.get('/', (req, res) => {
 
 router.get('/dashboard', (req, res) => {
   if (req.session.one) {
-    res.render('dashboard');
+    if (req.session.one === process.env.ADMIN) {
+      res.redirect('/admin');
+    } else {
+      res.render('dashboard');
+    }
   } else {
     res.redirect('/');
+  }
+});
+
+router.get('/admin', (req, res) => {
+  if (req.session.one) {
+    if (req.session.one === process.env.ADMIN) {
+      res.render('admin');
+    } else {
+      res.redirect('/');
+    }
+  } else {
+    res.redirect('/');
+  }
+});
+
+let generatePass = () => {
+  var set = '0123456789abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ';
+  var salt = '';
+  for (var i = 0; i < 10; i++) {
+    var p = Math.floor(Math.random() * set.length);
+    salt += set[p];
+  }
+  return salt;
+};
+
+router.get('/admin/reg', (req, res) => {
+  if (req.session.one) {
+    if (req.session.one === process.env.ADMIN) {
+      Emails.count().exec((err, count) => {
+        let random = Math.floor(Math.random() * count);
+        Emails.findOne().skip(random).exec((err, result) => {
+          let login = result.mail.split('@')[0] + '123@humst.ru';
+          res.render('admin/reg', {
+            username: result.mail.split('@')[0],
+            login: login,
+            password: generatePass()
+          });
+        });
+      });
+    } else {
+      res.redirect('/');
+    }
+  } else {
+    res.redirect('/');
+  }
+});
+
+router.post('/admin/reg', (req, res) => {
+  if (req.session.one) {
+    if (req.session.one === process.env.ADMIN) {
+      bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(req.body.login, salt, function(err, hash) {
+          let acc = new Acc({
+            email      : req.body.login,
+            hash       : hash,
+            password   : req.body.pass,
+            invite     : false,
+            sell       : false,
+            created_at : new Date(),
+            updated_at : new Date()
+          });
+          acc.save((err) => {
+            if (err) {
+              log(err);
+              res.sendStatus(200);
+            } else {
+              log('Save ' + req.body.login);
+              res.sendStatus(200);
+            }
+          });
+        });
+      });
+    }
   }
 });
 
