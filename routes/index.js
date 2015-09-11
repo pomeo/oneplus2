@@ -180,7 +180,8 @@ router.get('/create', (req, res) => {
 module.exports = router;
 
 mongoose.connect('mongodb://' + process.env.mongo + '/oneinvites', {
-  autoIndex: process.env.NODE_ENV !== 'production'
+  //autoIndex: process.env.NODE_ENV !== 'production'
+  autoIndex: true
 });
 
 //Логгер в одном месте, для упрощения перезда на любой логгер.

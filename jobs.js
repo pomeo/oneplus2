@@ -107,7 +107,7 @@ jobs.process('mail', function(job, done) {
         setImmediate(done);
       } else {
         log('Письмо ' + job.data.to + ' сохранено');
-        if (job.data.from === 'invites@oneplus.net' ||
+        if (job .data.from === 'invites@oneplus.net' ||
             job.data.from === 'me@pomeo.me') {
           let msg = {
             title: 'invites@oneplus.net',
@@ -172,7 +172,10 @@ jobs.process('clickConfirm', function(job, done) {
   });
 });
 
-mongoose.connect('mongodb://' + process.env.mongo + '/oneinvites', { autoIndex: process.env.NODE_ENV !== 'production' });
+mongoose.connect('mongodb://' + process.env.mongo + '/oneinvites', {
+  //autoIndex: process.env.NODE_ENV !== 'production'
+  autoIndex: true
+});
 
 function log(logMsg, logType) {
   if (logMsg instanceof Error) logger.error(logMsg.stack);
