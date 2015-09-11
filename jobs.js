@@ -166,7 +166,7 @@ jobs.process('clickConfirm', function(job, done) {
       log('Ошибка: ' + JSON.stringify(data), 'error');
       setImmediate(done);
     }).once('success',function(data, response) {
-      log('Подтверждена почта ' + job.data.mail);
+      log('Подтверждена почта ' + job.data.to);
       setImmediate(done);
     });
   });
