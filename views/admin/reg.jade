@@ -1,0 +1,35 @@
+extends ../layout
+
+block content
+  div.main
+    nav.uk-navbar.uk-margin-bottom
+      div.uk-navbar-content
+        ul.uk-navbar-nav.uk-breadcrumb
+          li
+            a(href="/") Dashboard
+          li.uk-active
+            a(href="/") account
+      div.uk-navbar-flip
+        ul.uk-navbar-nav
+          li
+            a(href="/logout") Logout
+    div.uk-grid.uk-panel-box
+      div.uk-width-1-10
+        h3.uk-h5 Admin
+        ul.uk-list.uk-list-line
+          li
+            a(href="/admin") Accounts
+          li
+            a(href="/admin/buyers") Buyers
+          li
+            a(href="/admin/reg") Register
+      div.uk-width-6-10
+        h3.uk-h5 Register account
+        form.uk-form#iframe(method="post", action="/admin/reg")
+          fieldset(data-uk-margin)
+            input.uk-margin-small-right.uk-form-width-small(name="username", type="text", placeholder="#{username}", value="#{username}")
+            input.uk-margin-small-right.uk-form-width-small(name="login", type="text", placeholder="#{login}", value="#{login}")
+            input.uk-margin-small-right.uk-form-width-small(name="pass", type="text", placeholder="#{password}", value="#{password}")
+            button.uk-button save
+        iframe(src="https://account.oneplus.net/sign-up", width="600", height="750")
+          p Your browser does not support iframes.

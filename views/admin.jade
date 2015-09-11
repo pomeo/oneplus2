@@ -1,0 +1,45 @@
+extends layout
+
+block content
+  div.main
+    nav.uk-navbar.uk-margin-bottom
+      div.uk-navbar-content
+        ul.uk-navbar-nav.uk-breadcrumb
+          li
+            a(href="/") Dashboard
+          li.uk-active
+            a(href="/") account
+      div.uk-navbar-flip
+        ul.uk-navbar-nav
+          li
+            a(href="/logout") Logout
+    div.uk-grid.uk-panel-box
+      div.uk-width-1-10
+        h3.uk-h5 Admin
+        ul.uk-list.uk-list-line
+          li
+            a(href="/admin") Accounts
+          li
+            a(href="/admin/buyers") Buyers
+          li
+            a(href="/admin/reg") Register
+      div.uk-width-1-10
+        h3.uk-h5 Account
+        ul.uk-list.uk-list-line
+          li
+            a(href="#") test
+          li
+            a(href="#") test
+          li
+            a(href="#") test
+      div.uk-width-2-10
+        h3.uk-h5 Subject
+        ul.uk-list.uk-list-line
+          li
+            a(href="#") Successful sign-up for the reservation list
+          li
+            a(href="#") The 2016 Flagship Killer is now unleashed. Find out how to win a OnePlus 2!
+          li
+            a(href="#") Confirm your email
+      div.uk-width-6-10
+        h3.uk-h5 Email
