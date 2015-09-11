@@ -6,7 +6,7 @@ const _          = require('lodash');
 const modelsPath = __dirname + '/../../models';
 const winston    = require('winston');
 
-var logger;
+let logger;
 
 if (process.env.NODE_ENV === 'development') {
   logger = new (winston.Logger)({
@@ -71,7 +71,11 @@ module.exports = {
                 let Acc = mongoose.model('Accounts');
                 var upsertData = {
                   userid : userinfo.user_id,
-                  email  : userinfo.email
+                  email  : userinfo.email,
+                  updated_at: new Date(),
+                  $setOnInsert: {
+                    created_at: new Date()
+                  }
                 };
                 Acc.findOneAndUpdate({
                   userid: userinfo.user_id
