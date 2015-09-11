@@ -173,8 +173,7 @@ jobs.process('clickConfirm', function(job, done) {
 });
 
 mongoose.connect('mongodb://' + process.env.mongo + '/oneinvites', {
-  //autoIndex: process.env.NODE_ENV !== 'production'
-  autoIndex: true
+  autoIndex: process.env.NODE_ENV !== 'production'
 });
 
 function log(logMsg, logType) {
