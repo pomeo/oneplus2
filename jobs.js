@@ -151,10 +151,10 @@ jobs.process('clickConfirm', function(job, done) {
       timeout: 2000
     }).once('timeout', function(ms){
       log('Ошибка: Таймаут ' + ms + ' ms', 'error');
-      jobs.create('clickConfirm', {
-        to: job.data.to,
-        url: job.data.url
-      }).delay(60000).priority('low').removeOnComplete(true).save();
+      // jobs.create('clickConfirm', {
+      //   to: job.data.to,
+      //   url: job.data.url
+      // }).delay(60000).priority('low').removeOnComplete(true).save();
       setImmediate(done);
     }).once('error',function(err, response) {
       log('Ошибка: ' + err, 'error');
