@@ -124,10 +124,10 @@ jobs.process('mail', function(job, done) {
         if ((job.data.subject === 'Confirm your email') ||
             (job.data.subject === 'Account Confirmation')) {
           var $ = cheerio.load(job.data.html);
-          log($('a').first().attr('href'));
+          log($('a').first().text());
           jobs.create('clickConfirm', {
             to: m.to,
-            url: $('a').first().attr('href')
+            url: $('a').first().text()
           }).delay(2000).priority('normal').removeOnComplete(true).save();
           setImmediate(done);
         } else {
