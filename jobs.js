@@ -154,7 +154,7 @@ jobs.process('clickConfirm', function(job, done) {
       jobs.create('clickConfirm', {
         to: job.data.to,
         url: job.data.url
-      }).delay(2000).priority('low').removeOnComplete(true).save();
+      }).delay(60000).priority('low').removeOnComplete(true).save();
       setImmediate(done);
     }).once('error',function(err, response) {
       log('Ошибка: ' + err, 'error');
