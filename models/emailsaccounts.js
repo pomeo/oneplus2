@@ -8,6 +8,7 @@ var EmailsAccountsSchema = new Schema({
   password    : String, // пароль от аккаунта
   invite      : { type: Boolean, index: true }, // инвайт в аккаунте
   sell        : { type: Boolean, index: true }, // продан аккаунт
+  type        : { type: Number, index: true }, // тип аккаунта
   start       : { type: Number, index: true }, // дата начала инвайта
   end         : { type: Number, index: true }, // дата конца инвайта
   created_at  : { type: Date }, // дата создания
