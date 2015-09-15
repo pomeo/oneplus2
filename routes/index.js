@@ -54,7 +54,22 @@ router.get('/', (req, res) => {
   if (req.session.one) {
     res.redirect('/dashboard');
   } else {
-    res.render('index');
+    Acc.count({
+      type: 0,
+      invite: true,
+      sell: false
+    }).exec((err, count0) => {
+      Acc.count({
+        type: 1,
+        invite: false,
+        sell: false
+      }).exec((err, count1) => {
+        res.render('index', {
+          type0: count0,
+          type1: count1
+        });
+      });
+    });
   }
 });
 
