@@ -171,7 +171,7 @@ while true
     data['channel'][0]['item'].each do |item|
       if (item['encoded'][0].match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i))
         m = item['encoded'][0].match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i)
-        t = 'https://invites.oneplus.net/claim/#{m}'
+        t = 'https://invites.oneplus.net/claim/%s' % m
         getinvite(t)
       end
       urls = URI.extract(item['encoded'][0], ['http', 'https'])
