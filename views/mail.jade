@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  div.main.uk-container
+    div.uk-panel-box.uk-margin-top
+      h3.uk-h5 Account
+      p #[strong Login:] #{login} #[strong Password:] #{password} #[a(href="https://account.oneplus.net") account.oneplus.net]
+    div.uk-panel-box.uk-margin
+      table.uk-table
+        caption
+        thead
+          tr
+            th Sender
+            th Subject
+            th Date
+         tbody
+           each val in emails
+             tr
+               td
+                 a(href="/mail/#{hash}/inbox/#{val._id}")
+                   =val.from
+               td
+                 a(href="/mail/#{hash}/inbox/#{val._id}")
+                   =val.subject
+               td
+                 a(href="/mail/#{hash}/inbox/#{val._id}")
+                   =val.created_at
