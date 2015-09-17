@@ -121,7 +121,7 @@ router.post('/admin/reg', (req, res) => {
         bcrypt.hash(req.body.login, salt, function(err, hash) {
           let acc = new Acc({
             email      : req.body.login,
-            hash       : hash,
+            urlhash    : hash,
             password   : req.body.pass,
             invite     : false,
             sell       : false,
@@ -150,7 +150,7 @@ router.get('/mail', (req, res) => {
 router.get('/mail/:hash', (req, res) => {
   log(req.params.hash);
   Acc.findOne({
-    hash: req.params.hash
+    urlhash: req.params.hash
   }, (err, acc) => {
     if (err) {
       log(err);
@@ -170,7 +170,7 @@ router.get('/mail/:hash', (req, res) => {
             res.render('mail', {
               login: acc.email,
               password: acc.password,
-              hash: acc.hash,
+              hash: acc.urlhash,
               emails: emails
             });
           }
@@ -182,7 +182,7 @@ router.get('/mail/:hash', (req, res) => {
 
 router.get('/mail/:hash/inbox/:email', (req, res) => {
   Acc.findOne({
-    hash: req.params.hash
+    urlhash: req.params.hash
   }, function(err, acc) {
     if (err) {
       log(err);
