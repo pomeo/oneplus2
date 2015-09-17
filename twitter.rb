@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
+$stdout.sync = true
 require 'rubygems'
 require 'bundler/setup'
 require 'mechanize'
