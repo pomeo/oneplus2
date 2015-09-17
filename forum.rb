@@ -162,46 +162,50 @@ def getinvite(url)
 end
 
 while true
-  xml_data = URI.parse('https://forums.oneplus.net/forums/-/index.rss').read
+  begin
+    xml_data = URI.parse('https://forums.oneplus.net/forums/-/index.rss').read
 
-  data = XmlSimple.xml_in(xml_data)
+    data = XmlSimple.xml_in(xml_data)
 
-  data['channel'][0]['item'].each do |item|
-    if (item['encoded'][0].match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i))
-      getinvite('https://invites.oneplus.net/claim/#{item['encoded'][0].match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i)}')
-    end
-    urls = URI.extract(item['encoded'][0], ['http', 'https'])
-    urls.each do |u|
-      @t1 = Time.now
-      if (u.match(/invites.oneplus.net/i))
-        getinvite(u)
-      elsif (u.match(/onepl.us/i))
-        getinvite(u)
-      elsif (u.match(/mandrillapp.com/i))
-        getinvite(u)
-      elsif (u.match(/bit.ly/i))
-        getinvite(u)
-      elsif (u.match(/j.mp/i))
-        getinvite(u)
-      elsif (u.match(/ow.ly/i))
-        getinvite(u)
-      elsif (u.match(/goo.gl/i))
-        getinvite(u)
-      elsif (u.match(/fb.me/i))
-        getinvite(u)
-      elsif (u.match(/lnkd.in/i))
-        getinvite(u)
+    data['channel'][0]['item'].each do |item|
+      if (item['encoded'][0].match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i))
+        getinvite('https://invites.oneplus.net/claim/#{item['encoded'][0].match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i)}')
+      end
+      urls = URI.extract(item['encoded'][0], ['http', 'https'])
+      urls.each do |u|
+        @t1 = Time.now
+        if (u.match(/invites.oneplus.net/i))
+          getinvite(u)
+        elsif (u.match(/onepl.us/i))
+          getinvite(u)
+        elsif (u.match(/mandrillapp.com/i))
+          getinvite(u)
+        elsif (u.match(/bit.ly/i))
+          getinvite(u)
+        elsif (u.match(/j.mp/i))
+          getinvite(u)
+        elsif (u.match(/ow.ly/i))
+          getinvite(u)
+        elsif (u.match(/goo.gl/i))
+          getinvite(u)
+        elsif (u.match(/fb.me/i))
+          getinvite(u)
+        elsif (u.match(/lnkd.in/i))
+          getinvite(u)
+        end
+      end
+      if (@count == 3600)
+        puts "#{@count} #{@us.email} #{Time.now}"
+        @a.get('https://invites.oneplus.net/my-invites')
+        puts @a.page.title
+        @count = 0
+      else
+        puts "#{@count} #{@us.email} #{Time.now}"
+        @count = @count + 1
       end
     end
-    if (@count == 3600)
-      puts "#{@count} #{@us.email} #{Time.now}"
-      @a.get('https://invites.oneplus.net/my-invites')
-      puts @a.page.title
-      @count = 0
-    else
-      puts "#{@count} #{@us.email} #{Time.now}"
-      @count = @count + 1
-    end
+  rescue
+    puts "Error forum"
   end
   sleep 1
 end
