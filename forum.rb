@@ -177,7 +177,7 @@ while true
       urls = URI.extract(item['encoded'][0], ['http', 'https'])
       urls.each do |u|
         @t1 = Time.now
-        if (u.match(/invites.oneplus.net/i))
+        if (u.match(/invites.oneplus.net\/claim/i))
           getinvite(u)
         elsif (u.match(/onepl.us/i))
           getinvite(u)
