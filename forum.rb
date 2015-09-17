@@ -3,7 +3,6 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'mechanize'
-require 'tweetstream'
 require 'open-uri'
 require 'logger'
 require 'uri'
@@ -47,14 +46,6 @@ puts @us.email
 
 @user = @us.email
 @pass = @us.password
-
-TweetStream.configure do |config|
-  config.consumer_key       = ENV['TWITTER_CONSUMER_KEY']
-  config.consumer_secret    = ENV['TWITTER_CONSUMER_KEY_SECRET']
-  config.oauth_token        = ENV['TWITTER_ACCESS_TOKEN']
-  config.oauth_token_secret = ENV['TWITTER_ACCESS_TOKEN_SECRET']
-  config.auth_method        = :oauth
-end
 
 @a = Mechanize.new { |agent|
   agent.user_agent_alias = 'Windows Chrome'
@@ -121,7 +112,7 @@ def getinvite(url)
               req.set_form_data({
                                   :token => ENV['PUSHOVER_TOKEN'],
                                   :user => ENV['PUSHOVER_USER'],
-                                  :title => "#{d[0].title} Twitter",
+                                  :title => "#{d[0].title} Forum",
                                   :message => "#{@us.email}\n#{left}"
                                 })
               res = Net::HTTP.new(urlp.host, urlp.port)
@@ -170,49 +161,47 @@ def getinvite(url)
   end
 end
 
-TweetStream::Client.new.on_error do |message|
-  puts "Error twitter stream"
-  puts message
-end.track('oneplus') do |status|
-  puts "#{status.text}"
-  #test links
-  #text = 'oneplus https://t.co/0JY07GelLz http://t.co/kBKZcHACrH http://t.co/yoaQnLGlnw http://t.co/ckatzqRi4t http://t.co/Ejr366bbFq http://t.co/o0HlgaEjzF'
-  #urls = URI.extract(text, ['http', 'https'])
-  urls = URI.extract(status.text, ['http', 'https'])
-  urls.each do |u|
-    @t1 = Time.now
-    @a.get(u) do |p|
-      html = Nokogiri::HTML(p.body)
-      s = html.xpath('//noscript/meta')[0]
-      url = s['content'].replace(s['content'].gsub(/0;URL=/, ''))
-      if (url.match(/invites.oneplus.net/i))
-        getinvite(url)
-      elsif (url.match(/onepl.us/i))
-        getinvite(url)
-      elsif (url.match(/mandrillapp.com/i))
-        getinvite(url)
-      elsif (url.match(/bit.ly/i))
-        getinvite(url)
-      elsif (url.match(/j.mp/i))
-        getinvite(url)
-      elsif (url.match(/ow.ly/i))
-        getinvite(url)
-      elsif (url.match(/goo.gl/i))
-        getinvite(url)
-      elsif (url.match(/fb.me/i))
-        getinvite(url)
-      elsif (url.match(/lnkd.in/i))
-        getinvite(url)
+while true
+  xml_data = URI.parse('https://forums.oneplus.net/forums/-/index.rss').read
+
+  data = XmlSimple.xml_in(xml_data)
+
+  data['channel'][0]['item'].each do |item|
+    if (item['encoded'][0].match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i))
+      getinvite('https://invites.oneplus.net/claim/' + item['encoded'][0].match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i))
+    end
+    urls = URI.extract(item['encoded'][0], ['http', 'https'])
+    urls.each do |u|
+      @t1 = Time.now
+      if (u.match(/invites.oneplus.net/i))
+        getinvite(u)
+      elsif (u.match(/onepl.us/i))
+        getinvite(u)
+      elsif (u.match(/mandrillapp.com/i))
+        getinvite(u)
+      elsif (u.match(/bit.ly/i))
+        getinvite(u)
+      elsif (u.match(/j.mp/i))
+        getinvite(u)
+      elsif (u.match(/ow.ly/i))
+        getinvite(u)
+      elsif (u.match(/goo.gl/i))
+        getinvite(u)
+      elsif (u.match(/fb.me/i))
+        getinvite(u)
+      elsif (u.match(/lnkd.in/i))
+        getinvite(u)
       end
     end
+    if (@count == 3600)
+      puts "#{@count} #{@us.email} #{Time.now}"
+      @a.get('https://invites.oneplus.net/my-invites')
+      puts @a.page.title
+      @count = 0
+    else
+      puts "#{@count} #{@us.email} #{Time.now}"
+      @count = @count + 1
+    end
   end
-  if (@count == 20)
-    puts "#{@count} #{@us.email} #{Time.now}"
-    @a.get('https://invites.oneplus.net/my-invites')
-    puts @a.page.title
-    @count = 0
-  else
-    puts "#{@count} #{@us.email} #{Time.now}"
-    @count = @count + 1
-  end
+  sleep 1
 end
