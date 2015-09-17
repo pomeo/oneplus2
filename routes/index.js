@@ -46,6 +46,7 @@ fs.readdirSync(modelsPath).forEach(function(file) {
 
 let Emails = mongoose.model('EmailsForInvites');
 let Acc = mongoose.model('EmailsAccounts');
+let Mails = mongoose.model('Mails');
 
 let pp = require('./paypal/paypalWrapper');
 
@@ -140,6 +141,59 @@ router.post('/admin/reg', (req, res) => {
       });
     }
   }
+});
+
+router.get('/mail', (req, res) => {
+  res.redirect('/');
+});
+
+router.get('/mail/:hash', (req, res) => {
+  log(req.params.hash);
+  Acc.findOne({
+    hash: req.params.hash
+  }, (err, acc) => {
+    if (err) {
+      log(err);
+      res.redirect('/');
+    } else {
+      if (_.isNull(acc)) {
+        res.send('Error');
+      } else {
+        let M = Mails.find({to: acc.email});
+        M.sort({created_at: -1});
+        M.limit(50);
+        M.exec((err, emails) => {
+          if (err) {
+            log(err);
+            res.send('Error');
+          } else {
+            res.render('mail', {
+              login: acc.email,
+              password: acc.password,
+              hash: acc.hash,
+              emails: emails
+            });
+          }
+        });
+      }
+    }
+  });
+});
+
+router.get('/mail/:hash/inbox/:email', (req, res) => {
+  Acc.findOne({
+    hash: req.params.hash
+  }, function(err, acc) {
+    if (err) {
+      log(err);
+      res.redirect('/');
+    } else {
+      res.render('mail', {
+        login: acc.email,
+        password: acc.password
+      });
+    }
+  });
 });
 
 router.get('/login', (req, res) => {
