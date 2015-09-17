@@ -19,7 +19,6 @@ const _           = require('lodash');
 const async       = require('async');
 const cc          = require('coupon-code');
 const push        = require('pushover-notifications');
-// const Browser     = require('zombie');
 const rollbar     = require('rollbar');
 const cheerio     = require('cheerio');
 const vm          = require('vm');
