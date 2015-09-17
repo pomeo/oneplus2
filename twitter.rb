@@ -178,6 +178,9 @@ end.track('oneplus') do |status|
   #test links
   #text = 'oneplus https://t.co/0JY07GelLz http://t.co/kBKZcHACrH http://t.co/yoaQnLGlnw http://t.co/ckatzqRi4t http://t.co/Ejr366bbFq http://t.co/o0HlgaEjzF'
   #urls = URI.extract(text, ['http', 'https'])
+  if (status.text.match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i))
+    getinvite('https://invites.oneplus.net/claim/#{status.text.match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i)}')
+  end
   urls = URI.extract(status.text, ['http', 'https'])
   urls.each do |u|
     @t1 = Time.now
