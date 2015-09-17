@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
-$stdout.sync = true
 require 'rubygems'
 require 'bundler/setup'
 require 'mechanize'
@@ -40,6 +39,8 @@ class Oneplus
     @title = ti
   end
 end
+
+$stdout.sync = true
 
 @us = Emailsaccounts.first(:sell => false, :order => [ :start.asc ])
 puts @us.email
