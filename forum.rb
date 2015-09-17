@@ -169,8 +169,8 @@ while true
     data = XmlSimple.xml_in(xml_data)
 
     data['channel'][0]['item'].each do |item|
-      if (item['encoded'][0].match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i))
-        m = item['encoded'][0].match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i)
+      if (item['encoded'][0].match(/([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
+        m = item['encoded'][0].match(/([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
         t = 'https://invites.oneplus.net/claim/%s' % m
         getinvite(t)
       end
