@@ -194,15 +194,14 @@ while true
           getinvite(u)
         end
       end
-      if (@count == 3600)
-        puts "#{@count} #{@us.email} #{Time.now}"
-        @a.get('https://invites.oneplus.net/my-invites')
-        puts @a.page.title
-        @count = 0
-      else
-        puts "#{@count} #{@us.email} #{Time.now}"
-        @count = @count + 1
-      end
+    end
+    if (@count == 3600)
+      puts "#{@count} #{@us.email} #{Time.now}"
+      @a.get('https://invites.oneplus.net/my-invites')
+      puts @a.page.title
+      @count = 0
+    else
+      @count = @count + 1
     end
   rescue
     puts "Error forum"
