@@ -212,6 +212,40 @@ def getForum
   end
 end
 
+get urlTwitter(urls)
+  begin
+    urls.each do |u|
+    @t1 = Time.now
+    @a.get(u) do |p|
+      html = Nokogiri::HTML(p.body)
+      s = html.xpath('//noscript/meta')[0]
+      url = s['content'].replace(s['content'].gsub(/0;URL=/, ''))
+      if (url.match(/invites.oneplus.net/i))
+        getinvite(url)
+      elsif (url.match(/onepl.us/i))
+        getinvite(url)
+      elsif (url.match(/mandrillapp.com/i))
+        getinvite(url)
+      elsif (url.match(/bit.ly/i))
+        getinvite(url)
+      elsif (url.match(/j.mp/i))
+        getinvite(url)
+      elsif (url.match(/ow.ly/i))
+        getinvite(url)
+      elsif (url.match(/goo.gl/i))
+        getinvite(url)
+      elsif (url.match(/fb.me/i))
+        getinvite(url)
+      elsif (url.match(/lnkd.in/i))
+        getinvite(url)
+      end
+    end
+  end
+  rescue
+    puts "Error get url from twitter stream"
+  end
+end
+
 def getTwitter
   TweetStream::Client.new.on_error do |message|
     puts "Error twitter stream"
@@ -222,33 +256,7 @@ def getTwitter
       getinvite(t)
     end
     urls = URI.extract(status.text, ['http', 'https'])
-    urls.each do |u|
-      @t1 = Time.now
-      @a.get(u) do |p|
-        html = Nokogiri::HTML(p.body)
-        s = html.xpath('//noscript/meta')[0]
-        url = s['content'].replace(s['content'].gsub(/0;URL=/, ''))
-        if (url.match(/invites.oneplus.net/i))
-          getinvite(url)
-        elsif (url.match(/onepl.us/i))
-          getinvite(url)
-        elsif (url.match(/mandrillapp.com/i))
-          getinvite(url)
-        elsif (url.match(/bit.ly/i))
-          getinvite(url)
-        elsif (url.match(/j.mp/i))
-          getinvite(url)
-        elsif (url.match(/ow.ly/i))
-          getinvite(url)
-        elsif (url.match(/goo.gl/i))
-          getinvite(url)
-        elsif (url.match(/fb.me/i))
-          getinvite(url)
-        elsif (url.match(/lnkd.in/i))
-          getinvite(url)
-        end
-      end
-    end
+    urlTwitter(urls)
     if (@count == 100)
       puts "#{@count} #{@us.email} #{Time.now}"
       @a.get('https://invites.oneplus.net/my-invites')
