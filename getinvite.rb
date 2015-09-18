@@ -168,6 +168,32 @@ def getinvite(url)
   end
 end
 
+def matchUrl(url)
+  begin
+    if (url.match(/invites.oneplus.net\/claim/i))
+      getinvite(url)
+    elsif (url.match(/onepl.us/i))
+      getinvite(url)
+    elsif (url.match(/mandrillapp.com/i))
+      getinvite(url)
+    elsif (url.match(/bit.ly/i))
+      getinvite(url)
+    elsif (url.match(/j.mp/i))
+      getinvite(url)
+    elsif (url.match(/ow.ly/i))
+      getinvite(url)
+    elsif (url.match(/goo.gl/i))
+      getinvite(url)
+    elsif (url.match(/fb.me/i))
+      getinvite(url)
+    elsif (url.match(/lnkd.in/i))
+      getinvite(url)
+    end
+  rescue
+    puts "Error match url"
+  end
+end
+
 def getForum
   while true
     begin
@@ -184,25 +210,7 @@ def getForum
         urls = URI.extract(item['encoded'][0], ['http', 'https'])
         urls.each do |u|
           @t1 = Time.now
-          if (u.match(/invites.oneplus.net\/claim/i))
-            getinvite(u)
-          elsif (u.match(/onepl.us/i))
-            getinvite(u)
-          elsif (u.match(/mandrillapp.com/i))
-            getinvite(u)
-          elsif (u.match(/bit.ly/i))
-            getinvite(u)
-          elsif (u.match(/j.mp/i))
-            getinvite(u)
-          elsif (u.match(/ow.ly/i))
-            getinvite(u)
-          elsif (u.match(/goo.gl/i))
-            getinvite(u)
-          elsif (u.match(/fb.me/i))
-            getinvite(u)
-          elsif (u.match(/lnkd.in/i))
-            getinvite(u)
-          end
+          matchUrl(u)
         end
       end
     rescue
@@ -212,35 +220,17 @@ def getForum
   end
 end
 
-get urlTwitter(urls)
+def urlTwitter(urls)
   begin
     urls.each do |u|
-    @t1 = Time.now
-    @a.get(u) do |p|
-      html = Nokogiri::HTML(p.body)
-      s = html.xpath('//noscript/meta')[0]
-      url = s['content'].replace(s['content'].gsub(/0;URL=/, ''))
-      if (url.match(/invites.oneplus.net/i))
-        getinvite(url)
-      elsif (url.match(/onepl.us/i))
-        getinvite(url)
-      elsif (url.match(/mandrillapp.com/i))
-        getinvite(url)
-      elsif (url.match(/bit.ly/i))
-        getinvite(url)
-      elsif (url.match(/j.mp/i))
-        getinvite(url)
-      elsif (url.match(/ow.ly/i))
-        getinvite(url)
-      elsif (url.match(/goo.gl/i))
-        getinvite(url)
-      elsif (url.match(/fb.me/i))
-        getinvite(url)
-      elsif (url.match(/lnkd.in/i))
-        getinvite(url)
+      @t1 = Time.now
+      @a.get(u) do |p|
+        html = Nokogiri::HTML(p.body)
+        s = html.xpath('//noscript/meta')[0]
+        url = s['content'].replace(s['content'].gsub(/0;URL=/, ''))
+        matchUrl(url)
       end
     end
-  end
   rescue
     puts "Error get url from twitter stream"
   end
