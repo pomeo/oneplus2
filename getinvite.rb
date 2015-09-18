@@ -91,7 +91,7 @@ def getinvite(url)
     puts url
     @a.get(url) do |m|
       if (m.uri.to_s.match(/invites.oneplus.net/i))
-        if (app.at('p.h3.text-left.text-red').text.strip == 'You entered an invalid invite')
+        if (m.at('p.h3.text-left.text-red').text.strip == 'You entered an invalid invite')
           puts "Used invite"
         else
           @t2 = Time.now
