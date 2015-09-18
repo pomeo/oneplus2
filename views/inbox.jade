@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  div.main.uk-container
+    div.uk-panel-box.uk-margin-top
+      h4.uk-h3
+        =subject
+      p.uk-margin-bottom-remove From:
+        span.uk-margin-small-left
+          =from
+      p.uk-margin-top-remove Date:
+        span.uk-margin-small-left
+          =date
+    div.uk-panel-box.uk-margin
+      !=html

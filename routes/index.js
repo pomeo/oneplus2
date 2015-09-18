@@ -188,9 +188,21 @@ router.get('/mail/:hash/inbox/:email', (req, res) => {
       log(err);
       res.redirect('/');
     } else {
-      res.render('mail', {
-        login: acc.email,
-        password: acc.password
+      Mails.findById(req.params.email, (err, mail) => {
+        if (err) {
+          log(err);
+          res.sendStatus(500);
+        } else {
+          res.render('inbox', {
+            login: acc.email,
+            password: acc.password,
+            from: mail.from,
+            to: mail.to,
+            subject: mail.subject,
+            date: mail.date,
+            html: mail.html
+          });
+        }
       });
     }
   });
