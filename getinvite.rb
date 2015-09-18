@@ -217,7 +217,6 @@ def getTwitter
     puts "Error twitter stream"
     puts message
   end.track('oneplus') do |status|
-    puts "#{status.text}"
     if (status.text.match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i))
       t = 'https://invites.oneplus.net/claim/%s' % status.text.match(/([\w\d]{4}-[\w\d]{4}-[\w\d]{4}-[\w\d]{4})/i)
       getinvite(t)
