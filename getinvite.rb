@@ -69,6 +69,8 @@ rescue
  puts "Error FORM #{@user}"
 end
 
+puts @a.page.title
+
 if @a.page.title != 'Edit User Information - OnePlus Account'
   urlp = URI.parse('https://api.pushover.net/1/messages.json')
   req = Net::HTTP::Post.new(urlp.path)
@@ -237,24 +239,28 @@ def urlTwitter(urls)
 end
 
 def getTwitter
-  TweetStream::Client.new.on_error do |message|
-    puts "Error twitter stream"
-    puts message
-  end.track('oneplus') do |status|
-    if (status.text.match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
-      t = 'https://invites.oneplus.net/claim/%s' % status.text.match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
-      getinvite(t)
+  begin
+    TweetStream::Client.new.on_error do |message|
+      puts "Error twitter stream"
+      puts message
+    end.track('oneplus') do |status|
+      if (status.text.match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
+        t = 'https://invites.oneplus.net/claim/%s' % status.text.match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
+        getinvite(t)
+      end
+      urls = URI.extract(status.text, ['http', 'https'])
+      urlTwitter(urls)
+      if (@count == 100)
+        puts "#{@count} #{@us.email} #{Time.now}"
+        @a.get('https://invites.oneplus.net/my-invites')
+        puts @a.page.title
+        @count = 0
+      else
+        @count = @count + 1
+      end
     end
-    urls = URI.extract(status.text, ['http', 'https'])
-    urlTwitter(urls)
-    if (@count == 100)
-      puts "#{@count} #{@us.email} #{Time.now}"
-      @a.get('https://invites.oneplus.net/my-invites')
-      puts @a.page.title
-      @count = 0
-    else
-      @count = @count + 1
-    end
+  rescue
+    puts "Error TWITTER"
   end
 end
 
