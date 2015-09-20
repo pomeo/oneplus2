@@ -110,12 +110,24 @@ let generatePass = () => {
 router.get('/admin/reg', (req, res) => {
   if (req.session.one) {
     if (req.session.one === process.env.ADMIN) {
-      Emails.count().exec((err, count) => {
+      Acc.count({
+        password: {
+          $exists: false
+        },
+        sell: false,
+        invite: false
+      }).exec((err, count) => {
         let random = Math.floor(Math.random() * count);
-        Emails.findOne().skip(random).exec((err, result) => {
-          let login = result.mail.split('@')[0] + '123@humst.ru';
+        Acc.findOne({
+          password: {
+            $exists: false
+          },
+          sell: false,
+          invite: false
+        }).skip(random).exec((err, result) => {
+          let login = result.email;
           res.render('admin/reg', {
-            username: result.mail.split('@')[0] + '123',
+            username: result.email.split('@')[0] + '456',
             login: login,
             password: generatePass()
           });
@@ -132,26 +144,19 @@ router.get('/admin/reg', (req, res) => {
 router.post('/admin/reg', (req, res) => {
   if (req.session.one) {
     if (req.session.one === process.env.ADMIN) {
-      bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(req.body.login, salt, function(err, hash) {
-          let acc = new Acc({
-            email      : req.body.login,
-            urlhash    : hash,
-            password   : req.body.pass,
-            invite     : false,
-            sell       : false,
-            created_at : new Date(),
-            updated_at : new Date()
-          });
-          acc.save((err) => {
-            if (err) {
-              log(err);
-              res.sendStatus(200);
-            } else {
-              log('Save ' + req.body.login);
-              res.sendStatus(200);
-            }
-          });
+      Acc.findOne({
+        email: req.body.login
+      }, function(err, a) {
+        a.password = req.body.pass;
+        a.updated_at = new Date();
+        a.save((err) => {
+          if (err) {
+            log(err);
+            res.sendStatus(200);
+          } else {
+            log('Save ' + req.body.login);
+            res.sendStatus(200);
+          }
         });
       });
     }
