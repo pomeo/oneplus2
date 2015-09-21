@@ -275,9 +275,8 @@ def getTwitter
       urls = URI.extract(status.text, ['http', 'https'])
       urlTwitter(urls)
       if (@count == 100)
-        puts "#{@count} #{@us.email} #{Time.now}"
         @a.get('https://invites.oneplus.net/my-invites')
-        puts @a.page.title
+        puts "#{@count} #{@us.email} #{@a.page.title} #{Time.now}"
         @count = 0
         if @a.page.title != 'My invites'
           urlp = URI.parse('https://api.pushover.net/1/messages.json')
