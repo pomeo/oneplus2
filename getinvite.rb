@@ -117,6 +117,15 @@ def getinvite(url)
               res.start { |http|
                 http.request(req)
               }
+              @a.get('https://account.oneplus.net/login') do |login|
+                login.form_with(:action => 'https://account.oneplus.net/login') do |f|
+                  f.email      = @us.email
+                  f.password   = @us.password
+                end.click_button
+              end
+              @a.get('https://invites.oneplus.net/my-invites')
+              puts @a.page.title
+            end
             end
             inv = Array.new
             app.search('.invite-card').each do |invite|
@@ -149,8 +158,8 @@ def getinvite(url)
               @a.get('https://account.oneplus.net/onepluslogout')
               @us = Emailsaccounts.first(:sell => false, :invite => false, :order => [ :created_at.asc ])
               begin
-                @a.get('https://account.oneplus.net/login') do |app|
-                  app.form_with(:action => 'https://account.oneplus.net/login') do |f|
+                @a.get('https://account.oneplus.net/login') do |login|
+                  login.form_with(:action => 'https://account.oneplus.net/login') do |f|
                     f.email      = @us.email
                     f.password   = @us.password
                   end.click_button
@@ -286,6 +295,12 @@ def getTwitter
           res.start { |http|
             http.request(req)
           }
+          @a.get('https://account.oneplus.net/login') do |login|
+            login.form_with(:action => 'https://account.oneplus.net/login') do |f|
+              f.email      = @us.email
+              f.password   = @us.password
+            end.click_button
+          end
         end
       else
         @count = @count + 1
