@@ -126,7 +126,6 @@ def getinvite(url)
               @a.get('https://invites.oneplus.net/my-invites')
               puts @a.page.title
             end
-            end
             inv = Array.new
             app.search('.invite-card').each do |invite|
               if !invite.at('time').nil?
