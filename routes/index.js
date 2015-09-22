@@ -163,6 +163,16 @@ router.post('/admin/reg', (req, res) => {
   }
 });
 
+router.get('/logout', (req, res) => {
+  if (req.session) {
+    req.session.destroy(() => {
+      res.redirect('/');
+    });
+  } else {
+    res.redirect('/');
+  }
+});
+
 router.get('/mail', (req, res) => {
   res.redirect('/');
 });
