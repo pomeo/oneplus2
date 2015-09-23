@@ -302,6 +302,7 @@ def getTwitter
         end
       else
         @count = @count + 1
+        puts @count
       end
     end
   rescue
