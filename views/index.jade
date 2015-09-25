@@ -30,20 +30,32 @@ block content
                   td.uk-text-large.uk-text-danger 3$
                   td
                     button.uk-button.uk-button-primary(disabled) Buy
-                tr(data-uk-tooltip="{pos:'right'}", title="Currently not available")
-                  td.uk-text-large
-                    strong.uk-text-success invite with account
-                  td.uk-text-large.uk-text-warning 0
-                  td.uk-text-large.uk-text-danger 2$
-                  td
-                    button.uk-button.uk-button-primary(disabled) Buy
-                tr(data-uk-tooltip="{pos:'right'}", title="Currently not available")
+                if type0 == 0
+                  tr(data-uk-tooltip="{pos:'right'}", title="Currently not available")
+                else
+                  tr
                   td.uk-text-large
                     strong.uk-text-success activated invite with account
-                  td.uk-text-large.uk-text-warning 0
+                  td.uk-text-large.uk-text-warning #{type0}
+                  td.uk-text-large.uk-text-danger 2$
+                  td
+                    if type0 == 0
+                      button.uk-button.uk-button-primary(disabled) Buy
+                    else
+                      button.uk-button.uk-button-primary Buy
+                if type1 == 0
+                  tr(data-uk-tooltip="{pos:'right'}", title="Currently not available")
+                else
+                  tr
+                  td.uk-text-large
+                    strong.uk-text-success invite with account
+                  td.uk-text-large.uk-text-warning #{type1}
                   td.uk-text-large.uk-text-danger 1$
                   td
-                    button.uk-button.uk-button-primary(disabled) Buy
+                    if type1 == 0
+                      button.uk-button.uk-button-primary(disabled) Buy
+                    else
+                      button.uk-button.uk-button-primary Buy
                 tr(data-uk-tooltip="{pos:'right'}", title="Currently not available")
                   td.uk-text-large
                     strong.uk-text-success India invite
