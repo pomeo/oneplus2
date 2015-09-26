@@ -64,6 +64,8 @@ fs.readdirSync(modelsPath).forEach(function(file) {
 });
 
 let Mails = mongoose.model('Mails');
+let EmailsAccounts = mongoose.model('EmailsAccounts');
+let EmailsForInvites = mongoose.model('EmailsForInvites');
 
 jobs.promote(1500, 1);
 
@@ -84,6 +86,68 @@ let agenda = new Agenda({
     address: process.env.mongo + '/oneinvites'
   }
 });
+
+agenda.define('check emails for invites', (job, done) => {
+  Mails.find({subject:'You’re invited'}, (err, emails) => {
+    if (err) {
+      log(err, 'error');
+      done();
+    } else {
+      async.each(emails, function(email, callback) {
+        EmailsForInvites.findOne({mail:email.to}, (err, em) => {
+          if (err) {
+            log(err, 'error');
+            callback();
+          } else {
+            EmailsAccounts.findOne({email:em.mail}, (err, acc) => {
+              if (err) {
+                log(err, 'error');
+                callback();
+              } else {
+                if (_.isNull(acc)) {
+                  let account = new EmailsAccounts({
+                    email        : em.mail,
+                    urlhash      : em.hash,
+                    invite       : false,
+                    sell         : false,
+                    start        : moment(email.date).unix(),
+                    end          : moment(email.date).add(24, 'h').unix(),
+                    type         : 1,
+                    updated_at   : new Date(),
+                    created_at : new Date()
+                  });
+                  account.save((err) => {
+                    if (err) {
+                      log(err, 'error');
+                      callback();
+                    } else {
+                      log('Create ' + em.mail);
+                      callback();
+                    }
+                  });
+                } else {
+                  callback();
+                }
+              }
+            });
+          }
+        });
+      }, function(e) {
+        if (e) {
+          log(e, 'error');
+          done();
+        } else {
+          log('Check all emails for invites');
+          done();
+        }
+      });
+    }
+  });
+});
+
+agenda.every('1 hour', 'check emails for invites');
+
+agenda.start();
 
 jobs.process('mail', function(job, done) {
   var domain = require('domain').create();
