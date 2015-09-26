@@ -114,7 +114,7 @@ agenda.define('check emails for invites', (job, done) => {
                     end          : moment(email.date).add(24, 'h').unix(),
                     type         : 1,
                     updated_at   : new Date(),
-                    created_at : new Date()
+                    created_at   : new Date()
                   });
                   account.save((err) => {
                     if (err) {
