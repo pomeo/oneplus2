@@ -4,23 +4,23 @@ mixin type0desc
   td.uk-text-large
     strong.uk-text-success activated invite with account
   td.uk-text-large.uk-text-warning #{type0}
-    td.uk-text-large.uk-text-danger 2$
+    td.uk-text-large.uk-text-danger 3$
     td
       if type0 == 0
         button.uk-button.uk-button-primary(disabled) Buy
       else
-        button.uk-button.uk-button-primary Buy
+        a.uk-button.uk-button-primary(href="/buy0") Buy
 
 mixin type1desc
   td.uk-text-large
     strong.uk-text-success invite with account
   td.uk-text-large.uk-text-warning #{type1}
-  td.uk-text-large.uk-text-danger 1$
+  td.uk-text-large.uk-text-danger 2$
     td
       if type1 == 0
         button.uk-button.uk-button-primary(disabled) Buy
       else
-        button.uk-button.uk-button-primary Buy
+        a.uk-button.uk-button-primary(href="/buy1") Buy
 
 block content
   div.uk-container.main
