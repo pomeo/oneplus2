@@ -106,7 +106,7 @@ jobs.process('mail', function(job, done) {
         setImmediate(done);
       } else {
         log('Письмо ' + job.data.to + ' сохранено');
-        if (job .data.from === 'invites@oneplus.net' ||
+        if (job.data.from === 'invites@oneplus.net' ||
             job.data.from === 'me@pomeo.me') {
           let msg = {
             title: 'invites@oneplus.net',
