@@ -3,8 +3,12 @@ extends layout
 block content
   div.main.uk-container
     div.uk-panel-box.uk-margin-top
-      h3.uk-h5 Account
-      p #[strong Login:] #{login} #[strong Password:] #{password} #[a(href="https://account.oneplus.net") account.oneplus.net]
+      if password
+        p #[strong Login:] #{login} #[strong Password:] #{password} #[a(href="https://account.oneplus.net") account.oneplus.net]
+      else
+        p You need to register an account #[a(href="https://account.oneplus.net") here (account.oneplus.net)] on this email #[strong #{login}]
+        p After that you can activate an invite from emails to this account.
+        p And then change email to what you want.
     div.uk-panel-box.uk-margin
       table.uk-table
         caption
