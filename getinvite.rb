@@ -90,86 +90,22 @@ end
 
 def getinvite(url)
   begin
-    @a.get(url) do |m|
-      if (m.uri.to_s.match(/(invites.oneplus.net\/claim\/GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
-        puts url
-        if (m.at('p.h3.text-left.text-red').text.strip == 'You entered an invalid invite')
-          puts "Used invite"
-        else
-          if !@t1.nil?
-            @t2 = Time.now
-            @delta = @t2 - @t1
-            puts "Time #{@delta}"
-          end
-          puts m.uri.to_s
-          puts m.title
-          @a.get('https://invites.oneplus.net/my-invites') do |app|
-            if @a.page.title != 'My invites'
-              urlp = URI.parse('https://api.pushover.net/1/messages.json')
-              req = Net::HTTP::Post.new(urlp.path)
-              req.set_form_data({
-                                  :token => ENV['PUSHOVER_TOKEN'],
-                                  :user => ENV['PUSHOVER_USER'],
-                                  :title => "OnePlus",
-                                  :message => "Error login #{@us.email} #{Time.now}"
-                                })
-              res = Net::HTTP.new(urlp.host, urlp.port)
-              res.use_ssl = true
-              res.verify_mode = OpenSSL::SSL::VERIFY_PEER
-              res.start { |http|
-                http.request(req)
-              }
-              @a.get('https://account.oneplus.net/login') do |login|
-                login.form_with(:action => 'https://account.oneplus.net/login') do |f|
-                  f.email      = @us.email
-                  f.password   = @us.password
-                end.click_button
-              end
-              @a.get('https://invites.oneplus.net/my-invites')
-              puts "#{@us.email} #{@a.page.title} #{Time.now}"
+    if (!url.to_s.match(/goo.gl\/forms/))
+      @a.get(url) do |m|
+        if (m.uri.to_s.match(/(invites.oneplus.net\/claim\/GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
+          puts url
+          if (m.at('p.h3.text-left.text-red').text.strip == 'You entered an invalid invite')
+            puts "Used invite"
+          else
+            if !@t1.nil?
+              @t2 = Time.now
+              @delta = @t2 - @t1
+              puts "Time #{@delta}"
             end
-            inv = Array.new
-            app.search('.invite-card').each do |invite|
-              if !invite.at('time').nil?
-                t1 = Time.now
-                t2 = Time.now + invite.at('time')['data-time'].to_i
-                inv.push(Oneplus.new(t1, t2, invite.at('p.card-type').text.strip))
-              end
-            end
-            d = inv.sort { |a,b| b.date_end <=> a.date_end }
-            if !d[0].nil?
-              t1 = d[0].date_start.to_i
-              t2 = d[0].date_end.to_i
-              @us.update(:invite => true, :start => t1, :end => t2, :updated_at => Time.now)
-              left = Time.at(t2-t1).utc.strftime('%H:%M:%S')
-              urlp = URI.parse('https://api.pushover.net/1/messages.json')
-              req = Net::HTTP::Post.new(urlp.path)
-              req.set_form_data({
-                                  :token => ENV['PUSHOVER_TOKEN'],
-                                  :user => ENV['PUSHOVER_USER'],
-                                  :title => "#{d[0].title}",
-                                  :message => "#{@us.email}\n#{left}\n#{@delta}"
-                                })
-              res = Net::HTTP.new(urlp.host, urlp.port)
-              res.use_ssl = true
-              res.verify_mode = OpenSSL::SSL::VERIFY_PEER
-              res.start { |http|
-                http.request(req)
-              }
-              @a.get('https://account.oneplus.net/onepluslogout')
-              @us = Emailsaccounts.first(:sell => false, :invite => false, :order => [ :created_at.asc ])
-              begin
-                @a.get('https://account.oneplus.net/login') do |login|
-                  login.form_with(:action => 'https://account.oneplus.net/login') do |f|
-                    f.email      = @us.email
-                    f.password   = @us.password
-                  end.click_button
-                end
-                puts "#{@us.email} #{@a.page.title} #{Time.now}"
-              rescue => e
-                STDERR.puts "Error FORM #{@us.email} #{Time.now}\n#{e}"
-              end
-              if @a.page.title != 'Edit User Information - OnePlus Account'
+            puts m.uri.to_s
+            puts m.title
+            @a.get('https://invites.oneplus.net/my-invites') do |app|
+              if @a.page.title != 'My invites'
                 urlp = URI.parse('https://api.pushover.net/1/messages.json')
                 req = Net::HTTP::Post.new(urlp.path)
                 req.set_form_data({
@@ -184,12 +120,78 @@ def getinvite(url)
                 res.start { |http|
                   http.request(req)
                 }
+                @a.get('https://account.oneplus.net/login') do |login|
+                  login.form_with(:action => 'https://account.oneplus.net/login') do |f|
+                    f.email      = @us.email
+                    f.password   = @us.password
+                  end.click_button
+                end
+                @a.get('https://invites.oneplus.net/my-invites')
+                puts "#{@us.email} #{@a.page.title} #{Time.now}"
+              end
+              inv = Array.new
+              app.search('.invite-card').each do |invite|
+                if !invite.at('time').nil?
+                  t1 = Time.now
+                  t2 = Time.now + invite.at('time')['data-time'].to_i
+                  inv.push(Oneplus.new(t1, t2, invite.at('p.card-type').text.strip))
+                end
+              end
+              d = inv.sort { |a,b| b.date_end <=> a.date_end }
+              if !d[0].nil?
+                t1 = d[0].date_start.to_i
+                t2 = d[0].date_end.to_i
+                @us.update(:invite => true, :start => t1, :end => t2, :updated_at => Time.now)
+                left = Time.at(t2-t1).utc.strftime('%H:%M:%S')
+                urlp = URI.parse('https://api.pushover.net/1/messages.json')
+                req = Net::HTTP::Post.new(urlp.path)
+                req.set_form_data({
+                                    :token => ENV['PUSHOVER_TOKEN'],
+                                    :user => ENV['PUSHOVER_USER'],
+                                    :title => "#{d[0].title}",
+                                    :message => "#{@us.email}\n#{left}\n#{@delta}"
+                                  })
+                res = Net::HTTP.new(urlp.host, urlp.port)
+                res.use_ssl = true
+                res.verify_mode = OpenSSL::SSL::VERIFY_PEER
+                res.start { |http|
+                  http.request(req)
+                }
+                @a.get('https://account.oneplus.net/onepluslogout')
+                @us = Emailsaccounts.first(:sell => false, :invite => false, :order => [ :created_at.asc ])
+                begin
+                  @a.get('https://account.oneplus.net/login') do |login|
+                    login.form_with(:action => 'https://account.oneplus.net/login') do |f|
+                      f.email      = @us.email
+                      f.password   = @us.password
+                    end.click_button
+                  end
+                  puts "#{@us.email} #{@a.page.title} #{Time.now}"
+                rescue => e
+                  STDERR.puts "Error FORM #{@us.email} #{Time.now}\n#{e}"
+                end
+                if @a.page.title != 'Edit User Information - OnePlus Account'
+                  urlp = URI.parse('https://api.pushover.net/1/messages.json')
+                  req = Net::HTTP::Post.new(urlp.path)
+                  req.set_form_data({
+                                      :token => ENV['PUSHOVER_TOKEN'],
+                                      :user => ENV['PUSHOVER_USER'],
+                                      :title => "OnePlus",
+                                      :message => "Error login #{@us.email} #{Time.now}"
+                                    })
+                  res = Net::HTTP.new(urlp.host, urlp.port)
+                  res.use_ssl = true
+                  res.verify_mode = OpenSSL::SSL::VERIFY_PEER
+                  res.start { |http|
+                    http.request(req)
+                  }
+                end
               end
             end
           end
+        else
+          puts "Wrong url #{Time.now}\n#{url}"
         end
-      else
-        puts "Wrong url #{Time.now}\n#{url}"
       end
     end
   rescue => e
