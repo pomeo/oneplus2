@@ -66,7 +66,7 @@ begin
     end.click_button
   end
 rescue
- puts "Error FORM #{@us.email}"
+ puts "Error FORM #{@us.email} #{Time.now}"
 end
 
 puts @a.page.title
@@ -78,7 +78,7 @@ if @a.page.title != 'Edit User Information - OnePlus Account'
                       :token => ENV['PUSHOVER_TOKEN'],
                       :user => ENV['PUSHOVER_USER'],
                       :title => "OnePlus",
-                      :message => "Error login #{@us.email}"
+                      :message => "Error login #{@us.email} #{Time.now}"
                     })
   res = Net::HTTP.new(urlp.host, urlp.port)
   res.use_ssl = true
@@ -111,7 +111,7 @@ def getinvite(url)
                                   :token => ENV['PUSHOVER_TOKEN'],
                                   :user => ENV['PUSHOVER_USER'],
                                   :title => "OnePlus",
-                                  :message => "Error login #{@us.email}"
+                                  :message => "Error login #{@us.email} #{Time.now}"
                                 })
               res = Net::HTTP.new(urlp.host, urlp.port)
               res.use_ssl = true
@@ -167,7 +167,7 @@ def getinvite(url)
                 end
                 puts "#{@us.email} #{@a.page.title} #{Time.now}"
               rescue
-                puts "Error FORM #{@us.email}"
+                puts "Error FORM #{@us.email} #{Time.now}"
               end
               if @a.page.title != 'Edit User Information - OnePlus Account'
                 urlp = URI.parse('https://api.pushover.net/1/messages.json')
@@ -176,7 +176,7 @@ def getinvite(url)
                                     :token => ENV['PUSHOVER_TOKEN'],
                                     :user => ENV['PUSHOVER_USER'],
                                     :title => "OnePlus",
-                                    :message => "Error login #{@us.email}"
+                                    :message => "Error login #{@us.email} #{Time.now}"
                                   })
                 res = Net::HTTP.new(urlp.host, urlp.port)
                 res.use_ssl = true
@@ -189,11 +189,11 @@ def getinvite(url)
           end
         end
       else
-        puts 'Wrong url'
+        puts "Wrong url #{Time.now}"
       end
     end
   rescue
-    puts "Error getinvite"
+    puts "Error getinvite #{Time.now}"
   end
 end
 
@@ -219,7 +219,7 @@ def matchUrl(url)
       getinvite(url)
     end
   rescue
-    puts "Error match url"
+    puts "Error match url #{Time.now}"
   end
 end
 
@@ -244,7 +244,7 @@ def getForum
         end
       end
     rescue
-      puts "Error forum"
+      puts "Error forum #{Time.now}"
     end
     sleep 1
   end
@@ -262,14 +262,14 @@ def urlTwitter(urls)
       end
     end
   rescue
-    puts "Error get url from twitter stream"
+    puts "Error get url from twitter stream #{Time.now}"
   end
 end
 
 def getTwitter
   begin
     TweetStream::Client.new.on_error do |message|
-      puts "Error twitter stream"
+      puts "Error twitter stream #{Time.now}"
       puts message
     end.track('oneplus') do |status|
       if (status.text.match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
@@ -290,7 +290,7 @@ def getTwitter
                               :token => ENV['PUSHOVER_TOKEN'],
                               :user => ENV['PUSHOVER_USER'],
                               :title => "OnePlus",
-                              :message => "Error login #{@us.email}"
+                              :message => "Error login #{@us.email} #{Time.now}"
                             })
           res = Net::HTTP.new(urlp.host, urlp.port)
           res.use_ssl = true
@@ -311,7 +311,7 @@ def getTwitter
       end
     end
   rescue
-    puts "Error TWITTER"
+    puts "Error TWITTER #{Time.now}"
   end
 end
 
