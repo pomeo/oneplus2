@@ -90,6 +90,7 @@ end
 
 def getinvite(url)
   begin
+    puts url
     @a.get(url) do |m|
       if (m.uri.to_s.match(/(invites.oneplus.net\/claim\/GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
         puts url
