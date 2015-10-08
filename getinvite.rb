@@ -189,7 +189,7 @@ def getinvite(url)
           end
         end
       else
-        puts "Wrong url #{Time.now}"
+        puts "Wrong url #{Time.now}\n#{url}"
       end
     end
   rescue => e
