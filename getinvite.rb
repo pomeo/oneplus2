@@ -65,8 +65,8 @@ begin
       f.password   = @us.password
     end.click_button
   end
-rescue
- puts "Error FORM #{@us.email} #{Time.now}"
+rescue => e
+  STDERR.puts "Error FORM #{@us.email} #{Time.now}\n#{e}"
 end
 
 puts @a.page.title
@@ -90,7 +90,6 @@ end
 
 def getinvite(url)
   begin
-    puts url
     @a.get(url) do |m|
       if (m.uri.to_s.match(/(invites.oneplus.net\/claim\/GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
         puts url
@@ -167,8 +166,8 @@ def getinvite(url)
                   end.click_button
                 end
                 puts "#{@us.email} #{@a.page.title} #{Time.now}"
-              rescue
-                puts "Error FORM #{@us.email} #{Time.now}"
+              rescue => e
+                STDERR.puts "Error FORM #{@us.email} #{Time.now}\n#{e}"
               end
               if @a.page.title != 'Edit User Information - OnePlus Account'
                 urlp = URI.parse('https://api.pushover.net/1/messages.json')
@@ -193,8 +192,8 @@ def getinvite(url)
         puts "Wrong url #{Time.now}"
       end
     end
-  rescue
-    puts "Error getinvite #{Time.now}"
+  rescue => e
+    STDERR.puts "Error getinvite #{Time.now}\n#{e}"
   end
 end
 
@@ -219,8 +218,8 @@ def matchUrl(url)
     elsif (url.match(/lnkd.in/i))
       getinvite(url)
     end
-  rescue
-    puts "Error match url #{Time.now}"
+  rescue => e
+    STDERR.puts "Error match url #{Time.now}\n#{e}"
   end
 end
 
@@ -244,8 +243,8 @@ def getForum
           matchUrl(u)
         end
       end
-    rescue
-      puts "Error forum #{Time.now}"
+    rescue => e
+      STDERR.puts "Error forum #{Time.now}\n#{e}"
     end
     sleep 1
   end
@@ -262,8 +261,8 @@ def urlTwitter(urls)
         matchUrl(url)
       end
     end
-  rescue
-    puts "Error get url from twitter stream #{Time.now}"
+  rescue => e
+    STDERR.puts "Error get url from twitter stream #{Time.now}\n#{e}"
   end
 end
 
@@ -311,8 +310,8 @@ def getTwitter
         puts @count
       end
     end
-  rescue
-    puts "Error TWITTER #{Time.now}"
+  rescue => e
+    STDERR.puts "Error TWITTER #{Time.now}\n#{e}"
   end
 end
 
