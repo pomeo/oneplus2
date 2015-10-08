@@ -126,7 +126,7 @@ def getinvite(url)
                 end.click_button
               end
               @a.get('https://invites.oneplus.net/my-invites')
-              puts @a.page.title
+              puts "#{@us.email} #{@a.page.title} #{Time.now}"
             end
             inv = Array.new
             app.search('.invite-card').each do |invite|
@@ -165,6 +165,7 @@ def getinvite(url)
                     f.password   = @us.password
                   end.click_button
                 end
+                puts "#{@us.email} #{@a.page.title} #{Time.now}"
               rescue
                 puts "Error FORM #{@us.email}"
               end
@@ -233,6 +234,7 @@ def getForum
         if (item['encoded'][0].match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
           m = item['encoded'][0].match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
           t = 'https://invites.oneplus.net/claim/%s' % m
+          @t1 = Time.now
           getinvite(t)
         end
         urls = URI.extract(item['encoded'][0], ['http', 'https'])
@@ -272,6 +274,7 @@ def getTwitter
     end.track('oneplus') do |status|
       if (status.text.match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
         t = 'https://invites.oneplus.net/claim/%s' % status.text.match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
+        @t1 = Time.now
         getinvite(t)
       end
       urls = URI.extract(status.text, ['http', 'https'])
