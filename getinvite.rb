@@ -96,9 +96,11 @@ def getinvite(url)
         if (m.at('p.h3.text-left.text-red').text.strip == 'You entered an invalid invite')
           puts "Used invite"
         else
-          @t2 = Time.now
-          @delta = @t2 - @t1
-          puts "Time #{@delta}"
+          if !@t1.nil?
+            @t2 = Time.now
+            @delta = @t2 - @t1
+            puts "Time #{@delta}"
+          end
           puts m.uri.to_s
           puts m.title
           @a.get('https://invites.oneplus.net/my-invites') do |app|
