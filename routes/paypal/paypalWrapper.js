@@ -32,7 +32,7 @@ fs.readdirSync(modelsPath).forEach(function(file) {
 });
 
 const redirect = process.env.NODE_ENV === 'development' ?
-        'http://10.38.38.200' : 'http://oneinvites.com';
+        'http://10.38.38.200' : 'https://oneinvites.com';
 
 paypal.configure({
   'mode': process.env.NODE_ENV === 'development' ? 'sandbox' : 'live',
