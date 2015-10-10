@@ -149,7 +149,7 @@ def getinvite(url)
                                     :token => ENV['PUSHOVER_TOKEN'],
                                     :user => ENV['PUSHOVER_USER'],
                                     :title => "#{d[0].title}",
-                                    :message => "#{@us.email}\n#{left}\n#{@delta}"
+                                    :message => "#{@us.email}\n#{left}"
                                   })
                 res = Net::HTTP.new(urlp.host, urlp.port)
                 res.use_ssl = true
@@ -273,7 +273,7 @@ def getTwitter
     TweetStream::Client.new.on_error do |message|
       puts "Error twitter stream #{Time.now}"
       puts message
-    end.track('oneplus') do |status|
+    end.track('oneplus', 'onepl.us') do |status|
       if (status.text.match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
         t = 'https://invites.oneplus.net/claim/%s' % status.text.match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
         @t1 = Time.now
