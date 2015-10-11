@@ -13,10 +13,19 @@ const jobs     = io.createQueue({
   }
 });
 const fs       = require('fs');
-const bcrypt   = require('bcrypt');
 const multer   = require('multer');
 const upload   = multer();
 const winston  = require('winston');
+const paypal   = require('paypal-rest-sdk');
+const redirect = process.env.NODE_ENV === 'development' ?
+        'http://10.38.38.200' : 'https://oneinvites.com';
+const _url     = require('url');
+const push     = require('pushover-notifications');
+
+let p = new push({
+  user: process.env.PUSHOVER_USER,
+  token: process.env.PUSHOVER_TOKEN
+});
 
 let logger;
 
@@ -37,6 +46,12 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
+paypal.configure({
+  'mode': process.env.NODE_ENV === 'development' ? 'sandbox' : 'live',
+  'client_id': process.env.PAYPALCLIENTID,
+  'client_secret': process.env.PAYPALSECRET
+});
+
 const modelsPath = __dirname + '/../models';
 fs.readdirSync(modelsPath).forEach(function(file) {
   if (~file.indexOf('js')) {
@@ -47,6 +62,7 @@ fs.readdirSync(modelsPath).forEach(function(file) {
 let Emails = mongoose.model('EmailsForInvites');
 let Acc = mongoose.model('EmailsAccounts');
 let Mails = mongoose.model('Mails');
+let Payments = mongoose.model('Payments');
 
 let pp = require('./paypal/paypalWrapper');
 
@@ -173,6 +189,187 @@ router.get('/logout', (req, res) => {
   }
 });
 
+router.get('/buy1', (req, res) => {
+  Acc.count({
+    type: 1,
+    invite: false,
+    sell: false
+  }).exec((err, count) => {
+    if (err) {
+      log(err, 'error');
+      res.sendStatus(500);
+    } else {
+      if (count === 0) {
+        res.send('Accounts not available');
+      } else {
+        let create_payment_json = {
+          'intent': 'sale',
+          'payer': {
+            'payment_method': 'paypal'
+          },
+          'redirect_urls': {
+            'return_url': redirect + '/return',
+            'cancel_url': redirect + '/cancel'
+          },
+          'transactions': [{
+            'item_list': {
+              'items': [{
+                'name': 'Invite with account',
+                'sku': 'type1',
+                'price': '2.00',
+                'currency': 'RUB',
+                'quantity': 1
+              }]
+            },
+            'amount': {
+              'currency': 'RUB',
+              'total': '2.00'
+            },
+            'description': 'This is the payment description.'
+          }]
+        };
+
+        paypal.payment.create(create_payment_json, (error, payment) => {
+          if (error) {
+            log(error, 'error');
+            res.sendStatus(500);
+          } else {
+            log('Create Payment Response');
+            log(payment);
+            payment.links.forEach((pay) => {
+              if (pay.method === 'REDIRECT') {
+                let p = new Payments({
+                  paymentId: payment.id,
+                  state: payment.state,
+                  token: _url.parse(payment.links[1].href, true).query.token,
+                  notes: 'create_time: ' + payment.create_time,
+                  created_at: new Date(),
+                  updated_at: new Date()
+                });
+                p.save(err => {
+                  if (err) {
+                    log(err, 'error');
+                    res.sendStatus(500);
+                  } else {
+                    res.redirect(pay.href);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    }
+  });
+});
+
+router.get('/return', (req, res) => {
+  Payments.findOne({
+    paymentId: req.query.paymentId,
+    token: req.query.token
+  }, (err, payment) => {
+    if (err) {
+      log(err, 'error');
+      res.sendStatus(500);
+    } else {
+      if (_.isNull(payment)) {
+        res.send('Payment not found');
+      } else {
+        if ((payment.state === 'done') || (payment.state === 'cancel')) {
+          res.send('Already payed');
+        } else {
+          paypal.payment.get(payment.paymentId, (error, paym) => {
+            if (error) {
+              log(error, 'error');
+              res.sendStatus(500);
+            } else {
+              log('Get Payment Response');
+              payment.PayerID = req.query.PayerID;
+              payment.updated_at = new Date();
+              payment.email = paym.payer['payer_info'].email;
+              payment.state = 'done';
+              payment.notes = payment.notes + '\n Payment done';
+              payment.save(err => {
+                if (err) {
+                  log(err, 'error');
+                  res.sendStatus(500);
+                } else {
+                  Acc.count({
+                    password: {
+                      $exists: false
+                    },
+                    sell: false,
+                    invite: false
+                  }).exec((err, count) => {
+                    let random = Math.floor(Math.random() * count);
+                    Acc.findOne({
+                      password: {
+                        $exists: false
+                      },
+                      sell: false,
+                      invite: false
+                    }).skip(random).exec((err, result) => {
+                      if (err) {
+                        log(err, 'error');
+                        res.sendStatus(500);
+                      } else {
+                        let msg = {
+                          title: 'OneInvites',
+                          message: '+2$'
+                        };
+                        p.send(msg, function(err, result) {
+                          if (err) {
+                            log(err, 'error');
+                          } else {
+                            log(result);
+                          }
+                        });
+                        res.redirect(redirect + '/mail/' + result.urlhash);
+                      }
+                    });
+                  });
+                }
+              });
+            }
+          });
+        }
+      }
+    }
+  });
+});
+
+router.get('/cancel', (req, res) => {
+  Payments.findOne({
+    token: req.query.token
+  }, (err, payment) => {
+    if (err) {
+      log(err, 'error');
+      res.sendStatus(500);
+    } else {
+      if (_.isNull(payment)) {
+        res.send('Payment not found');
+      } else {
+        log('Get Payment Response');
+        payment.updated_at = new Date();
+        payment.state = 'cancel';
+        payment.notes = payment.notes + '\n Payment cancel';
+        payment.save(err => {
+          if (err) {
+            log(err, 'error');
+            res.sendStatus(500);
+          } else {
+            res.redirect('/');
+          }
+        });
+      }
+    }
+  });
+});
+
+router.get('/faq', (req, res) => {
+  res.render('store');
+});
+
 router.get('/mail', (req, res) => {
   res.redirect('/');
 });
@@ -189,19 +386,35 @@ router.get('/mail/:hash', (req, res) => {
       if (_.isNull(acc)) {
         res.send('Error');
       } else {
-        let M = Mails.find({to: acc.email});
-        M.sort({created_at: -1});
-        M.limit(50);
-        M.exec((err, emails) => {
+        acc.sell = true;
+        acc.save(err => {
           if (err) {
-            log(err);
-            res.send('Error');
+            log(err, 'error');
+            res.sendStatus(500);
           } else {
-            res.render('mail', {
-              login: acc.email,
-              password: acc.password,
-              hash: acc.urlhash,
-              emails: emails
+            let M = Mails.find({to: acc.email});
+            M.sort({created_at: -1});
+            M.limit(50);
+            M.exec((err, emails) => {
+              if (err) {
+                log(err);
+                res.send('Error');
+              } else {
+                if (acc.type === 0) {
+                  res.render('mail', {
+                    login: acc.email,
+                    password: acc.password,
+                    hash: acc.urlhash,
+                    emails: emails
+                  });
+                } else {
+                  res.render('mail', {
+                    login: acc.email,
+                    hash: acc.urlhash,
+                    emails: emails
+                  });
+                }
+              }
             });
           }
         });
