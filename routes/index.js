@@ -217,12 +217,12 @@ router.get('/buy1', (req, res) => {
                 'name': 'Invite with account',
                 'sku': 'type1',
                 'price': '2.00',
-                'currency': 'RUB',
+                'currency': 'USD',
                 'quantity': 1
               }]
             },
             'amount': {
-              'currency': 'RUB',
+              'currency': 'USD',
               'total': '2.00'
             },
             'description': 'This is the payment description.'
