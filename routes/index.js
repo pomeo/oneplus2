@@ -295,6 +295,7 @@ router.get('/return', (req, res) => {
                   res.sendStatus(500);
                 } else {
                   Acc.count({
+                    type: 1,
                     password: {
                       $exists: false
                     },
@@ -303,6 +304,7 @@ router.get('/return', (req, res) => {
                   }).exec((err, count) => {
                     let random = Math.floor(Math.random() * count);
                     Acc.findOne({
+                      type: 1,
                       password: {
                         $exists: false
                       },
