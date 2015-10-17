@@ -481,10 +481,17 @@ router.post('/webhook', upload.array(), (req, res, next) => {
   }
 });
 
-router.get('/create', (req, res) => {
-  // jobs.create('check', {
-  //   count: 1
-  // }).delay(2000).priority('normal').removeOnComplete(true).save();
+router.post('/webhook/callback', (req, res) => {
+  log('WebhookPost: ' + req.params);
+  res.sendStatus(200);
+});
+
+router.get('/webhook/callback', (req, res) => {
+  log('WebhookGet: ' + req.query);
+  res.sendStatus(200);
+});
+
+router.get('/check', (req, res) => {
   res.sendStatus(200);
 });
 
