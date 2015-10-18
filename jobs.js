@@ -213,7 +213,7 @@ agenda.define('check payment', (job, done) => {
   });
 });
 
-agenda.every('5 minutes', 'check payment');
+//agenda.every('5 minutes', 'check payment');
 
 agenda.every('1 hour', 'check emails for invites');
 
