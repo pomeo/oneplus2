@@ -25,6 +25,9 @@ const vm          = require('vm');
 const path        = require('path');
 const util        = require('util');
 const winston     = require('winston');
+const paypal   = require('paypal-rest-sdk');
+const redirect = process.env.NODE_ENV === 'development' ?
+        'http://10.38.38.200' : 'https://oneinvites.com';
 
 let p = new push({
   user: process.env.PUSHOVER_USER,
@@ -56,6 +59,12 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
+paypal.configure({
+  'mode': process.env.NODE_ENV === 'development' ? 'sandbox' : 'live',
+  'client_id': process.env.PAYPALCLIENTID,
+  'client_secret': process.env.PAYPALSECRET
+});
+
 const modelsPath = __dirname + '/models';
 fs.readdirSync(modelsPath).forEach(function(file) {
   if (~file.indexOf('js')) {
@@ -66,6 +75,7 @@ fs.readdirSync(modelsPath).forEach(function(file) {
 let Mails = mongoose.model('Mails');
 let EmailsAccounts = mongoose.model('EmailsAccounts');
 let EmailsForInvites = mongoose.model('EmailsForInvites');
+let Payments = mongoose.model('Payments');
 
 jobs.promote(1500, 1);
 
@@ -144,6 +154,66 @@ agenda.define('check emails for invites', (job, done) => {
     }
   });
 });
+
+agenda.define('check payment', (job, done) => {
+  Payments.find({
+    state:'done',
+    PayerID: {
+      $ne: null
+    }
+  }, (err, payments) => {
+    if (err) {
+      log(err, 'error');
+      done();
+    } else {
+      async.each(payments, function(payment, callback) {
+        let execute_payment_json = {
+          'payer_id': payment.PayerID,
+          'transactions': [{
+            'amount': {
+              'currency': 'USD',
+              'total': '2.00'
+            }
+          }]
+        };
+
+        let paymentId = payment.paymentId;
+
+        paypal.payment.execute(paymentId, execute_payment_json, (error, pa) => {
+          if (error) {
+            log(error.response, 'error');
+            callback();
+          } else {
+            log('Get Payment Response');
+            log(JSON.stringify(pa));
+            Payments.findOne({_id: payment._id}, (err, paym) => {
+              paym.state = pa.state;
+              paym.save((err) => {
+                if (err) {
+                  log(err, 'error');
+                  callback();
+                } else {
+                  log('Post paypal ');
+                  callback();
+                }
+              });
+            });
+          }
+        });
+      }, function(e) {
+        if (e) {
+          log(e, 'error');
+          done();
+        } else {
+          log('Check all paypal');
+          done();
+        }
+      });
+    }
+  });
+});
+
+agenda.every('5 minutes', 'check payment');
 
 agenda.every('1 hour', 'check emails for invites');
 
