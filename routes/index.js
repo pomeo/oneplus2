@@ -189,183 +189,96 @@ router.get('/logout', (req, res) => {
   }
 });
 
-// router.get('/buy1', (req, res) => {
-//   Acc.count({
-//     type: 1,
-//     invite: false,
-//     sell: false
-//   }).exec((err, count) => {
-//     if (err) {
-//       log(err, 'error');
-//       res.sendStatus(500);
-//     } else {
-//       if (count === 0) {
-//         res.send('Accounts not available');
-//       } else {
-//         let create_payment_json = {
-//           'intent': 'sale',
-//           'payer': {
-//             'payment_method': 'paypal'
-//           },
-//           'redirect_urls': {
-//             'return_url': redirect + '/return',
-//             'cancel_url': redirect + '/cancel'
-//           },
-//           'transactions': [{
-//             'item_list': {
-//               'items': [{
-//                 'name': 'Invite with account',
-//                 'sku': 'type1',
-//                 'price': '2.00',
-//                 'currency': 'USD',
-//                 'quantity': 1
-//               }]
-//             },
-//             'amount': {
-//               'currency': 'USD',
-//               'total': '2.00'
-//             },
-//             'description': 'This is the payment description.'
-//           }]
-//         };
-
-//         paypal.payment.create(create_payment_json, (error, payment) => {
-//           if (error) {
-//             log(error, 'error');
-//             res.sendStatus(500);
-//           } else {
-//             log('Create Payment Response');
-//             log(payment);
-//             payment.links.forEach((pay) => {
-//               if (pay.method === 'REDIRECT') {
-//                 let p = new Payments({
-//                   paymentId: payment.id,
-//                   state: payment.state,
-//                   token: _url.parse(payment.links[1].href, true).query.token,
-//                   notes: 'create_time: ' + payment.create_time,
-//                   created_at: new Date(),
-//                   updated_at: new Date()
-//                 });
-//                 p.save(err => {
-//                   if (err) {
-//                     log(err, 'error');
-//                     res.sendStatus(500);
-//                   } else {
-//                     res.redirect(pay.href);
-//                   }
-//                 });
-//               }
-//             });
-//           }
-//         });
-//       }
-//     }
-//   });
-// });
-
-router.get('/return', (req, res) => {
-  Payments.findOne({
-    paymentId: req.query.paymentId,
-    token: req.query.token
-  }, (err, payment) => {
+router.get('/buy1', (req, res) => {
+  Acc.count({
+    type: 1,
+    invite: false,
+    sell: false
+  }).exec((err, count) => {
     if (err) {
       log(err, 'error');
       res.sendStatus(500);
     } else {
-      if (_.isNull(payment)) {
-        res.send('Payment not found');
+      if (count === 0) {
+        res.send('Accounts not available');
       } else {
-        if ((payment.state === 'done') || (payment.state === 'cancel')) {
-          res.send('Already payed');
-        } else {
-          paypal.payment.get(payment.paymentId, (error, paym) => {
-            if (error) {
-              log(error, 'error');
-              res.sendStatus(500);
-            } else {
-              log('Get Payment Response');
-              payment.PayerID = req.query.PayerID;
-              payment.updated_at = new Date();
-              payment.email = paym.payer['payer_info'].email;
-              payment.state = 'done';
-              payment.notes = payment.notes + '\n Payment done';
-              payment.save(err => {
-                if (err) {
-                  log(err, 'error');
-                  res.sendStatus(500);
-                } else {
-                  Acc.count({
-                    type: 1,
-                    password: {
-                      $exists: false
-                    },
-                    sell: false,
-                    invite: false
-                  }).exec((err, count) => {
-                    let random = Math.floor(Math.random() * count);
-                    Acc.findOne({
-                      type: 1,
-                      password: {
-                        $exists: false
-                      },
-                      sell: false,
-                      invite: false
-                    }).skip(random).exec((err, result) => {
-                      if (err) {
-                        log(err, 'error');
-                        res.sendStatus(500);
-                      } else {
-                        let msg = {
-                          title: 'OneInvites',
-                          message: '+2$'
-                        };
-                        p.send(msg, function(err, result) {
-                          if (err) {
-                            log(err, 'error');
-                          } else {
-                            log(result);
-                          }
-                        });
-                        res.redirect(redirect + '/mail/' + result.urlhash);
-                      }
-                    });
-                  });
-                }
-              });
-            }
-          });
-        }
-      }
-    }
-  });
-});
+        let create_payment_json = {
+          'intent': 'sale',
+          'payer': {
+            'payment_method': 'paypal'
+          },
+          'redirect_urls': {
+            'return_url': redirect + '/return',
+            'cancel_url': redirect + '/cancel'
+          },
+          'transactions': [{
+            'item_list': {
+              'items': [{
+                'name': 'Global invite with account',
+                'sku': 'type1',
+                'price': '2.00',
+                'currency': 'USD',
+                'quantity': 1
+              }]
+            },
+            'amount': {
+              'currency': 'USD',
+              'total': '2.00'
+            },
+            'description': 'Global invite with account to buy OnePlus Two'
+          }]
+        };
 
-router.get('/cancel', (req, res) => {
-  Payments.findOne({
-    token: req.query.token
-  }, (err, payment) => {
-    if (err) {
-      log(err, 'error');
-      res.sendStatus(500);
-    } else {
-      if (_.isNull(payment)) {
-        res.send('Payment not found');
-      } else {
-        log('Get Payment Response');
-        payment.updated_at = new Date();
-        payment.state = 'cancel';
-        payment.notes = payment.notes + '\n Payment cancel';
-        payment.save(err => {
-          if (err) {
-            log(err, 'error');
+        paypal.payment.create(create_payment_json, (error, payment) => {
+          if (error) {
+            log(error, 'error');
             res.sendStatus(500);
           } else {
-            res.redirect('/');
+            log('Create Payment Response');
+            log(payment);
+            payment.links.forEach((pay) => {
+              if (pay.method === 'REDIRECT') {
+                let p = new Payments({
+                  paymentId: payment.id,
+                  state: payment.state,
+                  invite: false,
+                  created_at: new Date(),
+                  updated_at: new Date()
+                });
+                p.save(err => {
+                  if (err) {
+                    log(err, 'error');
+                    res.sendStatus(500);
+                  } else {
+                    res.redirect(pay.href);
+                  }
+                });
+              }
+            });
           }
         });
       }
     }
   });
+});
+
+router.get('/return', (req, res) => {
+  if (_.isEmpty(req.query.PayerID) ||
+     _.isEmpty(req.query.paymentId) ||
+     _.isUndefined(req.query.PayerID) ||
+     _.isUndefined(req.query.paymentId)) {
+    res.send('Error in query');
+  } else {
+    jobs.create('paypal', {
+      paymentId: req.query.paymentId,
+      PayerID: req.query.PayerID
+    }).priority('normal').removeOnComplete(true).save();
+    res.render('return');
+  }
+});
+
+router.get('/cancel', (req, res) => {
+  res.redirect('/');
 });
 
 router.get('/faq', (req, res) => {
@@ -482,7 +395,7 @@ router.post('/webhook', upload.array(), (req, res, next) => {
 });
 
 router.post('/webhook/callback', (req, res) => {
-  log('WebhookPost: ' + JSON.stringify(req.params));
+  log('WebhookPost: ' + JSON.stringify(req.body));
   res.sendStatus(200);
 });
 
@@ -491,8 +404,80 @@ router.get('/webhook/callback', (req, res) => {
   res.sendStatus(200);
 });
 
-router.get('/check', (req, res) => {
-  res.sendStatus(200);
+router.post('/check', (req, res) => {
+  if (_.isNull(req.body.paymentId) || _.isEmpty(req.body.paymentId)) {
+    res.send('Error');
+  } else {
+    Payments.findOne({
+      paymentId: req.body.paymentId
+    }, (err, payment) => {
+      if (err) {
+        log(err, 'error');
+        res.sendStatus(200);
+      } else {
+        if (payment.state === 'approved') {
+          if (payment.invite === true) {
+            log(req.body.paymentId + ' already has invite');
+            res.sendStatus(200);
+          } else {
+            Acc.count({
+              type: 1,
+              password: {
+                $exists: false
+              },
+              sell: false,
+              invite: false
+            }).exec((err, count) => {
+              let random = Math.floor(Math.random() * count);
+              Acc.findOne({
+                type: 1,
+                password: {
+                  $exists: false
+                },
+                sell: false,
+                invite: false
+              }).skip(random).exec((err, result) => {
+                if (err) {
+                  log(err, 'error');
+                  res.sendStatus(200);
+                } else {
+                  if (_.isNull(result)) {
+                    log('End accounts');
+                    res.sendStatus(200);
+                  } else {
+                    let msg = {
+                      title: 'OneInvites',
+                      message: '+2$'
+                    };
+                    p.send(msg, function(err, result) {
+                      if (err) {
+                        log(err, 'error');
+                      } else {
+                        log(result);
+                      }
+                    });
+                    payment.invite = true;
+                    payment.save(err => {
+                      if (err) {
+                        log(err, 'error');
+                        res.sendStatus(200);
+                      } else {
+                        res.json({
+                          url: redirect + '/mail/' + result.urlhash
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            });
+          }
+        } else {
+          res.sendStatus(200);
+        }
+      }
+    });
+  }
 });
 
 module.exports = router;
