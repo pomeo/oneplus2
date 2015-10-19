@@ -213,7 +213,47 @@ agenda.define('check payment', (job, done) => {
   });
 });
 
+agenda.define('check old invites', (job, done) => {
+  EmailsAccounts.find({
+    end: {
+      $lt: moment().add(1, 'h').unix()
+    }
+  }, (err, accounts) => {
+    if (err) {
+      log(err, 'error');
+      done();
+    } else {
+      async.each(accounts, function(account, callback) {
+        EmailsAccounts.findOne({
+          _id: account._id
+        }, (err, acc) => {
+          acc.type = 3;
+          acc.save((err) => {
+            if (err) {
+              log(err, 'error');
+              callback();
+            } else {
+              log('Type 1 -> 3 ' + acc.email);
+              callback();
+            }
+          });
+        });
+      }, function(e) {
+        if (e) {
+          log(e, 'error');
+          done();
+        } else {
+          log('Check all old invites');
+          done();
+        }
+      });
+    }
+  });
+});
+
 //agenda.every('5 minutes', 'check payment');
+
+agenda.every('5 minutes', 'check old invites');
 
 agenda.every('1 hour', 'check emails for invites');
 
