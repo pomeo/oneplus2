@@ -482,12 +482,12 @@ router.post('/webhook', upload.array(), (req, res, next) => {
 });
 
 router.post('/webhook/callback', (req, res) => {
-  log('WebhookPost: ' + req.params);
+  log('WebhookPost: ' + JSON.stringify(req.params));
   res.sendStatus(200);
 });
 
 router.get('/webhook/callback', (req, res) => {
-  log('WebhookGet: ' + req.query);
+  log('WebhookGet: ' + JSON.stringify(req.query));
   res.sendStatus(200);
 });
 
