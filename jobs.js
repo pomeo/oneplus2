@@ -357,6 +357,10 @@ jobs.process('paypal', function(job, done) {
         Payments.findOne({paymentId: job.data.paymentId}, (err, paym) => {
           paym.state = pa.state;
           paym.notes = JSON.stringify(pa);
+          if (!_.isUndefined(pa.payer)) {
+            paym.email = pa.payer['payer_info'].email;
+          }
+          paym.PayerID = job.data.PayerID;
           paym.save((err) => {
             if (err) {
               log(err, 'error');
