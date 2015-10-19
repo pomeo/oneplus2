@@ -221,7 +221,22 @@ agenda.define('check payment', {
           paypal.payment.get(paymentId, (error, paym) => {
             if (error) {
               log(error);
-              callback();
+              Payments.findOne({
+                paymentId: paymentId
+              }, (err, pay) => {
+                pay.state = 'error';
+                pay.notes = JSON.stringify(error);
+                pay.updated_at = new Date();
+                pay.save(err => {
+                  if (err) {
+                    log(err, 'error');
+                    callback();
+                  } else {
+                    log('Error ' + paymentId);
+                    callback();
+                  }
+                });
+              });
             } else {
               log('Get Payment Response');
               log(JSON.stringify(paym));
