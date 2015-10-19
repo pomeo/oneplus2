@@ -155,63 +155,63 @@ agenda.define('check emails for invites', (job, done) => {
   });
 });
 
-agenda.define('check payment', (job, done) => {
-  Payments.find({
-    state:'done',
-    PayerID: {
-      $ne: null
-    }
-  }, (err, payments) => {
-    if (err) {
-      log(err, 'error');
-      done();
-    } else {
-      async.each(payments, function(payment, callback) {
-        let execute_payment_json = {
-          'payer_id': payment.PayerID,
-          'transactions': [{
-            'amount': {
-              'currency': 'USD',
-              'total': '2.00'
-            }
-          }]
-        };
+// agenda.define('check payment', (job, done) => {
+//   Payments.find({
+//     state:'done',
+//     PayerID: {
+//       $ne: null
+//     }
+//   }, (err, payments) => {
+//     if (err) {
+//       log(err, 'error');
+//       done();
+//     } else {
+//       async.each(payments, function(payment, callback) {
+//         let execute_payment_json = {
+//           'payer_id': payment.PayerID,
+//           'transactions': [{
+//             'amount': {
+//               'currency': 'USD',
+//               'total': '2.00'
+//             }
+//           }]
+//         };
 
-        let paymentId = payment.paymentId;
+//         let paymentId = payment.paymentId;
 
-        paypal.payment.execute(paymentId, execute_payment_json, (error, pa) => {
-          if (error) {
-            log(error.response, 'error');
-            callback();
-          } else {
-            log('Get Payment Response');
-            log(JSON.stringify(pa));
-            Payments.findOne({_id: payment._id}, (err, paym) => {
-              paym.state = pa.state;
-              paym.save((err) => {
-                if (err) {
-                  log(err, 'error');
-                  callback();
-                } else {
-                  log('Post paypal ');
-                  callback();
-                }
-              });
-            });
-          }
-        });
-      }, function(e) {
-        if (e) {
-          log(e, 'error');
-          done();
-        } else {
-          log('Check all paypal');
-          done();
-        }
-      });
-    }
-  });
-});
+//         paypal.payment.execute(paymentId, execute_payment_json, (error, pa) => {
+//           if (error) {
+//             log(error.response, 'error');
+//             callback();
+//           } else {
+//             log('Get Payment Response');
+//             log(JSON.stringify(pa));
+//             Payments.findOne({_id: payment._id}, (err, paym) => {
+//               paym.state = pa.state;
+//               paym.save((err) => {
+//                 if (err) {
+//                   log(err, 'error');
+//                   callback();
+//                 } else {
+//                   log('Post paypal ');
+//                   callback();
+//                 }
+//               });
+//             });
+//           }
+//         });
+//       }, function(e) {
+//         if (e) {
+//           log(e, 'error');
+//           done();
+//         } else {
+//           log('Check all paypal');
+//           done();
+//         }
+//       });
+//     }
+//   });
+// });
 
 agenda.define('check old invites', (job, done) => {
   EmailsAccounts.find({
