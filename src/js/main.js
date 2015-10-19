@@ -1,3 +1,3 @@
 'use strict';
-import './first.js';
+import './check.js';
 import './reg.js';
