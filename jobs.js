@@ -215,7 +215,8 @@ agenda.define('check emails for invites', (job, done) => {
 
 agenda.define('check old invites', (job, done) => {
   EmailsAccounts.find({
-    end: {
+    type : 1,
+    end : {
       $lt: moment().add(1, 'h').unix()
     }
   }, (err, accounts) => {
