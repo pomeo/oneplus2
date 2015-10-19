@@ -13,14 +13,14 @@ mixin type0desc
 
 mixin type1desc
   td.uk-text-large
-    strong.uk-text-success invite with account
+    strong.uk-text-success Global(NOT INDIA) invite with account
   td.uk-text-large.uk-text-warning #{type1}
   td.uk-text-large.uk-text-danger 2$
     td
       if type1 == 0
         button.uk-button.uk-button-primary(disabled) Buy
       else
-        button.uk-button.uk-button-primary(disabled) Fix bugs
+        a.uk-button.uk-button-primary(href="/buy1") Buy
 
 block content
   div.uk-container.main
