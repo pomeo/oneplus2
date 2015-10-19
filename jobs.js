@@ -123,7 +123,7 @@ agenda.define('post twitter', {
       } else {
         if (count !== 0) {
           T.post('statuses/update', {
-            status: 'oneinvites.com\nAccounts with GLOBAL(not India) invites\nfor only 2$\ninvites.oneplus.net #oneplus2invite #OnePlus2'
+            status: 'oneinvites.com\n' + count + ' accounts with GLOBAL(not India) invites\nfor only 2$\ninvites.oneplus.net #oneplus2invite #OnePlus2'
           }, (err, data, response) => {
             if (err) {
               log(err, 'error');
