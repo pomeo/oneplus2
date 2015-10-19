@@ -25,13 +25,21 @@ const vm          = require('vm');
 const path        = require('path');
 const util        = require('util');
 const winston     = require('winston');
-const paypal   = require('paypal-rest-sdk');
-const redirect = process.env.NODE_ENV === 'development' ?
+const Twit        = require('twit');
+const paypal      = require('paypal-rest-sdk');
+const redirect    = process.env.NODE_ENV === 'development' ?
         'http://10.38.38.200' : 'https://oneinvites.com';
 
 let p = new push({
   user: process.env.PUSHOVER_USER,
   token: process.env.PUSHOVER_TOKEN
+});
+
+const T = new Twit({
+  consumer_key        : process.env.TWITTER_CONSUMER_KEY,
+  consumer_secret     : process.env.TWITTER_CONSUMER_KEY_SECRET,
+  access_token        : process.env.TWITTER_ACCESS_TOKEN,
+  access_token_secret : process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
 
 String.prototype.cleanup = function() {
@@ -97,7 +105,47 @@ let agenda = new Agenda({
   }
 });
 
-agenda.define('check emails for invites', (job, done) => {
+agenda.define('post twitter', {
+  concurrency: 1
+}, (job, done) => {
+  if (process.env.NODE_ENV !== 'development') {
+    EmailsAccounts.count({
+      type: 1,
+      password: {
+        $exists: false
+      },
+      sell: false,
+      invite: false
+    }).exec((err, count) => {
+      if (err) {
+        log(err, 'error');
+        done();
+      } else {
+        if (count !== 0) {
+          T.post('statuses/update', {
+            status: count + ' accounts with GLOBAL(not India) invites\noneinvites.com for only 2$\ninvites.oneplus.net #oneplus2invite #OnePlus2'
+          }, (err, data, response) => {
+            if (err) {
+              log(err, 'error');
+              done();
+            } else {
+              log(data);
+              done();
+            }
+          });
+        } else {
+          done();
+        }
+      }
+    });
+  } else {
+    done();
+  }
+});
+
+agenda.define('check emails for invites', {
+  concurrency: 1
+}, (job, done) => {
   Mails.find({subject:'You’re invited'}, (err, emails) => {
     if (err) {
       log(err, 'error');
@@ -155,65 +203,68 @@ agenda.define('check emails for invites', (job, done) => {
   });
 });
 
-// agenda.define('check payment', (job, done) => {
-//   Payments.find({
-//     state:'done',
-//     PayerID: {
-//       $ne: null
-//     }
-//   }, (err, payments) => {
-//     if (err) {
-//       log(err, 'error');
-//       done();
-//     } else {
-//       async.each(payments, function(payment, callback) {
-//         let execute_payment_json = {
-//           'payer_id': payment.PayerID,
-//           'transactions': [{
-//             'amount': {
-//               'currency': 'USD',
-//               'total': '2.00'
-//             }
-//           }]
-//         };
+agenda.define('check payment', {
+  concurrency: 1,
+  lockLifetime: 5000
+}, (job, done) => {
+  Payments.find({
+    state:'created'
+  }, (err, payments) => {
+    if (err) {
+      log(err, 'error');
+      done();
+    } else {
+      if (!_.isEmpty(payments)) {
+        async.each(payments, (payment, callback) => {
+          let paymentId = payment.paymentId;
 
-//         let paymentId = payment.paymentId;
+          paypal.payment.get(paymentId, (error, paym) => {
+            if (error) {
+              log(error);
+              callback();
+            } else {
+              log('Get Payment Response');
+              log(JSON.stringify(paym));
+              Payments.findOne({
+                paymentId: paymentId
+              }, (err, pay) => {
+                pay.state = paym.state;
+                if (!_.isUndefined(paym.payer)) {
+                  pay.email = paym.payer['payer_info'].email;
+                }
+                pay.notes = JSON.stringify(paym);
+                pay.updated_at = new Date();
+                pay.save(err => {
+                  if (err) {
+                    log(err, 'error');
+                    callback();
+                  } else {
+                    log('Check ' + paymentId);
+                    callback();
+                  }
+                });
+              });
+            }
+          });
+        }, function(e) {
+          if (e) {
+            log(e, 'error');
+            done();
+          } else {
+            log('Check all paypal');
+            done();
+          }
+        });
+      } else {
+        done();
+      }
+    }
+  });
+});
 
-//         paypal.payment.execute(paymentId, execute_payment_json, (error, pa) => {
-//           if (error) {
-//             log(error.response, 'error');
-//             callback();
-//           } else {
-//             log('Get Payment Response');
-//             log(JSON.stringify(pa));
-//             Payments.findOne({_id: payment._id}, (err, paym) => {
-//               paym.state = pa.state;
-//               paym.save((err) => {
-//                 if (err) {
-//                   log(err, 'error');
-//                   callback();
-//                 } else {
-//                   log('Post paypal ');
-//                   callback();
-//                 }
-//               });
-//             });
-//           }
-//         });
-//       }, function(e) {
-//         if (e) {
-//           log(e, 'error');
-//           done();
-//         } else {
-//           log('Check all paypal');
-//           done();
-//         }
-//       });
-//     }
-//   });
-// });
-
-agenda.define('check old invites', (job, done) => {
+agenda.define('check old invites', {
+  concurrency: 1
+}, (job, done) => {
   EmailsAccounts.find({
     type : 1,
     end : {
@@ -252,13 +303,59 @@ agenda.define('check old invites', (job, done) => {
   });
 });
 
-//agenda.every('5 minutes', 'check payment');
+agenda.every('5 seconds', 'check payment');
 
 agenda.every('5 minutes', 'check old invites');
 
 agenda.every('1 hour', 'check emails for invites');
 
+agenda.every('1 hour', 'post twitter');
+
 agenda.start();
+
+jobs.process('paypal', function(job, done) {
+  var domain = require('domain').create();
+  domain.on('error', function(err) {
+    log(err);
+    setImmediate(done);
+  });
+  domain.run(function() {
+    let execute_payment_json = {
+      'payer_id': job.data.PayerID,
+      'transactions': [{
+        'amount': {
+          'currency': 'USD',
+          'total': '2.00'
+        }
+      }]
+    };
+
+    let paymentId = job.data.paymentId;
+
+    paypal.payment.execute(paymentId, execute_payment_json, (error, pa) => {
+      if (error) {
+        log(error.response, 'error');
+        done();
+      } else {
+        log('Get Payment Response');
+        log(JSON.stringify(pa));
+        Payments.findOne({paymentId: job.data.paymentId}, (err, paym) => {
+          paym.state = pa.state;
+          paym.notes = JSON.stringify(pa);
+          paym.save((err) => {
+            if (err) {
+              log(err, 'error');
+              done();
+            } else {
+              log('Post paypal');
+              done();
+            }
+          });
+        });
+      }
+    });
+  });
+});
 
 jobs.process('mail', function(job, done) {
   var domain = require('domain').create();
