@@ -150,7 +150,12 @@ agenda.define('post twitter', {
 agenda.define('check emails for invites', {
   concurrency: 1
 }, (job, done) => {
-  Mails.find({subject:'You’re invited'}, (err, emails) => {
+  Mails.find({
+    subject:'You’re invited',
+    created_at: {
+      $gt: moment().subtract(1, 'day').format()
+    }
+  }, (err, emails) => {
     if (err) {
       log(err, 'error');
       done();
@@ -161,37 +166,50 @@ agenda.define('check emails for invites', {
             log(err, 'error');
             callback();
           } else {
-            EmailsAccounts.findOne({email:em.mail}, (err, acc) => {
-              if (err) {
-                log(err, 'error');
-                callback();
-              } else {
-                if (_.isNull(acc)) {
-                  let account = new EmailsAccounts({
-                    email        : em.mail,
-                    urlhash      : em.hash,
-                    invite       : false,
-                    sell         : false,
-                    start        : moment(email.date).unix(),
-                    end          : moment(email.date).add(24, 'h').unix(),
-                    type         : 1,
-                    updated_at   : new Date(),
-                    created_at   : new Date()
-                  });
-                  account.save((err) => {
-                    if (err) {
-                      log(err, 'error');
+            if (_.isNull(em)) {
+              callback();
+            } else {
+              EmailsAccounts.findOne({email:em.mail}, (err, acc) => {
+                if (err) {
+                  log(err, 'error');
+                  callback();
+                } else {
+                  if (_.isNull(acc)) {
+                    let account = new EmailsAccounts({
+                      email        : em.mail,
+                      urlhash      : em.hash,
+                      invite       : false,
+                      sell         : false,
+                      start        : moment(email.date).unix(),
+                      end          : moment(email.date).add(24, 'h').unix(),
+                      type         : 1,
+                      updated_at   : new Date(),
+                      created_at   : new Date()
+                    });
+                    account.save((err) => {
+                      if (err) {
+                        log(err, 'error');
+                        callback();
+                      } else {
+                        log('Create ' + em.mail);
+                        callback();
+                      }
+                    });
+                  } else {
+                    if (acc.sell === true) {
                       callback();
                     } else {
-                      log('Create ' + em.mail);
-                      callback();
+                      if (acc.start === moment(email.date).unix()) {
+                        callback();
+                      } else {
+                        log(acc.email);
+                        callback();
+                      }
                     }
-                  });
-                } else {
-                  callback();
+                  }
                 }
-              }
-            });
+              });
+            }
           }
         });
       }, function(e) {
