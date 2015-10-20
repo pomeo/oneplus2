@@ -202,8 +202,19 @@ agenda.define('check emails for invites', {
                       if (acc.start === moment(email.date).unix()) {
                         callback();
                       } else {
-                        log(acc.email);
-                        callback();
+                        acc.type = 1;
+                        acc.start = moment(email.date).unix(),
+                        acc.end = moment(email.date).add(24, 'h').unix(),
+                        acc.updated_at = new Date();
+                        acc.save((err) => {
+                          if (err) {
+                            log(err, 'error');
+                            callback();
+                          } else {
+                            log('Update ' + acc.email);
+                            callback();
+                          }
+                        });
                       }
                     }
                   }
