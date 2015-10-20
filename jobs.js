@@ -152,7 +152,7 @@ agenda.define('check emails for invites', {
 }, (job, done) => {
   Mails.find({
     subject:'You’re invited',
-    created_at: {
+    date: {
       $gt: moment().subtract(1, 'day').format()
     }
   }, (err, emails) => {
