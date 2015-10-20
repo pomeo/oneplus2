@@ -340,11 +340,9 @@ agenda.define('check old invites', {
   });
 });
 
-//agenda.every('5 seconds', 'check payment');
-
 agenda.every('5 minutes', 'check old invites');
 
-agenda.every('10 minutes', 'check emails for invites');
+agenda.every('5 minutes', 'check emails for invites');
 
 agenda.every('1 hour', 'post twitter');
 
