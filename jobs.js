@@ -105,6 +105,10 @@ let agenda = new Agenda({
   }
 });
 
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 agenda.define('post twitter', {
   concurrency: 1
 }, (job, done) => {
@@ -123,7 +127,7 @@ agenda.define('post twitter', {
       } else {
         if (count !== 0) {
           T.post('statuses/update', {
-            status: 'oneinvites.com\nAccounts with GLOBAL(not India) invites for only 2$\ninvites.oneplus.net #oneplus2invite #OnePlus2\n' + moment().unix()
+            status: 'oneinvites.com\nAccounts with GLOBAL(not India) invites for only 2$\ninvites.oneplus.net #oneplus2invite #OnePlus2 #OP2Invite\n' + getRandomInt(1,5)
           }, (err, data, response) => {
             if (err) {
               log(err, 'error');
