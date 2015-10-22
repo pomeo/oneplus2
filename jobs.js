@@ -150,18 +150,25 @@ agenda.define('post twitter', {
 agenda.define('check emails for invites', {
   concurrency: 1
 }, (job, done) => {
-  Mails.find({
-    subject:'You’re invited',
-    date: {
-      $gt: moment().subtract(1, 'day').format()
+  Mails.aggregate([{
+    $match: {
+      subject: 'You’re invited',
+      date: {
+        $gt: moment().subtract(24, 'h').toDate()
+      }
     }
-  }, (err, emails) => {
+  }, {
+    $group: {
+      _id: { to: '$to' },
+      date: { $max: '$date' }
+    }
+  }], (err, emails) => {
     if (err) {
       log(err, 'error');
       done();
     } else {
       async.each(emails, function(email, callback) {
-        EmailsForInvites.findOne({mail:email.to}, (err, em) => {
+        EmailsForInvites.findOne({mail:email._id.to}, (err, em) => {
           if (err) {
             log(err, 'error');
             callback();
