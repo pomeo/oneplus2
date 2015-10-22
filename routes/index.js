@@ -13,6 +13,7 @@ const jobs     = io.createQueue({
   }
 });
 const fs       = require('fs');
+const moment   = require('moment');
 const multer   = require('multer');
 const upload   = multer();
 const winston  = require('winston');
