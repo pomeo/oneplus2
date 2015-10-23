@@ -42,7 +42,7 @@ end
 
 $stdout.sync = true
 
-@us = Emailsaccounts.first(:sell => false, :password.not => null, :order => [ :start.asc ])
+@us = Emailsaccounts.first(:sell => false, :password.not => nil, :order => [ :start.asc ])
 puts @us.email
 
 TweetStream.configure do |config|
@@ -158,7 +158,7 @@ def getinvite(url)
                     http.request(req)
                   }
                   @a.get('https://account.oneplus.net/onepluslogout')
-                  @us = Emailsaccounts.first(:sell => false, :password.not => null, :order => [ :start.asc ])
+                  @us = Emailsaccounts.first(:sell => false, :password.not => nil, :order => [ :start.asc ])
                   begin
                     @a.get('https://account.oneplus.net/login') do |login|
                       login.form_with(:action => 'https://account.oneplus.net/login') do |f|
