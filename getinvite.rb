@@ -71,7 +71,7 @@ end
 
 puts @a.page.title
 
-if @a.page.title != 'Edit User Information - OnePlus Account'
+if (@a.page.title != 'Edit User Information - OnePlus Account')
   urlp = URI.parse('https://api.pushover.net/1/messages.json')
   req = Net::HTTP::Post.new(urlp.path)
   req.set_form_data({
@@ -97,7 +97,7 @@ def getinvite(url)
           if (m.at('p.h3.text-left.text-red').text.strip == 'You entered an invalid invite')
             puts "Used invite"
           else
-            if !@t1.nil?
+            if (!@t1.nil?)
               @t2 = Time.now
               @delta = @t2 - @t1
               puts "Time #{@delta}"
@@ -105,7 +105,7 @@ def getinvite(url)
             puts m.uri.to_s
             puts m.title
             @a.get('https://invites.oneplus.net/my-invites') do |app|
-              if @a.page.title != 'My invites'
+              if (@a.page.title != 'My invites')
                 urlp = URI.parse('https://api.pushover.net/1/messages.json')
                 req = Net::HTTP::Post.new(urlp.path)
                 req.set_form_data({
@@ -131,14 +131,14 @@ def getinvite(url)
               else
                 inv = Array.new
                 app.search('.invite-card').each do |invite|
-                  if !invite.at('time').nil?
+                  if (!invite.at('time').nil?)
                     t1 = Time.now
                     t2 = Time.now + invite.at('time')['data-time'].to_i
                     inv.push(Oneplus.new(t1, t2, invite.at('p.card-type').text.strip))
                   end
                 end
                 d = inv.sort { |a,b| b.date_end <=> a.date_end }
-                if !d[0].nil?
+                if (!d[0].nil?)
                   t1 = d[0].date_start.to_i
                   t2 = d[0].date_end.to_i
                   @us.update(:invite => true, :start => t1, :end => t2, :updated_at => Time.now)
@@ -170,7 +170,7 @@ def getinvite(url)
                   rescue => e
                     STDERR.puts "Error FORM #{@us.email} #{Time.now}\n#{e}"
                   end
-                  if @a.page.title != 'Edit User Information - OnePlus Account'
+                  if (@a.page.title != 'Edit User Information - OnePlus Account')
                     urlp = URI.parse('https://api.pushover.net/1/messages.json')
                     req = Net::HTTP::Post.new(urlp.path)
                     req.set_form_data({
