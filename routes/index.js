@@ -190,78 +190,78 @@ router.get('/logout', (req, res) => {
   }
 });
 
-router.get('/buy1', (req, res) => {
-  Acc.count({
-    type: 1,
-    invite: false,
-    sell: false
-  }).exec((err, count) => {
-    if (err) {
-      log(err, 'error');
-      res.sendStatus(500);
-    } else {
-      if (count === 0) {
-        res.send('Accounts not available');
-      } else {
-        let create_payment_json = {
-          'intent': 'sale',
-          'payer': {
-            'payment_method': 'paypal'
-          },
-          'redirect_urls': {
-            'return_url': redirect + '/return',
-            'cancel_url': redirect + '/cancel'
-          },
-          'transactions': [{
-            'item_list': {
-              'items': [{
-                'name': 'Global invite with account',
-                'sku': 'type1',
-                'price': '2.00',
-                'currency': 'USD',
-                'quantity': 1
-              }]
-            },
-            'amount': {
-              'currency': 'USD',
-              'total': '2.00'
-            },
-            'description': 'Global invite with account to buy OnePlus Two'
-          }]
-        };
+// router.get('/buy1', (req, res) => {
+//   Acc.count({
+//     type: 1,
+//     invite: false,
+//     sell: false
+//   }).exec((err, count) => {
+//     if (err) {
+//       log(err, 'error');
+//       res.sendStatus(500);
+//     } else {
+//       if (count === 0) {
+//         res.send('Accounts not available');
+//       } else {
+//         let create_payment_json = {
+//           'intent': 'sale',
+//           'payer': {
+//             'payment_method': 'paypal'
+//           },
+//           'redirect_urls': {
+//             'return_url': redirect + '/return',
+//             'cancel_url': redirect + '/cancel'
+//           },
+//           'transactions': [{
+//             'item_list': {
+//               'items': [{
+//                 'name': 'Global invite with account',
+//                 'sku': 'type1',
+//                 'price': '2.00',
+//                 'currency': 'USD',
+//                 'quantity': 1
+//               }]
+//             },
+//             'amount': {
+//               'currency': 'USD',
+//               'total': '2.00'
+//             },
+//             'description': 'Global invite with account to buy OnePlus Two'
+//           }]
+//         };
 
-        paypal.payment.create(create_payment_json, (error, payment) => {
-          if (error) {
-            log(error, 'error');
-            res.sendStatus(500);
-          } else {
-            log('Create Payment Response');
-            log(payment);
-            payment.links.forEach((pay) => {
-              if (pay.method === 'REDIRECT') {
-                let p = new Payments({
-                  paymentId: payment.id,
-                  state: payment.state,
-                  invite: false,
-                  created_at: new Date(),
-                  updated_at: new Date()
-                });
-                p.save(err => {
-                  if (err) {
-                    log(err, 'error');
-                    res.sendStatus(500);
-                  } else {
-                    res.redirect(pay.href);
-                  }
-                });
-              }
-            });
-          }
-        });
-      }
-    }
-  });
-});
+//         paypal.payment.create(create_payment_json, (error, payment) => {
+//           if (error) {
+//             log(error, 'error');
+//             res.sendStatus(500);
+//           } else {
+//             log('Create Payment Response');
+//             log(payment);
+//             payment.links.forEach((pay) => {
+//               if (pay.method === 'REDIRECT') {
+//                 let p = new Payments({
+//                   paymentId: payment.id,
+//                   state: payment.state,
+//                   invite: false,
+//                   created_at: new Date(),
+//                   updated_at: new Date()
+//                 });
+//                 p.save(err => {
+//                   if (err) {
+//                     log(err, 'error');
+//                     res.sendStatus(500);
+//                   } else {
+//                     res.redirect(pay.href);
+//                   }
+//                 });
+//               }
+//             });
+//           }
+//         });
+//       }
+//     }
+//   });
+// });
 
 router.get('/return', (req, res) => {
   if (_.isEmpty(req.query.PayerID) ||
