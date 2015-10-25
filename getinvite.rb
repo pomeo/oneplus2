@@ -129,6 +129,20 @@ def getinvite(url)
                 @a.get('https://invites.oneplus.net/my-invites')
                 puts "#{@us.email} #{@a.page.title} #{Time.now}"
               else
+                urlp = URI.parse('https://api.pushover.net/1/messages.json')
+                req = Net::HTTP::Post.new(urlp.path)
+                req.set_form_data({
+                                    :token => ENV['PUSHOVER_TOKEN'],
+                                    :user => ENV['PUSHOVER_USER'],
+                                    :title => "OnePlus",
+                                    :message => "000 #{@us.email} #{Time.now}"
+                                  })
+                res = Net::HTTP.new(urlp.host, urlp.port)
+                res.use_ssl = true
+                res.verify_mode = OpenSSL::SSL::VERIFY_PEER
+                res.start { |http|
+                  http.request(req)
+                }
                 inv = Array.new
                 app.search('.invite-card').each do |invite|
                   if (!invite.at('time').nil?)
