@@ -159,7 +159,10 @@ agenda.define('check emails for invites', {
     }
   }, {
     $group: {
-      _id: { to: '$to' },
+      _id: {
+        to: '$to',
+        html: '$html'
+      },
       date: { $max: '$date' }
     }
   }], (err, emails) => {
@@ -181,7 +184,7 @@ agenda.define('check emails for invites', {
                   log(err, 'error');
                   callback();
                 } else {
-                  let $ = cheerio.load(email.html);
+                  let $ = cheerio.load(email._id.html);
                   let hours = +$('b').text();
                   if (_.isNull(acc)) {
                     let account = new EmailsAccounts({
