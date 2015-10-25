@@ -154,7 +154,7 @@ agenda.define('check emails for invites', {
     $match: {
       subject: 'You’re invited',
       date: {
-        $gt: moment().subtract(72, 'h').toDate()
+        $gt: moment().subtract(48, 'h').toDate()
       }
     }
   }, {
