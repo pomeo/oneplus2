@@ -154,14 +154,14 @@ agenda.define('check emails for invites', {
     $match: {
       subject: 'You’re invited',
       date: {
-        $gt: moment().subtract(48, 'h').toDate()
+        $gt: moment().subtract(168, 'h').toDate()
       }
     }
   }, {
     $group: {
       _id: {
-        to: '$to',
-        html: '$html'
+        id: '$_id',
+        to: '$to'
       },
       date: { $max: '$date' }
     }
@@ -170,69 +170,76 @@ agenda.define('check emails for invites', {
       log(err, 'error');
       done();
     } else {
-      async.each(emails, function(email, callback) {
-        EmailsForInvites.findOne({mail:email._id.to}, (err, em) => {
+      async.each(emails, function(m, callback) {
+        Mails.findById(m._id.id, (err, email) => {
           if (err) {
             log(err, 'error');
             callback();
           } else {
-            if (_.isNull(em)) {
-              callback();
-            } else {
-              EmailsAccounts.findOne({email:em.mail}, (err, acc) => {
-                if (err) {
-                  log(err, 'error');
+            EmailsForInvites.findOne({mail:email.to}, (err, em) => {
+              if (err) {
+                log(err, 'error');
+                callback();
+              } else {
+                if (_.isNull(em)) {
                   callback();
                 } else {
-                  let $ = cheerio.load(email._id.html);
-                  let hours = +$('b').text();
-                  if (_.isNull(acc)) {
-                    let account = new EmailsAccounts({
-                      email        : em.mail,
-                      urlhash      : em.hash,
-                      invite       : false,
-                      sell         : false,
-                      start        : moment(email.date).unix(),
-                      end          : moment(email.date).add(hours, 'h').unix(),
-                      type         : 1,
-                      updated_at   : new Date(),
-                      created_at   : new Date()
-                    });
-                    account.save((err) => {
-                      if (err) {
-                        log(err, 'error');
-                        callback();
-                      } else {
-                        log('Create ' + em.mail);
-                        callback();
-                      }
-                    });
-                  } else {
-                    if (acc.sell === true) {
+                  EmailsAccounts.findOne({email:em.mail}, (err, acc) => {
+                    if (err) {
+                      log(err, 'error');
                       callback();
                     } else {
-                      if (acc.start !== moment(email.date).unix()) {
-                        callback();
-                      } else {
-                        acc.type = 1;
-                        acc.start = moment(email.date).unix(),
-                        acc.end = moment(email.date).add(hours, 'h').unix(),
-                        acc.updated_at = new Date();
-                        acc.save((err) => {
+                      let $ = cheerio.load(email.html);
+                      let hours = +$('b').text();
+                      if (_.isNull(acc)) {
+                        let account = new EmailsAccounts({
+                          email        : em.mail,
+                          urlhash      : em.hash,
+                          invite       : false,
+                          sell         : false,
+                          start        : moment(email.date).unix(),
+                          end          : moment(email.date).add(hours, 'h').unix(),
+                          type         : 1,
+                          updated_at   : new Date(),
+                          created_at   : new Date()
+                        });
+                        account.save((err) => {
                           if (err) {
                             log(err, 'error');
                             callback();
                           } else {
-                            log('Update ' + acc.email);
+                            log('Create ' + em.mail);
                             callback();
                           }
                         });
+                      } else {
+                        if (acc.sell === true) {
+                          callback();
+                        } else {
+                          if (acc.start !== moment(email.date).unix()) {
+                            callback();
+                          } else {
+                            acc.type = 1;
+                            acc.start = moment(email.date).unix(),
+                            acc.end = moment(email.date).add(hours, 'h').unix(),
+                            acc.updated_at = new Date();
+                            acc.save((err) => {
+                              if (err) {
+                                log(err, 'error');
+                                callback();
+                              } else {
+                                log('Update ' + acc.email);
+                                callback();
+                              }
+                            });
+                          }
+                        }
                       }
                     }
-                  }
+                  });
                 }
-              });
-            }
+              }
+            });
           }
         });
       }, function(e) {
