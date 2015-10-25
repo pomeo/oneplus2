@@ -244,33 +244,6 @@ def matchUrl(url)
   end
 end
 
-def getForum
-  while true
-    begin
-      xml_data = URI.parse('https://forums.oneplus.net/forums/-/index.rss').read
-
-      data = XmlSimple.xml_in(xml_data)
-
-      data['channel'][0]['item'].each do |item|
-        if (item['encoded'][0].match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
-          m = item['encoded'][0].match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
-          t = 'https://invites.oneplus.net/claim/%s' % m
-          @t1 = Time.now
-          getinvite(t)
-        end
-        urls = URI.extract(item['encoded'][0], ['http', 'https'])
-        urls.each do |u|
-          @t1 = Time.now
-          matchUrl(u)
-        end
-      end
-    rescue => e
-      STDERR.puts "Error forum #{Time.now}\n#{e}"
-    end
-    sleep 1
-  end
-end
-
 def urlTwitter(urls)
   begin
     urls.each do |u|
@@ -335,8 +308,3 @@ def getTwitter
     STDERR.puts "Error TWITTER #{Time.now}\n#{e}"
   end
 end
-
-th1 = Thread.new{getTwitter()}
-th2 = Thread.new{getForum()}
-th1.join
-th2.join
