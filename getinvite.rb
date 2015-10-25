@@ -78,7 +78,7 @@ if (@a.page.title != 'Edit User Information - OnePlus Account')
                       :token => ENV['PUSHOVER_TOKEN'],
                       :user => ENV['PUSHOVER_USER'],
                       :title => "OnePlus",
-                      :message => "Error login #{@us.email} #{Time.now}"
+                      :message => "1 Error login #{@us.email} #{Time.now}"
                     })
   res = Net::HTTP.new(urlp.host, urlp.port)
   res.use_ssl = true
@@ -177,7 +177,7 @@ def getinvite(url)
                                         :token => ENV['PUSHOVER_TOKEN'],
                                         :user => ENV['PUSHOVER_USER'],
                                         :title => "OnePlus",
-                                        :message => "Error login #{@us.email} #{Time.now}"
+                                        :message => "2 Error login #{@us.email} #{Time.now}"
                                       })
                     res = Net::HTTP.new(urlp.host, urlp.port)
                     res.use_ssl = true
@@ -297,7 +297,7 @@ def getTwitter
                               :token => ENV['PUSHOVER_TOKEN'],
                               :user => ENV['PUSHOVER_USER'],
                               :title => "OnePlus",
-                              :message => "Error login #{@us.email} #{Time.now}"
+                              :message => "3 Error login #{@us.email} #{Time.now}"
                             })
           res = Net::HTTP.new(urlp.host, urlp.port)
           res.use_ssl = true
