@@ -256,7 +256,6 @@ def getForum
           m = item['encoded'][0].match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
           t = 'https://invites.oneplus.net/claim/%s' % m
           @t1 = Time.now
-          getinvite(t)
           if (@count >= 100)
             @count = 0
             @a.get('https://invites.oneplus.net/my-invites')
@@ -287,6 +286,7 @@ def getForum
             @count = @count + 1
             puts @count
           end
+          getinvite(t)
         end
         urls = URI.extract(item['encoded'][0], ['http', 'https'])
         urls.each do |u|
