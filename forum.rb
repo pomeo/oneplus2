@@ -270,3 +270,5 @@ def getForum
     sleep 1
   end
 end
+
+getForum;

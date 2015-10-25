@@ -308,3 +308,5 @@ def getTwitter
     STDERR.puts "Error TWITTER #{Time.now}\n#{e}"
   end
 end
+
+getTwitter;
