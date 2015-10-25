@@ -97,11 +97,6 @@ def getinvite(url)
           if (m.at('p.h3.text-left.text-red').text.strip == 'You entered an invalid invite')
             puts "Used invite"
           else
-            if (!@t1.nil?)
-              @t2 = Time.now
-              @delta = @t2 - @t1
-              puts "Time #{@delta}"
-            end
             puts m.uri.to_s
             puts m.title
             @a.get('https://invites.oneplus.net/my-invites') do |app|
@@ -255,7 +250,6 @@ def getForum
         if (item['encoded'][0].match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
           m = item['encoded'][0].match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
           t = 'https://invites.oneplus.net/claim/%s' % m
-          @t1 = Time.now
           if (@count >= 100)
             @count = 0
             @a.get('https://invites.oneplus.net/my-invites')
@@ -290,7 +284,6 @@ def getForum
         end
         urls = URI.extract(item['encoded'][0], ['http', 'https'])
         urls.each do |u|
-          @t1 = Time.now
           matchUrl(u)
         end
       end
