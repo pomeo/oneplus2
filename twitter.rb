@@ -97,11 +97,6 @@ def getinvite(url)
           if (m.at('p.h3.text-left.text-red').text.strip == 'You entered an invalid invite')
             puts "Used invite"
           else
-            if (!@t1.nil?)
-              @t2 = Time.now
-              @delta = @t2 - @t1
-              puts "Time #{@delta}"
-            end
             puts m.uri.to_s
             puts m.title
             @a.get('https://invites.oneplus.net/my-invites') do |app|
@@ -247,7 +242,6 @@ end
 def urlTwitter(urls)
   begin
     urls.each do |u|
-      @t1 = Time.now
       @a.get(u) do |p|
         html = Nokogiri::HTML(p.body)
         s = html.xpath('//noscript/meta')[0]
@@ -268,7 +262,6 @@ def getTwitter
     end.track('oneplus', 'onepl.us') do |status|
       if (status.text.match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/))
         t = 'https://invites.oneplus.net/claim/%s' % status.text.match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
-        @t1 = Time.now
         getinvite(t)
       end
       urls = URI.extract(status.text, ['http', 'https'])
