@@ -154,7 +154,7 @@ agenda.define('check emails for invites', {
     $match: {
       subject: 'You’re invited',
       date: {
-        $gt: moment().subtract(24, 'h').toDate()
+        $gt: moment().subtract(168, 'h').toDate()
       }
     }
   }, {
@@ -181,6 +181,8 @@ agenda.define('check emails for invites', {
                   log(err, 'error');
                   callback();
                 } else {
+                  let $ = cheerio.load(email.html);
+                  let hours = +$('b').text();
                   if (_.isNull(acc)) {
                     let account = new EmailsAccounts({
                       email        : em.mail,
@@ -188,7 +190,7 @@ agenda.define('check emails for invites', {
                       invite       : false,
                       sell         : false,
                       start        : moment(email.date).unix(),
-                      end          : moment(email.date).add(24, 'h').unix(),
+                      end          : moment(email.date).add(hours, 'h').unix(),
                       type         : 1,
                       updated_at   : new Date(),
                       created_at   : new Date()
@@ -206,12 +208,12 @@ agenda.define('check emails for invites', {
                     if (acc.sell === true) {
                       callback();
                     } else {
-                      if (acc.start === moment(email.date).unix()) {
+                      if (acc.start !== moment(email.date).unix()) {
                         callback();
                       } else {
                         acc.type = 1;
                         acc.start = moment(email.date).unix(),
-                        acc.end = moment(email.date).add(24, 'h').unix(),
+                        acc.end = moment(email.date).add(hours, 'h').unix(),
                         acc.updated_at = new Date();
                         acc.save((err) => {
                           if (err) {
