@@ -154,7 +154,7 @@ agenda.define('check emails for invites', {
     $match: {
       subject: 'You’re invited',
       date: {
-        $gt: moment().subtract(72, 'h').toDate()
+        $gt: moment().subtract(24, 'h').toDate()
       }
     }
   }, {
@@ -216,7 +216,7 @@ agenda.define('check emails for invites', {
                         if (acc.sell === true) {
                           callback();
                         } else {
-                          if (acc.start !== moment(email.date).unix()) {
+                          if (acc.start === moment(email.date).unix()) {
                             callback();
                           } else {
                             acc.type = 1;
