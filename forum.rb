@@ -252,7 +252,7 @@ def getForum
           t = 'https://invites.oneplus.net/claim/%s' % m
           getinvite(t)
         else
-          if (@count >= 100)
+          if (@count >= 500)
             @count = 0
             @a.get('https://invites.oneplus.net/my-invites')
             puts "#{@count} #{@us.email} #{@a.page.title} #{Time.now}"
