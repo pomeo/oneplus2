@@ -29,6 +29,7 @@
     "morgan": "^1.6.1",
     "multer": "^1.0.1",
     "paypal-rest-sdk": "^1.6.1",
+    "postmark": "^1.2.1",
     "pushover-notifications": "^0.2.2",
     "redis.io": "0.0.3",
     "request": "^2.60.0",
