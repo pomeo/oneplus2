@@ -17,6 +17,8 @@ const moment   = require('moment');
 const multer   = require('multer');
 const upload   = multer();
 const winston  = require('winston');
+const postmark = require('postmark');
+const CLIENT   = new postmark.Client(process.env.POSTMARK);
 const paypal   = require('paypal-rest-sdk');
 const redirect = process.env.NODE_ENV === 'development' ?
         'http://10.38.38.200' : 'https://oneinvites.com';
@@ -446,6 +448,14 @@ router.post('/check', (req, res) => {
                     log('End accounts');
                     res.sendStatus(200);
                   } else {
+                    CLIENT.sendEmailWithTemplate({
+                      'From': 'robot@oneinvites.com',
+                      'To': payment.email,
+                      'TemplateId': 166061,
+                      'TemplateModel': {
+                        'action_url': redirect + '/mail/' + result.urlhash
+                      }
+                    });
                     let msg = {
                       title: 'OneInvites',
                       message: '+2$'
