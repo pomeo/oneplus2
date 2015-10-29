@@ -122,6 +122,7 @@ gulp.task('stylus', function () {
                    'bower_components/uikit/css/components/accordion.almost-flat.css',
                    'bower_components/uikit/css/components/slideshow.css',
                    'bower_components/uikit/css/components/slideshow.almost-flat.css',
+                   'src/css/auction.css',
                    'src/css/styles.styl'])
          .pipe(plumber({
            errorHandler: notify.onError("Error: <%= error.message %>")

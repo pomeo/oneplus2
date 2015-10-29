@@ -1,0 +1,33 @@
+/**
+ *
+ * Auction Nudge v3.6.6
+ * https://www.auctionnudge.com
+ *
+ * By Joseph Hawes
+ * http://www.josephhawes.co.uk
+ *
+ */
+.self-clear,.an-page-wrap{overflow:hidden}* html .self-clear,
+* html .an-page-wrap{height:1%}.auction-nudge a
+img{border:none}.auction-nudge li,
+.auction-nudge
+a{text-decoration:none;border:none}.auction-nudge th,
+.auction-nudge
+td{padding:3px}.auction-nudge
+td{text-align:left}.an-fb-meta{overflow:hidden}* html .an-fb-meta{height:1%}#auction-nudge-feedback .an-fb-meta{margin-top:5px;margin-bottom:20px}#auction-nudge-feedback
+table{margin-bottom:0}#auction-nudge-feedback table
+caption{padding-bottom:4px;font-size:1.1em;font-weight:bold;text-align:left;background:transparent}#auction-nudge-feedback .an-fb-profile{margin:0
+0 20px 0;padding:0;list-style-type:none}#auction-nudge-feedback .an-fb-profile .an-user{font-size:1.2em;font-weight:bold}#auction-nudge-feedback .an-fb-profile .an-user .an-star{}#auction-nudge-feedback .an-fb-profile .an-percent,
+#auction-nudge-feedback .an-fb-profile .an-register{font-size:1.1em}#auction-nudge-feedback .an-fb-profile .an-percent .an-num{font-weight:bold}#auction-nudge-feedback table.an-ft{width:41%;float:left}#auction-nudge-feedback table.an-ft tr.an-ft-head{}#auction-nudge-feedback table.an-ft tr.an-ft-head
+th{padding:8px;font-size:0.9em;text-align:right;background:#eee}#auction-nudge-feedback table.an-ft
+td{text-align:right;padding:8px}#auction-nudge-feedback table.an-ft .an-ft-icon{width:4%}#auction-nudge-feedback table.an-ft .an-ft-30{width:32%}#auction-nudge-feedback table.an-ft .an-ft-180{width:32%}#auction-nudge-feedback table.an-ft .an-ft-365{width:32%}#auction-nudge-feedback table.an-fr{width:58%;float:right}#auction-nudge-feedback table.an-fr .an-fr-head
+th{padding:8px;font-size:0.9em;text-align:center;background:#eee}#auction-nudge-feedback table.an-fr
+td{text-align:center}#auction-nudge-feedback table.an-fr td.an-fr-criteria,
+#auction-nudge-feedback table.an-fr th.an-fr-criteria{width:30%;text-align:left;vertical-align:top}#auction-nudge-feedback table.an-fr .an-fr-rating{width:30%;vertical-align:top}#auction-nudge-feedback table.an-fr .an-fr-count{width:30%;vertical-align:top}#auction-nudge-feedback table.an-fb{width:100%;border-top:1px solid #eee}#auction-nudge-feedback table.an-fb tr.an-fb-head
+th{background:#eee}#auction-nudge-feedback table.an-fb tr.an-fb-head th,
+#auction-nudge-feedback table.an-fb tr.an-fb-entry
+td{vertical-align:top;text-align:left;border-bottom:1px solid #eee}#auction-nudge-feedback table.an-fb th,
+#auction-nudge-feedback table.an-fb
+td{padding:5px}#auction-nudge-feedback table.an-fb .an-fb-icon{width:5%}#auction-nudge-feedback table.an-fb .an-fb-icon
+img{margin-top:3px}#auction-nudge-feedback table.an-fb .an-fb-text{width:60%}#auction-nudge-feedback table.an-fb .an-fb-text
+div{margin-bottom:5px}#auction-nudge-feedback table.an-fb .an-fb-from{text-align:left;width:15%}#auction-nudge-feedback table.an-fb .an-fb-when{text-align:left;width:16%}
