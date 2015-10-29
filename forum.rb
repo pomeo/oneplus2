@@ -71,14 +71,14 @@ end
 
 puts @a.page.title
 
-if (@a.page.title != 'Edit User Information - OnePlus Account')
+def pushover(msg)
   urlp = URI.parse('https://api.pushover.net/1/messages.json')
   req = Net::HTTP::Post.new(urlp.path)
   req.set_form_data({
                       :token => ENV['PUSHOVER_TOKEN'],
                       :user => ENV['PUSHOVER_USER'],
                       :title => "OnePlus",
-                      :message => "1 Error login #{@us.email} #{Time.now}"
+                      :message => msg
                     })
   res = Net::HTTP.new(urlp.host, urlp.port)
   res.use_ssl = true
@@ -86,6 +86,10 @@ if (@a.page.title != 'Edit User Information - OnePlus Account')
   res.start { |http|
     http.request(req)
   }
+end
+
+if (@a.page.title != 'Edit User Information - OnePlus Account')
+  pushover("1 Error login #{@us.email} #{Time.now}")
 end
 
 def getinvite(url)
@@ -101,20 +105,7 @@ def getinvite(url)
             puts m.title
             @a.get('https://invites.oneplus.net/my-invites') do |app|
               if (@a.page.title != 'My invites')
-                urlp = URI.parse('https://api.pushover.net/1/messages.json')
-                req = Net::HTTP::Post.new(urlp.path)
-                req.set_form_data({
-                                    :token => ENV['PUSHOVER_TOKEN'],
-                                    :user => ENV['PUSHOVER_USER'],
-                                    :title => "OnePlus",
-                                    :message => "Error page My invtes #{@us.email} #{@a.page.title} #{Time.now}"
-                                  })
-                res = Net::HTTP.new(urlp.host, urlp.port)
-                res.use_ssl = true
-                res.verify_mode = OpenSSL::SSL::VERIFY_PEER
-                res.start { |http|
-                  http.request(req)
-                }
+                pushover("Error page My invtes #{@us.email} #{@a.page.title} #{Time.now}")
                 @a.get('https://account.oneplus.net/login') do |login|
                   login.form_with(:action => 'https://account.oneplus.net/login') do |f|
                     f.email      = @us.email
@@ -124,20 +115,7 @@ def getinvite(url)
                 @a.get('https://invites.oneplus.net/my-invites')
                 puts "#{@us.email} #{@a.page.title} #{Time.now}"
               else
-                urlp = URI.parse('https://api.pushover.net/1/messages.json')
-                req = Net::HTTP::Post.new(urlp.path)
-                req.set_form_data({
-                                    :token => ENV['PUSHOVER_TOKEN'],
-                                    :user => ENV['PUSHOVER_USER'],
-                                    :title => "OnePlus",
-                                    :message => "000 #{@us.email} #{Time.now}"
-                                  })
-                res = Net::HTTP.new(urlp.host, urlp.port)
-                res.use_ssl = true
-                res.verify_mode = OpenSSL::SSL::VERIFY_PEER
-                res.start { |http|
-                  http.request(req)
-                }
+                pushover("000 #{@us.email} #{Time.now}")
                 inv = Array.new
                 app.search('.invite-card').each do |invite|
                   if (!invite.at('time').nil?)
@@ -152,20 +130,7 @@ def getinvite(url)
                   t2 = d[0].date_end.to_i
                   @us.update(:invite => true, :start => t1, :end => t2, :updated_at => Time.now)
                   left = Time.at(t2-t1).utc.strftime('%H:%M:%S')
-                  urlp = URI.parse('https://api.pushover.net/1/messages.json')
-                  req = Net::HTTP::Post.new(urlp.path)
-                  req.set_form_data({
-                                      :token => ENV['PUSHOVER_TOKEN'],
-                                      :user => ENV['PUSHOVER_USER'],
-                                      :title => "#{d[0].title}",
-                                      :message => "#{@us.email}\n#{left}"
-                                    })
-                  res = Net::HTTP.new(urlp.host, urlp.port)
-                  res.use_ssl = true
-                  res.verify_mode = OpenSSL::SSL::VERIFY_PEER
-                  res.start { |http|
-                    http.request(req)
-                  }
+                  pushover("#{@us.email}\n#{left}")
                   @a.get('https://account.oneplus.net/onepluslogout')
                   @us = Emailsaccounts.first(:sell => false, :password.not => nil, :order => [ :start.asc ])
                   begin
@@ -180,20 +145,7 @@ def getinvite(url)
                     STDERR.puts "Error FORM #{@us.email} #{Time.now}\n#{e}"
                   end
                   if (@a.page.title != 'Edit User Information - OnePlus Account')
-                    urlp = URI.parse('https://api.pushover.net/1/messages.json')
-                    req = Net::HTTP::Post.new(urlp.path)
-                    req.set_form_data({
-                                        :token => ENV['PUSHOVER_TOKEN'],
-                                        :user => ENV['PUSHOVER_USER'],
-                                        :title => "OnePlus",
-                                        :message => "2 Error login #{@us.email} #{Time.now}"
-                                      })
-                    res = Net::HTTP.new(urlp.host, urlp.port)
-                    res.use_ssl = true
-                    res.verify_mode = OpenSSL::SSL::VERIFY_PEER
-                    res.start { |http|
-                      http.request(req)
-                    }
+                    pushover("2 Error login #{@us.email} #{Time.now}")
                   end
                 end
               end
@@ -257,20 +209,7 @@ def getForum
             @a.get('https://invites.oneplus.net/my-invites')
             puts "#{@count} #{@us.email} #{@a.page.title} #{Time.now}"
             if @a.page.title != 'My invites'
-              urlp = URI.parse('https://api.pushover.net/1/messages.json')
-              req = Net::HTTP::Post.new(urlp.path)
-              req.set_form_data({
-                                  :token => ENV['PUSHOVER_TOKEN'],
-                                  :user => ENV['PUSHOVER_USER'],
-                                  :title => "OnePlus",
-                                  :message => "3 Error login #{@us.email} #{Time.now}"
-                                })
-              res = Net::HTTP.new(urlp.host, urlp.port)
-              res.use_ssl = true
-              res.verify_mode = OpenSSL::SSL::VERIFY_PEER
-              res.start { |http|
-                http.request(req)
-              }
+              pushover("3 Error login #{@us.email} #{Time.now}")
               @a.get('https://account.oneplus.net/login') do |login|
                 login.form_with(:action => 'https://account.oneplus.net/login') do |f|
                   f.email      = @us.email
@@ -295,4 +234,4 @@ def getForum
   end
 end
 
-getForum;
+#getForum;
