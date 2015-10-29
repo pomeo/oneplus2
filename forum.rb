@@ -234,4 +234,4 @@ def getForum
   end
 end
 
-#getForum;
+getForum;
