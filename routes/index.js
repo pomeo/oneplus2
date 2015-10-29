@@ -288,6 +288,10 @@ router.get('/faq', (req, res) => {
   res.render('store');
 });
 
+router.get('/manual', (req, res) => {
+  res.render('manual');
+});
+
 router.get('/mail', (req, res) => {
   res.redirect('/');
 });
