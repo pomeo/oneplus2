@@ -127,8 +127,8 @@ agenda.define('post twitter', {
       } else {
         if (count !== 0) {
           T.post('statuses/update', {
-            //status: 'oneinvites.com\nAccounts with GLOBAL(not India) invites for only 2$\ninvites.oneplus.net #oneplus2invite #OnePlus2 #OP2Invite\n' + getRandomInt(1,5)
-            status: 'OnePlus X invites for Europe\n\nhttp://www.ebay.com/itm/141806056331\n\n#OnePlusX #oneplusxinvite\noneplus.net/invites\ninvites.oneplus.net\n' + getRandomInt(1,5)
+            status: 'Accounts with GLOBAL(not India) invites for only 2$\n\noneinvites.com\n\ninvites.oneplus.net #oneplus2invite #OnePlus2 #OP2Invite\n' + getRandomInt(1,5)
+            //status: 'OnePlus X invites for Europe\n\nhttp://www.ebay.com/itm/141806056331\n\n#OnePlusX #oneplusxinvite\noneplus.net/invites\ninvites.oneplus.net\n' + getRandomInt(1,5)
           }, (err, data, response) => {
             if (err) {
               log(err, 'error');
