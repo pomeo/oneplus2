@@ -1,16 +1,5 @@
 extends layout
 
-mixin type0desc
-  td.uk-text-large
-    strong.uk-text-success activated invite with account
-  td.uk-text-large.uk-text-warning #{type0}
-    td.uk-text-large.uk-text-danger 3$
-    td
-      if type0 == 0
-        button.uk-button.uk-button-primary(disabled) Buy
-      else
-        a.uk-button.uk-button-primary(href="/buy0") Buy
-
 mixin type1desc
   td.uk-text-large
     strong.uk-text-success Global(NOT INDIA) invite with account
@@ -42,12 +31,6 @@ block content
                   th Price
                   th
               tbody
-                if type0 == 0
-                  tr(data-uk-tooltip="{pos:'right'}", title="Currently not available")
-                    mixin type0desc
-                else
-                  tr
-                    mixin type0desc
                 if type1 == 0
                   tr(data-uk-tooltip="{pos:'right'}", title="Currently not available")
                     mixin type1desc
