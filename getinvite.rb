@@ -116,7 +116,7 @@ def getinvite(url)
             else
               inv = Array.new
               app.search('.invite-card').each do |invite|
-                if (!invite.at('time').nil?)
+                if !invite.at('time').nil? && invite.at('p.card-type').text.strip != 'OnePlus 2 (India)'
                   t1 = Time.now
                   t2 = Time.now + invite.at('time')['data-time'].to_i
                   inv.push(Oneplus.new(t1, t2, invite.at('p.card-type').text.strip))
