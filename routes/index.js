@@ -322,7 +322,7 @@ router.get('/mail/:hash', (req, res) => {
                 log(err);
                 res.send('Error');
               } else {
-                if (acc.type === 0) {
+                if (acc.password) {
                   res.render('mail', {
                     login: acc.email,
                     password: acc.password,
