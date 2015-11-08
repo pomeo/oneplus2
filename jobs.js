@@ -127,7 +127,7 @@ agenda.define('post twitter', {
       } else {
         if (count !== 0) {
           T.post('statuses/update', {
-            status: 'Accounts with GLOBAL(not India) invites for only 2$\n\noneinvites.com\n\ninvites.oneplus.net #oneplus2invite #OnePlus2 #OP2Invite\n' + getRandomInt(1,5)
+            status: 'Accounts with GLOBAL(not India) invites for only 2$\n\noneinvites.com\n\ninvites.oneplus.net #oneplus2invite #OnePlus2 #OP2Invite\n' + getRandomInt(1,50)
           }, (err, data, response) => {
             if (err) {
               log(err, 'error');
