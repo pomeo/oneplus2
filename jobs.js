@@ -190,7 +190,8 @@ agenda.define('check emails for invites', {
                       callback();
                     } else {
                       let $ = cheerio.load(email.html);
-                      let hours = +$('b').text();
+                      //let hours = +$('b').text();
+                      let hours = 72;
                       if (_.isNull(acc)) {
                         let account = new EmailsAccounts({
                           email        : em.mail,
