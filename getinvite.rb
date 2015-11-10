@@ -183,6 +183,8 @@ def matchUrl(url)
       getinvite(url)
     elsif url.match(/fb.me/i)
       getinvite(url)
+    elsif url.match(/t.co/i)
+      getinvite(url)
     elsif url.match(/lnkd.in/i)
       getinvite(url)
     end
