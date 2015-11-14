@@ -97,7 +97,7 @@ def getinvite(url)
     if !url.to_s.match(/goo.gl\/forms/)
       puts url
       @a.get(url) do |m|
-        if m.uri.to_s.match(/(invites.oneplus.net\/claim\/GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
+        if m.uri.to_s.match(/(invites.oneplus.net\/claim\/(GL|EU)[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
           if m.at('p.h3.text-left.text-red').text.strip == 'You entered an invalid invite'
             puts "Used invite"
           end
@@ -210,8 +210,8 @@ def getTwitter
       puts "Error twitter stream #{Time.now}"
       puts message
     end.track('oneplus', 'onepl.us') do |status|
-      if status.text.match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
-        t = 'https://invites.oneplus.net/claim/%s' % status.text.match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
+      if status.text.match(/((GL|EU)[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
+        t = 'https://invites.oneplus.net/claim/%s' % status.text.match(/((GL|EU)[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
         getinvite(t)
       end
       urls = URI.extract(status.text, ['http', 'https'])
@@ -247,8 +247,8 @@ def getForum
       data = XmlSimple.xml_in(xml_data)
 
       data['channel'][0]['item'].each do |item|
-        if item['encoded'][0].match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
-          m = item['encoded'][0].match(/(GL[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
+        if item['encoded'][0].match(/((GL|EU)[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
+          m = item['encoded'][0].match(/((GL|EU)[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
           t = 'https://invites.oneplus.net/claim/%s' % m
           getinvite(t)
         else
