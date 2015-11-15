@@ -213,8 +213,11 @@ def getTwitter
       puts message
     end.track('oneplus', 'onepl.us') do |status|
       if status.text.upcase.match(/(#{@r})/)
-        t = 'https://invites.oneplus.net/claim/%s' % status.text.upcase.match(/(#{@r})/)
-        getinvite(t)
+        m = status.text.upcase.scan(/(#{@r})/)
+        m.each do |u|
+          t = 'https://invites.oneplus.net/claim/%s' % u
+          getinvite(t)
+        end
       end
       urls = URI.extract(status.text, ['http', 'https'])
       urlTwitter(urls)
