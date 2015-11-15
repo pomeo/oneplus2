@@ -45,6 +45,8 @@ $stdout.sync = true
 @us = Emailsaccounts.first(:sell => false, :password.not => nil, :order => [ :start.asc ])
 puts @us.email
 
+@r = "(GL|EU)[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}"
+
 TweetStream.configure do |config|
   config.consumer_key       = ENV['TWITTER_CONSUMER_KEY']
   config.consumer_secret    = ENV['TWITTER_CONSUMER_KEY_SECRET']
@@ -97,7 +99,7 @@ def getinvite(url)
     if !url.to_s.match(/goo.gl\/forms/)
       puts url
       @a.get(url) do |m|
-        if m.uri.to_s.match(/(invites.oneplus.net\/claim\/(GL|EU)[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
+        if m.uri.to_s.match(/(invites.oneplus.net\/claim\/#{@r})/)
           if m.at('p.h3.text-left.text-red').text.strip == 'You entered an invalid invite'
             puts "Used invite"
           end
@@ -210,8 +212,8 @@ def getTwitter
       puts "Error twitter stream #{Time.now}"
       puts message
     end.track('oneplus', 'onepl.us') do |status|
-      if status.text.match(/((GL|EU)[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
-        t = 'https://invites.oneplus.net/claim/%s' % status.text.match(/((GL|EU)[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
+      if status.text.match(/(#{@r})/)
+        t = 'https://invites.oneplus.net/claim/%s' % status.text.match(/(#{@r})/)
         getinvite(t)
       end
       urls = URI.extract(status.text, ['http', 'https'])
@@ -247,10 +249,12 @@ def getForum
       data = XmlSimple.xml_in(xml_data)
 
       data['channel'][0]['item'].each do |item|
-        if item['encoded'][0].match(/((GL|EU)[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
-          m = item['encoded'][0].match(/((GL|EU)[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})/)
-          t = 'https://invites.oneplus.net/claim/%s' % m
-          getinvite(t)
+        if item['encoded'][0].upcase.match(/(#{@r})/)
+          m = item['encoded'][0].upcase.scan(/(#{@r})/)
+          m.each do |u|
+            t = 'https://invites.oneplus.net/claim/%s' % u
+            getinvite(t)
+          end
         else
           urls = URI.extract(item['encoded'][0], ['http', 'https'])
           urls.each do |u|
