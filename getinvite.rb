@@ -212,8 +212,8 @@ def getTwitter
       puts "Error twitter stream #{Time.now}"
       puts message
     end.track('oneplus', 'onepl.us') do |status|
-      if status.text.match(/(#{@r})/)
-        t = 'https://invites.oneplus.net/claim/%s' % status.text.match(/(#{@r})/)
+      if status.text.upcase.match(/(#{@r})/)
+        t = 'https://invites.oneplus.net/claim/%s' % status.text.upcase.match(/(#{@r})/)
         getinvite(t)
       end
       urls = URI.extract(status.text, ['http', 'https'])
