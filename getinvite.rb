@@ -198,7 +198,7 @@ def urlTwitter(urls)
         html = Nokogiri::HTML(p.body)
         s = html.xpath('//noscript/meta')[0]
         url = s['content'].replace(s['content'].gsub(/0;URL=/, ''))
-        matchUrl(url)
+        matchUrl(url.downcase)
       end
     end
   rescue => e
@@ -258,7 +258,7 @@ def getForum
         else
           urls = URI.extract(item['encoded'][0], ['http', 'https'])
           urls.each do |u|
-            matchUrl(u)
+            matchUrl(u.downcase)
           end
         end
       end
