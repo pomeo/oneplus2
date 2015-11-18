@@ -45,7 +45,7 @@ $stdout.sync = true
 @us = Emailsaccounts.first(:sell => false, :password.not => nil, :order => [ :start.asc ])
 puts @us.email
 
-@r = "(GL|EU|US)[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}"
+@r = "(GL|EU|NA)[A-Z0-9]{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}"
 
 TweetStream.configure do |config|
   config.consumer_key       = ENV['TWITTER_CONSUMER_KEY']
