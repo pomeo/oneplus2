@@ -376,18 +376,19 @@ jobs.process('mail', function(job, done) {
         log('Письмо ' + job.data.to + ' сохранено');
         // if (job.data.from === 'invites@oneplus.net' ||
         //     job.data.from === 'me@pomeo.me') {
-        //   let msg = {
-        //     title: 'invites@oneplus.net',
-        //     message: 'New invite to ' + job.data.to
-        //   };
-        //   p.send(msg, function(err, result) {
-        //     if (err) {
-        //       log(err, 'error');
-        //     } else {
-        //       log(result);
-        //     }
-        //   });
-        // }
+        if (job.data.subject === 'Share an invite') {
+          let msg = {
+            title: 'invites@oneplus.net',
+            message: 'New invite to ' + job.data.to
+          };
+          p.send(msg, function(err, result) {
+            if (err) {
+              log(err, 'error');
+            } else {
+              log(result);
+            }
+          });
+        }
         if ((job.data.subject === 'Confirm your email') ||
             (job.data.subject === 'Account Confirmation')) {
           var $ = cheerio.load(job.data.html);
