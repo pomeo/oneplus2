@@ -224,7 +224,7 @@ def getTwitter
       end
       urls = URI.extract(status.text, ['http', 'https'])
       urlTwitter(urls)
-      if @count >= 20
+      if @count >= 50
         @count = 0
         @a.get('https://invites.oneplus.net/my-invites')
         puts "#{@count} #{@us.email} #{@a.page.title} #{Time.now}"
