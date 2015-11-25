@@ -249,6 +249,7 @@ end
 
 def getForum
   while true
+    sleep 300
     begin
       xml_data = URI.parse('https://forums.oneplus.net/forums/-/index.rss').read
 
@@ -271,11 +272,10 @@ def getForum
     rescue => e
       STDERR.puts "Error forum #{Time.now}\n#{e}"
     end
-    sleep 1
   end
 end
 
 th1 = Thread.new{getTwitter()}
-#th2 = Thread.new{getForum()}
+th2 = Thread.new{getForum()}
 th1.join
-#th2.join
+th2.join
