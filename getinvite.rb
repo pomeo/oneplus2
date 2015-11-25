@@ -69,7 +69,7 @@ begin
   end
 rescue => e
   STDERR.puts "Error FORM #{@us.email} #{Time.now}\n#{e}"
-  puts @a.page
+  STDERR.puts @a.page
 end
 
 puts @a.page.title
