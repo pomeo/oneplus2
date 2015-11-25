@@ -276,6 +276,6 @@ def getForum
 end
 
 th1 = Thread.new{getTwitter()}
-th2 = Thread.new{getForum()}
+#th2 = Thread.new{getForum()}
 th1.join
-th2.join
+#th2.join
