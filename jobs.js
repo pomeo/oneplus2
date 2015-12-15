@@ -374,9 +374,9 @@ jobs.process('mail', function(job, done) {
         setImmediate(done);
       } else {
         log('Письмо ' + job.data.to + ' сохранено');
-        // if (job.data.from === 'invites@oneplus.net' ||
-        //     job.data.from === 'me@pomeo.me') {
-        if (job.data.subject === 'Share an invite') {
+        if (job.data.from === 'invites@oneplus.net' ||
+            job.data.from === 'me@pomeo.me' ||
+            job.data.subject === 'Share an invite') {
           let msg = {
             title: 'invites@oneplus.net',
             message: 'New invite to ' + job.data.to
