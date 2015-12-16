@@ -109,43 +109,43 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-agenda.define('post twitter', {
-  concurrency: 1
-}, (job, done) => {
-  if (process.env.NODE_ENV !== 'development') {
-    EmailsAccounts.count({
-      type: 1,
-      password: {
-        $exists: false
-      },
-      sell: false,
-      invite: false
-    }).exec((err, count) => {
-      if (err) {
-        log(err, 'error');
-        done();
-      } else {
-        if (count !== 0) {
-          T.post('statuses/update', {
-            status: 'Accounts with GLOBAL(not India) invite for only 2$\n\noneinvites.com\n\ninvites.oneplus.net #oneplus2invite #OnePlus2 #OP2Invite\n' + getRandomInt(1,50)
-          }, (err, data, response) => {
-            if (err) {
-              log(err, 'error');
-              done();
-            } else {
-              log(data);
-              done();
-            }
-          });
-        } else {
-          done();
-        }
-      }
-    });
-  } else {
-    done();
-  }
-});
+// agenda.define('post twitter', {
+//   concurrency: 1
+// }, (job, done) => {
+//   if (process.env.NODE_ENV !== 'development') {
+//     EmailsAccounts.count({
+//       type: 1,
+//       password: {
+//         $exists: false
+//       },
+//       sell: false,
+//       invite: false
+//     }).exec((err, count) => {
+//       if (err) {
+//         log(err, 'error');
+//         done();
+//       } else {
+//         if (count !== 0) {
+//           T.post('statuses/update', {
+//             status: 'Accounts with GLOBAL(not India) invite for only 2$\n\noneinvites.com\n\ninvites.oneplus.net #oneplus2invite #OnePlus2 #OP2Invite\n' + getRandomInt(1,50)
+//           }, (err, data, response) => {
+//             if (err) {
+//               log(err, 'error');
+//               done();
+//             } else {
+//               log(data);
+//               done();
+//             }
+//           });
+//         } else {
+//           done();
+//         }
+//       }
+//     });
+//   } else {
+//     done();
+//   }
+// });
 
 agenda.define('check emails for invites', {
   concurrency: 1
