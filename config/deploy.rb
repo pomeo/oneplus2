@@ -10,6 +10,7 @@ offroad_modules   "defaults", "supervisord"
 set :repository,  "git@github.com:pomeo/oneplus2.git"
 set :supervisord_start_group, "oneplus"
 set :supervisord_stop_group,  "oneplus"
+set :shared_children, shared_children + %w{tmp}
 #========================
 #ROLES
 #========================
