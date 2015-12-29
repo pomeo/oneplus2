@@ -9,7 +9,7 @@
     "build": "/bin/rm -rf public/js/* && NODE_ENV=production webpack -p --colors"
   },
   "dependencies": {
-    "agenda": "^0.6.28",
+    "agenda": "^0.7.5",
     "async": "^1.4.0",
     "bcrypt": "^0.8.5",
     "bluebird": "^2.9.34",
