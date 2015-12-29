@@ -1,27 +1,21 @@
-require 'rollbar/capistrano'
-set :rollbar_token, ENV['rollbar']
 #========================
 #CONFIG
 #========================
-set :application, "oneplus2"
+set :application, "oneinvites.com"
 #========================
 #CONFIG
 #========================
 require           "capistrano-offroad"
 offroad_modules   "defaults", "supervisord"
-set :repository,  "git@github.com:pomeo/#{application}.git"
+set :repository,  "git@github.com:pomeo/oneplus2.git"
 set :supervisord_start_group, "oneplus"
 set :supervisord_stop_group,  "oneplus"
 #========================
 #ROLES
 #========================
-role :app,        "ubuntu@oneinvites.com"
+set  :gateway,    "#{application}" # main server
+role :app,        "10.3.140.1"      # container
 
-namespace :deploy do
-  desc "Symlink shared configs and folders on each release."
-  task :symlink_shared do
-    run "ln -s #{shared_path}/files #{release_path}/files"
-  end
-end
-
-after "deploy:create_symlink", "deploy:npm_install", "deploy:symlink_shared", "deploy:restart"
+after "deploy:create_symlink",
+      "deploy:npm_install",
+      "deploy:restart"
