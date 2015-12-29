@@ -297,13 +297,15 @@ agenda.define('check old invites', {
   });
 });
 
-agenda.every('5 minutes', 'check old invites');
+agenda.on('ready', function() {
+  agenda.every('5 minutes', 'check old invites');
 
-agenda.every('5 minutes', 'check emails for invites');
+  agenda.every('5 minutes', 'check emails for invites');
 
-//agenda.every('1 hour', 'post twitter');
+  // agenda.every('1 hour', 'post twitter');
 
-agenda.start();
+  agenda.start();
+});
 
 jobs.process('paypal', function(job, done) {
   var domain = require('domain').create();
